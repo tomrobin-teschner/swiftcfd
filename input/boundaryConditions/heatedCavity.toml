@@ -1,0 +1,23 @@
+[block1]
+east =  {T = {type = "interface", value = 2}}
+west =  {T = {type = "dirichlet", value = 0.0}}
+north = {T = {type = "interface", value = 3}}
+south = {T = {type = "dirichlet", value = 0.0}}
+
+[block2]
+east =  {T = {type = "dirichlet", value = 0.0}}
+west =  {T = {type = "interface", value = 1}}
+north = {T = {type = "interface", value = 4}}
+south = {T = {type = "dirichlet", value = 0.0}}
+
+[block3]
+east =  {T = {type = "interface", value = 4}}
+west =  {T = {type = "dirichlet", value = 0.0}}
+north = {T = {type = "dirichlet", value = 1.0}}
+south = {T = {type = "interface", value = 1}}
+
+[block4]
+east =  {T = {type = "dirichlet", value = 0.0}}
+west =  {T = {type = "interface", value = 3}}
+north = {T = {type = "dirichlet", value = 1.0}}
+south = {T = {type = "interface", value = 2}}
