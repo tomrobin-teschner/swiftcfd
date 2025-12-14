@@ -63,3 +63,11 @@ class Mesh():
             self.x.append(x)
             self.y.append(y)
     
+    def get_min_spacing(self):
+        dx = self.x[0][1][0] - self.x[0][0][0]
+        dy = self.y[0][0][1] - self.y[0][0][0]
+        for i in range(1, self.num_blocks):
+            dx = min(dx, self.x[i][1][0] - self.x[i][0][0])
+            dy = min(dy, self.y[i][0][1] - self.y[i][0][0])
+        return min(dx, dy)
+    
