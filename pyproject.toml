@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fluxy"
+version = "0.5.0"
+description = "A package to solve 2D PDEs using implicit time integration"
+authors = [
+    { name = "Tom-Robin Teschner", email = "tom@cfd.university" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+
+[tool.setuptools.packages.find]
+where = ["."]

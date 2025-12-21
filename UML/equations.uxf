@@ -1,0 +1,50 @@
+<diagram program="umletino" version="15.1"><zoom_level>14</zoom_level><help_text>NavierStokes
+</help_text><element><id>UMLClass</id><coordinates><x>686</x><y>392</y><w>504</w><h>84</h></coordinates><panel_attributes>&lt;&lt;interface&gt;&gt;
+NumericalScheme
+--
++apply(A: Matrix, b: Vector, field: Field) : (A: Matrix, b: Vector)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>784</x><y>532</y><w>182</w><h>42</h></coordinates><panel_attributes>SecondOrderCentral
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>854</x><y>462</y><w>154</w><h>98</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>90;10;90;30;10;30;10;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1050</x><y>532</y><w>140</w><h>42</h></coordinates><panel_attributes>FirstOrderEuler</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>966</x><y>462</y><w>168</w><h>98</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;30;100;30;100;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>616</x><y>0</y><w>364</w><h>224</h></coordinates><panel_attributes>&lt;&lt;interface&gt;&gt;
+EquationBase
+--
++field: Field
++field_name: String
+--
++first_order_time() : void
++first_order_space() : void
++second_order_space() : void
++source() : void
++solve() : (iteration: Int, converged: Boolean)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>532</x><y>294</y><w>140</w><h>42</h></coordinates><panel_attributes>HeatEquation</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>728</x><y>294</y><w>154</w><h>42</h></coordinates><panel_attributes>AdvetionEquation</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>924</x><y>294</y><w>140</w><h>42</h></coordinates><panel_attributes>NavierStokes</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>588</x><y>210</y><w>252</w><h>112</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>160;10;160;30;10;30;10;60</additional_attributes></element><element><id>Relation</id><coordinates><x>798</x><y>210</y><w>224</w><h>112</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;30;140;30;140;60</additional_attributes></element><element><id>Relation</id><coordinates><x>798</x><y>210</y><w>42</w><h>112</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1204</x><y>42</y><w>406</w><h>210</h></coordinates><panel_attributes>LinearAlgebraSolver
+--
++A: Matrix
++b: Vector
+--
++reset_A() : void
++reset_b() : void
++add_to_A(row: Int, col: Int, value: Float) : void
++insert_into_A(row: Int, col: Int, value: Float) : void
++add_to_b(row: Int, value: Float) : void
++insert_to_b(row: Int, value: Float) : void
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>966</x><y>126</y><w>266</w><h>42</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;170;10</additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>168</y><w>518</w><h>252</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>90;10;10;10;10;150;350;150;350;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1204</x><y>266</y><w>322</w><h>168</h></coordinates><panel_attributes>Timestep
+--
++dt: Float
++CFL: Float
+--
+-get_timestep_from_cfl(cfd: Float) : void
+-get_cfl_from_timestep(dt: Float) : void
++get_timestep() : Float
++get_cfl_number(): Float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>966</x><y>154</y><w>266</w><h>168</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;110;10;110;100;170;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>448</y><w>672</w><h>112</h></coordinates><panel_attributes>BoundaryConditions
+--
+-bcType: List&lt;BCType&gt;
+-bcValue: List&lt;Float&gt;
+--
++apply_boundary_conditions(A: Matrix, b: Vector, field: Field) : (A: Matrix, b: Vector)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>322</x><y>406</y><w>392</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>260;10;10;10;10;30</additional_attributes></element><element><id>UMLClass</id><coordinates><x>252</x><y>574</y><w>168</w><h>126</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
+BCType
+--
+Dirichlet
+Neumann
+Interface</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>154</x><y>42</y><w>350</w><h>98</h></coordinates><panel_attributes>Field
+--
+-data: List&lt;Float&gt;
+--
++__call__(block: Int, idx: Int, idy: Int) : Float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>56</y><w>154</w><h>42</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>90;10;10;10</additional_attributes></element></diagram>

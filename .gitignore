@@ -7,3 +7,6 @@
 
 # ignore generated output
 output/*
+
+# ignore build folders
+*.egg-info
