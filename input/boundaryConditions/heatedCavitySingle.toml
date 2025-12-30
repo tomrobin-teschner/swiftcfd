@@ -1,0 +1,5 @@
+[block1]
+east =  {T = {type = "dirichlet", value = 0.0}}
+west =  {T = {type = "dirichlet", value = 0.0}}
+north = {T = {type = "dirichlet", value = 1.0}}
+south = {T = {type = "dirichlet", value = 0.0}}
