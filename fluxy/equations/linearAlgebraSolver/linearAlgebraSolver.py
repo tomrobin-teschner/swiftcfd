@@ -1,37 +1,46 @@
 from petsc4py import PETSc
 from petsc4py import init as petsc_init
 
+import numpy as np
+import matplotlib.pyplot as plt
+
 class LinearAlgebraSolver():
-    def __init__(self, params, mesh):
+    def __init__(self, params, mesh, var_name):
         # total points in mesh
-        total_points = mesh.total_points
+        self.total_points = mesh.total_points
+        self.mesh = mesh
+        self.var_name = var_name
 
         # initialise petsc for usage
         petsc_init()
 
         # create coefficient matrix A
         self.A = PETSc.Mat().create()
-        self.A.setSizes([total_points, total_points])
+        self.A.setSizes([self.total_points, self.total_points])
         self.A.setType(PETSc.Mat.Type.SEQAIJ)
+        self.A.setPreallocationNNZ(5)
         self.A.setUp()
-        self.A.setPreallocationNNZ(3)
 
         # create right-hand side vector
-        self.b = PETSc.Vec().createSeq(total_points)
+        self.b = PETSc.Vec().createSeq(self.total_points)
 
         # create linear solver
         self.ksp = PETSc.KSP().create()
+        # available solver types: https://petsc.org/release/petsc4py/reference/petsc4py.PETSc.KSP.Type.html#petsc4py.PETSc.KSP.Type
         self.ksp.setType(PETSc.KSP.Type.GMRES)
         self.ksp.getPC().setType(PETSc.PC.Type.JACOBI)
-        self.ksp.setTolerances(rtol=1e-8, atol=1e-12, divtol=1e5, max_it=1000)
+        self.ksp.setInitialGuessNonzero(True)
+
+        tolerance = params.solver('linearSolver', 'tolerance', var_name)
+        max_iterations = params.solver('linearSolver', 'maxIterations', var_name)
+
+        self.ksp.setTolerances(rtol = tolerance, max_it = max_iterations)
     
     def reset_A(self):
         self.A.zeroEntries()
-        self.A.assemble()
     
     def reset_b(self):
         self.b.zeroEntries()
-        self.b.assemble()
 
     def add_to_A(self, row, col, value):
         self.A.setValue(row, col, value, addv=PETSc.InsertMode.ADD_VALUES)
@@ -52,11 +61,15 @@ class LinearAlgebraSolver():
         self.b.assemblyBegin()
         self.b.assemblyEnd()
 
-    def solve(self, x):
-        self.assemble()
+    def field_to_petsc_vec(self, field):
+        vec = PETSc.Vec().createWithArray(field._data)
+        return vec
+
+    def solve(self, field):
         self.ksp.setOperators(self.A)
-        self.ksp.solve(self.b, x)
-    
+        field_petsc = self.field_to_petsc_vec(field)
+        self.ksp.solve(self.b, field_petsc)
+
     def get_solver_statistics(self):
         num_iterations = self.ksp.getIterationNumber()
         res_norm = self.ksp.getResidualNorm()
