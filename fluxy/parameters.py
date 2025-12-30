@@ -3,15 +3,13 @@ import toml
 
 class Parameters:
     """reads parameters from TOML parameter files"""
-    def __init__(self):       
-        temp_parameters = self._get_parameters(join('input', 'config.toml'))
+    def __init__(self, root = 'input'):       
+        temp_parameters = self._get_parameters(join(root, 'config.toml'))
         case_name = temp_parameters['inputFiles']['case']
 
-        self.solver_params = self._get_parameters(join('input', 'solver', case_name + '.toml'))
-        self.mesh_params = self._get_parameters(join('input', 'mesh', case_name + '.toml'))
-        self.bc_params = self._get_parameters(join('input', 'boundaryConditions', case_name + '.toml'))
-
-        
+        self.solver_params = self._get_parameters(join(root, 'solver', case_name + '.toml'))
+        self.mesh_params = self._get_parameters(join(root, 'mesh', case_name + '.toml'))
+        self.bc_params = self._get_parameters(join(root, 'boundaryConditions', case_name + '.toml'))
 
     def _get_parameters(self, filename):
         with open(filename) as f:
@@ -35,7 +33,7 @@ class Parameters:
             temp = temp[key]
         return temp
 
-    def _num_points(self):
+    def num_points(self):
         self.num_points = 0 
         for i in range(0, self.num_blocks):
             block = f'block{i + 1}'

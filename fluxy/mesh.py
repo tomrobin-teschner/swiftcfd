@@ -14,7 +14,7 @@ class Mesh():
         self.points_offset = np.zeros(self.num_blocks, dtype = int)
 
         self.total_points = 0
-        self.points_per_block = np.zeros(self.num_blocks, dtype = int)
+        self.points_per_block = []
 
         for i in range(0, self.num_blocks):
             block = f'block{i + 1}'
@@ -25,21 +25,21 @@ class Mesh():
             self.num_x[i] = int(self.params.mesh(block, 'x', 'num'))
             self.num_y[i] = int(self.params.mesh(block, 'y', 'num'))
 
-            self.points_per_block[i] = self.num_x[i] * self.num_y[i]
+            self.points_per_block.append(self.num_x[i] * self.num_y[i])
             self.total_points += self.points_per_block[i]
 
             if i == 0:
                 self.points_offset[i] = 0
             else:
-                self.points_offset[i] = self.points_offset[i - 1] + int(self.num_x[i - 1] * self.num_y[i - 1])
+                self.points_offset[i] = self.points_offset[i - 1] + self.num_x[i - 1] * self.num_y[i - 1]
             
         self.x = []
         self.y = []
 
     def map3Dto1D(self, block_id, i, j):
         offset = self.points_offset[block_id]
-        stride = int(self.num_x[block_id]) * j
-        return offset + stride + i        
+        stride = self.num_x[block_id] * j
+        return int(offset + stride + i)        
 
     def create(self):
         for block in range(0, self.num_blocks):
@@ -70,4 +70,36 @@ class Mesh():
             dx = min(dx, self.x[i][1][0] - self.x[i][0][0])
             dy = min(dy, self.y[i][0][1] - self.y[i][0][0])
         return min(dx, dy)
+
+    def get_spacing(self, block_id):
+        dx = self.x[block_id][1][0] - self.x[block_id][0][0]
+        dy = self.y[block_id][0][1] - self.y[block_id][0][0]
+        return dx, dy
+
+    def internal_loop_all_blocks(self):
+        for block in range(0, self.num_blocks):
+            for i in range(1, self.num_x[block] - 1):
+                for j in range(1, self.num_y[block] - 1):
+                    yield block, i, j
+    
+    def internal_loop_single_block(self, block_id):
+        for i in range(1, self.num_x[block_id] - 1):
+            for j in range(1, self.num_y[block_id] - 1):
+                yield i, j
+    
+    def loop_east(self, block_id, offset = 0):
+        for j in range(offset, self.num_y[block_id] - offset):
+            yield int(self.num_x[block_id]) - 1, j
+    
+    def loop_west(self, block_id, offset = 0):
+        for j in range(offset, self.num_y[block_id] - offset):
+            yield 0, j
+    
+    def loop_north(self, block_id, offset = 0):
+        for i in range(offset, self.num_x[block_id] - offset):
+            yield i, int(self.num_y[block_id] - 1)
+
+    def loop_south(self, block_id, offset = 0):
+        for i in range(offset, self.num_x[block_id] - offset):
+            yield i, 0
     
