@@ -1,6 +1,9 @@
 import unittest
-from fluxy.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
 from petsc4py import PETSc
+import numpy as np
+
+from fluxy.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
+from fluxy.field import Field
 
 class TestLinearAlgebraSolver(unittest.TestCase):
     def setUp(self):
