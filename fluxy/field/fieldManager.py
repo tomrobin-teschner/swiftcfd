@@ -1,0 +1,22 @@
+from fluxy.field.field import Field
+
+class FieldManager():
+    def __init__(self, params, mesh):
+        self.params = params
+        self.mesh = mesh
+        self.fields = {}
+
+    def add_field(self, field_name):
+        field = Field(self.params, self.mesh, field_name)
+        field.old = Field(self.params, self.mesh, field_name + '_old')
+        self.fields[field.name] = field
+
+    def get_field(self, name):
+        return self.fields[name]
+
+    def get_all_fields(self):
+        return self.fields
+
+    def update(self):
+        for _, field in self.fields.items():
+            field.update_solution()
