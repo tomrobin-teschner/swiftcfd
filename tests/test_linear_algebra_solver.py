@@ -2,8 +2,8 @@ import unittest
 from petsc4py import PETSc
 import numpy as np
 
-from fluxy.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
-from fluxy.field import Field
+from swiftcfd.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
+from swiftcfd.field import Field
 
 class TestLinearAlgebraSolver(unittest.TestCase):
     def setUp(self):

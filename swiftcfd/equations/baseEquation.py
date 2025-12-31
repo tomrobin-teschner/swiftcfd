@@ -1,8 +1,8 @@
 from abc import ABC
 
-from fluxy.equations.boundaryConditions.boundaryConditions import BoundaryConditions
-from fluxy.equations.boundaryConditions.interfaceConditions import InterfaceConditions
-from fluxy.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
+from swiftcfd.equations.boundaryConditions.boundaryConditions import BoundaryConditions
+from swiftcfd.equations.boundaryConditions.interfaceConditions import InterfaceConditions
+from swiftcfd.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
 
 class BaseEquation(ABC):
     def __init__(self, params, mesh, var_name):
@@ -12,9 +12,9 @@ class BaseEquation(ABC):
         self.bc = BoundaryConditions(params, mesh, var_name)
         self.ic = InterfaceConditions(params, mesh, self.bc)
 
-        self.has_time_derivative = False
-        self.has_advection = False
-        self.has_diffusion = False
+        self.has_first_order_time_derivative = False
+        self.has_first_order_space_derivative = False
+        self.has_second_order_space_derivative = False
         self.has_source = False
 
         self.solver = LinearAlgebraSolver(params, mesh, var_name)
@@ -25,12 +25,12 @@ class BaseEquation(ABC):
         self.solver.reset_b()
         
         # set internal matrix coefficients
-        if self.has_time_derivative:
-            self.time_derivative(time, field)
-        if self.has_advection:
-            self.advection(time, field)
-        if self.has_diffusion:
-            self.diffusion(time, field)
+        if self.has_first_order_time_derivative:
+            self.first_order_time_derivative(time, field)
+        if self.has_first_order_space_derivative:
+            self.first_order_space_derivative(time, field)
+        if self.has_second_order_space_derivative:
+            self.second_order_space_derivative(time, field)
         if self.has_source:
             self.source(time, field)
 
@@ -46,15 +46,15 @@ class BaseEquation(ABC):
         # adjust corner points
         self.ic.corner_points.average_field_at_corner_point(field)
 
-    def time_derivative(self, time, field):
+    def first_order_time_derivative(self, time, field):
         """Handle time derivatives of the equation."""
         pass
 
-    def advection(self, time, field):
+    def first_order_space_derivative(self, time, field):
         """Handle advection (first-order spatial derivatives)."""
         pass
 
-    def diffusion(self, time, field):
+    def second_order_space_derivative(self, time, field):
         """Handle diffusion (second-order spatial derivatives)."""
         pass
 

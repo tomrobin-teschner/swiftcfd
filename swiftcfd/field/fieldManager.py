@@ -1,4 +1,4 @@
-from fluxy.field.field import Field
+from swiftcfd.field.field import Field
 
 class FieldManager():
     def __init__(self, params, mesh):

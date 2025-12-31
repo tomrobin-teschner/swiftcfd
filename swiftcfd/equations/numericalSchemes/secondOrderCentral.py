@@ -1,4 +1,4 @@
-from fluxy.equations.numericalSchemes.numericalSchemesBase import NumericalSchemesBase
+from swiftcfd.equations.numericalSchemes.numericalSchemesBase import NumericalSchemesBase
 from math import pow
 
 class SecondOrderCentral(NumericalSchemesBase):

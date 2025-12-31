@@ -1,5 +1,5 @@
-from fluxy.equations.boundaryConditions.boundaryConditions import BCType
-from fluxy.equations.boundaryConditions.cornerPoint import CornerPoint
+from swiftcfd.equations.boundaryConditions.boundaryConditions import BCType
+from swiftcfd.equations.boundaryConditions.cornerPoint import CornerPoint
 
 class InterfaceConditions():
     def __init__(self, params, mesh, bc):

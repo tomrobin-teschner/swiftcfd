@@ -1,4 +1,4 @@
-# FLUXY
+# swiftcfd
 
 ![Static Badge](https://img.shields.io/badge/Version-0.12.0-blue)
 

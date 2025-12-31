@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from fluxy.equations.boundaryConditions.boundaryConditions import BoundaryConditions
+from swiftcfd.equations.boundaryConditions.boundaryConditions import BoundaryConditions
 
 class NumericalSchemesBase(ABC):
     def __init__(self, params, mesh, interface_condition):

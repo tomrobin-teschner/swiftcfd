@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from fluxy.equations.boundaryConditions.boundaryConditions import BCType
+from swiftcfd.equations.boundaryConditions.boundaryConditions import BCType
 
 class CornerType(Enum):
     BOTTOM_LEFT = auto()

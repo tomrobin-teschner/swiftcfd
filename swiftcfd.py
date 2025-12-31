@@ -1,25 +1,25 @@
-import fluxy
+import swiftcfd
 
 def run():
     # create parameters
-    params = fluxy.parameters()
+    params = swiftcfd.parameters()
 
     # create mesh
-    mesh = fluxy.mesh(params)
+    mesh = swiftcfd.mesh(params)
     mesh.create()
 
     # add to field manager
-    field_manager = fluxy.field_manager(params, mesh)
+    field_manager = swiftcfd.field_manager(params, mesh)
     field_manager.add_field('T')
 
     # create governign equation
-    eqn = fluxy.heat_diffusion(params, mesh, 'T')
+    eqn = swiftcfd.heat_diffusion(params, mesh, 'T')
 
     # create time handler
-    time = fluxy.time(params, mesh, eqn.has_advection, eqn.has_diffusion)
+    time = swiftcfd.time(params, mesh, eqn.has_first_order_space_derivative, eqn.has_second_order_space_derivative)
 
     # create output
-    out = fluxy.output(params, mesh, field_manager)
+    out = swiftcfd.output(params, mesh, field_manager)
 
     # loop over time
     iter = 1

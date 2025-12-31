@@ -4,6 +4,8 @@ from petsc4py import init as petsc_init
 import numpy as np
 import matplotlib.pyplot as plt
 
+from swiftcfd.equations.linearAlgebraSolver.solverFactory import SolverFactory
+
 class LinearAlgebraSolver():
     def __init__(self, params, mesh, var_name):
         # total points in mesh
@@ -25,16 +27,26 @@ class LinearAlgebraSolver():
         self.b = PETSc.Vec().createSeq(self.total_points)
 
         # create linear solver
-        self.ksp = PETSc.KSP().create()
         # available solver types: https://petsc.org/release/petsc4py/reference/petsc4py.PETSc.KSP.Type.html#petsc4py.PETSc.KSP.Type
-        self.ksp.setType(PETSc.KSP.Type.GMRES)
-        self.ksp.getPC().setType(PETSc.PC.Type.JACOBI)
-        self.ksp.setInitialGuessNonzero(True)
+        # available preconditioners: https://petsc.org/release/petsc4py/reference/petsc4py.PETSc.PC.Type.html
+        self.ksp = SolverFactory().create(params, self.var_name)
+        self.ksp.setOperators(self.A)
+        # self.
 
-        tolerance = params.solver('linearSolver', 'tolerance', var_name)
-        max_iterations = params.solver('linearSolver', 'maxIterations', var_name)
+        # # GMRES
+        # self.ksp = PETSc.KSP().create()
 
-        self.ksp.setTolerances(rtol = tolerance, max_it = max_iterations)
+        # # self.ksp.setType(PETSc.KSP.Type.GMRES)
+        # # self.ksp.getPC().setType(PETSc.PC.Type.JACOBI)
+        
+        # self.ksp.setType(PETSc.KSP.Type.RICHARDSON)
+        # self.ksp.getPC().setType(PETSc.PC.Type.ILU)
+
+        
+
+
+        # # set tolerances and max iteration
+        
     
     def reset_A(self):
         self.A.zeroEntries()
@@ -66,7 +78,6 @@ class LinearAlgebraSolver():
         return vec
 
     def solve(self, field):
-        self.ksp.setOperators(self.A)
         field_petsc = self.field_to_petsc_vec(field)
         self.ksp.solve(self.b, field_petsc)
 

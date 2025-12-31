@@ -1,4 +1,4 @@
-from fluxy.equations.numericalSchemes.numericalSchemesBase import NumericalSchemesBase
+from swiftcfd.equations.numericalSchemes.numericalSchemesBase import NumericalSchemesBase
 
 class FirstOrderEuler(NumericalSchemesBase):
     def __init__(self, params, mesh, bc):
