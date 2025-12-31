@@ -1,6 +1,7 @@
 from abc import ABC
 
 from fluxy.equations.boundaryConditions.boundaryConditions import BoundaryConditions
+from fluxy.equations.boundaryConditions.interfaceConditions import InterfaceConditions
 from fluxy.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
 
 class BaseEquation(ABC):
@@ -9,6 +10,7 @@ class BaseEquation(ABC):
         self.mesh = mesh
         self.var_name = var_name
         self.bc = BoundaryConditions(params, mesh, var_name)
+        self.ic = InterfaceConditions(params, mesh, self.bc)
 
         self.has_time_derivative = False
         self.has_advection = False
@@ -40,6 +42,9 @@ class BaseEquation(ABC):
 
         # solver linear system of equations after coefficient matrix has been assembled
         self.solver.solve(field)
+
+        # adjust corner points
+        self.ic.corner_points.average_field_at_corner_point(field)
 
     def time_derivative(self, time, field):
         """Handle time derivatives of the equation."""

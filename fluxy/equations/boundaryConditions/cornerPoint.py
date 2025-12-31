@@ -15,8 +15,6 @@ class CornerPoint:
 
         self._find_internal_corner_points()
 
-        print('num corner points detected: ', len(self.internal_corner_points))
-
     def _find_internal_corner_points(self):
         for block in range(0, self.mesh.num_blocks):
             east_bc  = self.bc.bc_type[block]["east"]
@@ -52,13 +50,16 @@ class CornerPoint:
                     as_index = self.mesh.map3Dto1D(as_block, self.mesh.num_x[as_block] - 1, self.mesh.num_y[as_block] - 2)
                     b_index  = self.mesh.map3Dto1D(b_block, 0, 0)
 
+                    i, j = 0, 0
+
                     corner_point = {
                         "index": {
-                            "ap": ap_index, "ae": ae_index, "aw": aw_index, "an": an_index, "as": as_index, "b":  b_index
+                            "ap": ap_index, "ae": ae_index, "aw": aw_index, "an": an_index, "as": as_index, "b":  b_index, "i": i, "j": j
                         },
                         "block": {
                             "ap": ap_block, "ae": ae_block, "aw": aw_block, "an": an_block, "as": as_block, "b":  b_block
                         }
+
                     }
 
                     self.internal_corner_points.append(corner_point)
@@ -86,9 +87,11 @@ class CornerPoint:
                     as_index = self.mesh.map3Dto1D(as_block, 0, self.mesh.num_y[as_block] - 2)
                     b_index  = self.mesh.map3Dto1D(b_block, self.mesh.num_x[b_block] - 1, 0)
 
+                    i, j = self.mesh.num_x[ap_block] - 1, 0
+
                     corner_point = {
                         "index": {
-                            "ap": ap_index, "ae": ae_index, "aw": aw_index, "an": an_index, "as": as_index, "b":  b_index
+                            "ap": ap_index, "ae": ae_index, "aw": aw_index, "an": an_index, "as": as_index, "b":  b_index, "i": i, "j": j
                         },
                         "block": {
                             "ap": ap_block, "ae": ae_block, "aw": aw_block, "an": an_block, "as": as_block, "b":  b_block
@@ -120,9 +123,11 @@ class CornerPoint:
                     as_index = self.mesh.map3Dto1D(as_block, 0, self.mesh.num_x[as_block] - 2)
                     b_index  = self.mesh.map3Dto1D(b_block, 0, self.mesh.num_x[b_block] - 1)
 
+                    i, j = 0, self.mesh.num_x[ap_block] - 1
+
                     corner_point = {
                         "index": {
-                            "ap": ap_index, "ae": ae_index, "aw": aw_index, "an": an_index, "as": as_index, "b":  b_index
+                            "ap": ap_index, "ae": ae_index, "aw": aw_index, "an": an_index, "as": as_index, "b":  b_index, "i": i, "j": j
                         },
                         "block": {
                             "ap": ap_block, "ae": ae_block, "aw": aw_block, "an": an_block, "as": as_block, "b":  b_block
@@ -154,9 +159,11 @@ class CornerPoint:
                     as_index = self.mesh.map3Dto1D(as_block, self.mesh.num_x[as_block] - 1, self.mesh.num_y[as_block] - 2)
                     b_index  = self.mesh.map3Dto1D(b_block, self.mesh.num_x[ap_block] - 1, self.mesh.num_y[ap_block] - 1)
 
+                    i, j = self.mesh.num_x[ap_block] - 1, self.mesh.num_y[ap_block] - 1
+
                     corner_point = {
                         "index": {
-                            "ap": ap_index, "ae": ae_index, "aw": aw_index, "an": an_index, "as": as_index, "b":  b_index
+                            "ap": ap_index, "ae": ae_index, "aw": aw_index, "an": an_index, "as": as_index, "b":  b_index, "i": i, "j": j
                         },
                         "block": {
                             "ap": ap_block, "ae": ae_block, "aw": aw_block, "an": an_block, "as": as_block, "b":  b_block
@@ -164,3 +171,36 @@ class CornerPoint:
                     }
 
                     self.internal_corner_points.append(corner_point)
+
+    def average_field_at_corner_point(self, field):
+        if len(self.internal_corner_points) > 0:
+            ap_index = [d["index"]["ap"] for d in self.internal_corner_points]
+            i_index = [d["index"]["i"] for d in self.internal_corner_points]
+            j_index = [d["index"]["j"] for d in self.internal_corner_points]
+            block = [d["block"]["ap"] for d in self.internal_corner_points]
+
+            assert(len(ap_index) % 4 == 0)
+
+            ap_sorted, i_sorted, j_sorted, block_sorted = zip(*sorted(zip(ap_index, i_index, j_index, block)))
+            ap_sorted = list(ap_sorted)
+            i_sorted = list(i_sorted)
+            j_sorted = list(j_sorted)
+            block_sorted = list(block_sorted)
+
+            for index in range(0, len(ap_sorted), 4):
+                b1, i1, j1 = block_sorted[index + 0], i_sorted[index + 0], j_sorted[index + 0]
+                b2, i2, j2 = block_sorted[index + 1], i_sorted[index + 1], j_sorted[index + 1]
+                b3, i3, j3 = block_sorted[index + 2], i_sorted[index + 2], j_sorted[index + 2]
+                b4, i4, j4 = block_sorted[index + 3], i_sorted[index + 3], j_sorted[index + 3]
+
+                phi1 = field[b1, i1, j1]
+                phi2 = field[b2, i2, j2]
+                phi3 = field[b3, i3, j3]
+                phi4 = field[b4, i4, j4]
+
+                phi_avg = (phi1 + phi2 + phi3 + phi4) / 4
+
+                field[b1, i1, j1] = phi_avg
+                field[b2, i2, j2] = phi_avg
+                field[b3, i3, j3] = phi_avg
+                field[b4, i4, j4] = phi_avg

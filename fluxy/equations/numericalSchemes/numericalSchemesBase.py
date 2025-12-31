@@ -1,13 +1,12 @@
 from abc import ABC, abstractmethod
 
 from fluxy.equations.boundaryConditions.boundaryConditions import BoundaryConditions
-from fluxy.equations.boundaryConditions.interfaceConditions import InterfaceConditions
 
 class NumericalSchemesBase(ABC):
-    def __init__(self, params, mesh, bc):
+    def __init__(self, params, mesh, interface_condition):
         self.params = params
         self.mesh = mesh
-        self.ic = InterfaceConditions(params, mesh, bc)
+        self.ic = interface_condition        
 
     def apply(self, solver, time, field, multiplier = 1.0):
         # get matrix coefficients for all blocks

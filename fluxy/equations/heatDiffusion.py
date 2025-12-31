@@ -9,8 +9,8 @@ class HeatDiffusion(BaseEquation):
         self.has_diffusion = True
         self.has_time_derivative = True
 
-        self.dTdt = FirstOrderEuler(params, mesh, self.bc)
-        self.d2Tdx2 = SecondOrderCentral(params, mesh, self.bc)
+        self.dTdt = FirstOrderEuler(params, mesh, self.ic)
+        self.d2Tdx2 = SecondOrderCentral(params, mesh, self.ic)
 
     def time_derivative(self, time, field):
         self.dTdt.apply(self.solver, time, field)

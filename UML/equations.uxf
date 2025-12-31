@@ -1,9 +1,9 @@
-<diagram program="umletino" version="15.1"><zoom_level>14</zoom_level><help_text>NavierStokes
-</help_text><element><id>UMLClass</id><coordinates><x>707</x><y>490</y><w>406</w><h>84</h></coordinates><panel_attributes>&lt;&lt;interface&gt;&gt;
+<diagram program="umletino" version="15.1"><zoom_level>13</zoom_level><help_text>NavierStokes
+</help_text><element><id>UMLClass</id><coordinates><x>585</x><y>364</y><w>377</w><h>78</h></coordinates><panel_attributes>&lt;&lt;interface&gt;&gt;
 NumericalScheme
 --
-+apply(solver: LinearAlgebraSolver, field: Field)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>707</x><y>630</y><w>182</w><h>42</h></coordinates><panel_attributes>SecondOrderCentral
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>777</x><y>560</y><w>154</w><h>98</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>90;10;90;30;10;30;10;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>973</x><y>630</y><w>140</w><h>42</h></coordinates><panel_attributes>FirstOrderEuler</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>889</x><y>560</y><w>168</w><h>98</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;30;100;30;100;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>539</x><y>98</y><w>364</w><h>224</h></coordinates><panel_attributes>&lt;&lt;interface&gt;&gt;
++apply(solver: LinearAlgebraSolver, field: Field)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>585</x><y>494</y><w>169</w><h>39</h></coordinates><panel_attributes>SecondOrderCentral
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>650</x><y>429</y><w>143</w><h>91</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>90;10;90;30;10;30;10;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>832</x><y>494</y><w>130</w><h>39</h></coordinates><panel_attributes>FirstOrderEuler</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>754</x><y>429</y><w>156</w><h>91</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;30;100;30;100;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>429</x><y>0</y><w>338</w><h>208</h></coordinates><panel_attributes>&lt;&lt;interface&gt;&gt;
 EquationBase
 --
 +field: Field
@@ -13,7 +13,7 @@ EquationBase
 +first_order_space() : void
 +second_order_space() : void
 +source() : void
-+solve() : (iteration: Int, converged: Boolean)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>455</x><y>392</y><w>140</w><h>42</h></coordinates><panel_attributes>HeatEquation</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>651</x><y>392</y><w>154</w><h>42</h></coordinates><panel_attributes>AdvetionEquation</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>847</x><y>392</y><w>140</w><h>42</h></coordinates><panel_attributes>NavierStokes</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>511</x><y>308</y><w>252</w><h>112</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>160;10;160;30;10;30;10;60</additional_attributes></element><element><id>Relation</id><coordinates><x>721</x><y>308</y><w>224</w><h>112</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;30;140;30;140;60</additional_attributes></element><element><id>Relation</id><coordinates><x>721</x><y>308</y><w>42</w><h>112</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1127</x><y>140</y><w>406</w><h>210</h></coordinates><panel_attributes>LinearAlgebraSolver
++solve() : (iteration: Int, converged: Boolean)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>351</x><y>273</y><w>130</w><h>39</h></coordinates><panel_attributes>HeatEquation</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>533</x><y>273</y><w>143</w><h>39</h></coordinates><panel_attributes>AdvetionEquation</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>715</x><y>273</y><w>130</w><h>39</h></coordinates><panel_attributes>NavierStokes</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>403</x><y>195</y><w>234</w><h>104</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>160;10;160;30;10;30;10;60</additional_attributes></element><element><id>Relation</id><coordinates><x>598</x><y>195</y><w>208</w><h>104</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;30;140;30;140;60</additional_attributes></element><element><id>Relation</id><coordinates><x>598</x><y>195</y><w>39</w><h>104</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>975</x><y>39</y><w>377</w><h>195</h></coordinates><panel_attributes>LinearAlgebraSolver
 --
 +A: Matrix
 +b: Vector
@@ -24,7 +24,7 @@ EquationBase
 +insert_into_A(row: Int, col: Int, value: Float) : void
 +add_to_b(row: Int, value: Float) : void
 +insert_to_b(row: Int, value: Float) : void
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>889</x><y>224</y><w>266</w><h>42</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;170;10</additional_attributes></element><element><id>Relation</id><coordinates><x>413</x><y>294</y><w>518</w><h>224</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>90;10;10;10;10;130;350;130;350;140</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1127</x><y>364</y><w>322</w><h>168</h></coordinates><panel_attributes>Timestep
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>754</x><y>117</y><w>247</w><h>39</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;170;10</additional_attributes></element><element><id>Relation</id><coordinates><x>312</x><y>182</y><w>481</w><h>208</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>90;10;10;10;10;130;350;130;350;140</additional_attributes></element><element><id>UMLClass</id><coordinates><x>975</x><y>247</y><w>299</w><h>156</h></coordinates><panel_attributes>Timestep
 --
 +dt: Float
 +CFL: Float
@@ -32,24 +32,29 @@ EquationBase
 -get_timestep_from_cfl(cfd: Float) : void
 -get_cfl_from_timestep(dt: Float) : void
 +get_timestep() : Float
-+get_cfl_number(): Float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>889</x><y>252</y><w>266</w><h>168</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;110;10;110;100;170;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>91</x><y>490</y><w>560</w><h>112</h></coordinates><panel_attributes>BoundaryConditions
++get_cfl_number(): Float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>754</x><y>143</y><w>247</w><h>156</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;110;10;110;100;170;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>52</x><y>364</y><w>520</w><h>104</h></coordinates><panel_attributes>BoundaryConditions
 --
 -bcType: List&lt;BCType&gt;
 -bcValue: List&lt;Float&gt;
 --
-+apply_boundary_conditions(solver: LinearAlgebraSolver, field: Field)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>161</x><y>266</y><w>406</w><h>252</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>270;10;10;10;10;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>245</x><y>308</y><w>168</w><h>126</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
++apply_boundary_conditions(solver: LinearAlgebraSolver, field: Field)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>117</x><y>156</y><w>338</w><h>234</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>240;10;10;10;10;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>156</x><y>195</y><w>156</w><h>117</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
 BCType
 --
 Dirichlet
 Neumann
-Interface</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>77</x><y>140</y><w>350</w><h>98</h></coordinates><panel_attributes>Field
+Interface</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>39</y><w>325</w><h>91</h></coordinates><panel_attributes>Field
 --
 -data: List&lt;Float&gt;
 --
-+__call__(block: Int, idx: Int, idy: Int) : Float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>413</x><y>154</y><w>154</w><h>42</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>90;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>91</x><y>616</y><w>602</w><h>112</h></coordinates><panel_attributes>InterfaceConditions
++__call__(block: Int, idx: Int, idy: Int) : Float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>312</x><y>52</y><w>143</w><h>39</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>90;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>13</x><y>481</y><w>559</w><h>104</h></coordinates><panel_attributes>InterfaceConditions
 --
 -bcType: List&lt;BCType&gt;
 -bcValue: List&lt;Float&gt;
 --
 +apply_interface_conditions(solver: LinearAlgebraSolver, coeff: List&lt;Float&gt;)
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>651</x><y>504</y><w>84</w><h>140</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>40;10;10;10;10;80</additional_attributes></element></diagram>
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>13</x><y>130</y><w>442</w><h>377</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>320;10;10;10;10;270</additional_attributes></element><element><id>UMLClass</id><coordinates><x>13</x><y>598</y><w>364</w><h>104</h></coordinates><panel_attributes>CornerPoints
+--
+internal_corner_points: List&lt;Dict&gt;
+--
+-find_internal_corner_points()
++average_field_at_corner_point(field: Field)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>364</x><y>572</y><w>156</w><h>117</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>100;10;100;70;10;70</additional_attributes></element></diagram>
