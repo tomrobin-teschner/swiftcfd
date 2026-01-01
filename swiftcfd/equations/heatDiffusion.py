@@ -18,3 +18,7 @@ class HeatDiffusion(BaseEquation):
     def second_order_space_derivative(self, time, field):
         alpha = self.params('solver', 'fluid', 'alpha')
         self.d2Tdx2.apply(self.solver, time, field, alpha)
+    
+    def get_diffusion_coefficients(self):
+        alpha = self.params('solver', 'fluid', 'alpha')
+        return alpha

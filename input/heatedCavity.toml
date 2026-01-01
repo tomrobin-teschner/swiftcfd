@@ -2,9 +2,6 @@
 ### ----- SOLVER PROPERTIES ----- ###
 ### ----------------------------- ###
 [solver.fluid]
-    # fluid viscosity
-    nu = 1e-3
-
     # thermal expansion coefficient
     alpha = 1e-3
 

@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from swiftcfd.equations.boundaryConditions.boundaryConditions import BoundaryConditions
 from swiftcfd.equations.boundaryConditions.interfaceConditions import InterfaceConditions
@@ -60,4 +60,8 @@ class BaseEquation(ABC):
 
     def source(self, time, field):
         """Handle sources of the equation."""
+        pass
+
+    @abstractmethod
+    def get_diffusion_coefficients(self):
         pass

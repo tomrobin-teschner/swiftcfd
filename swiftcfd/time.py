@@ -2,11 +2,13 @@ from sys import float_info
 from math import pow
 
 class Time():
-    def __init__(self, params, mesh, has_advection, has_diffusion):
+    def __init__(self, params, mesh, eqn):
         self.params = params
         self.mesh = mesh
-        self.has_advection = has_advection
-        self.has_diffusion = has_diffusion
+        self.has_advection = eqn.has_first_order_space_derivative
+        self.has_diffusion = eqn.has_second_order_space_derivative
+        if self.has_diffusion:
+            self.diffusion_coefficient = eqn.get_diffusion_coefficients()
 
         self.cfl_based_timestepping = self.params('solver', 'time', 'CFLBasedTimeStepping')
         self.end_time = self.params('solver', 'time', 'endTime')
@@ -14,13 +16,13 @@ class Time():
     
     def compute_dt(self, *fields):
         if self.has_diffusion:
-            nu = self.params('solver', 'fluid', 'nu')
+            gamma = self.diffusion_coefficient
             if self.cfl_based_timestepping:
                 CFL_diffusion = self.params('solver', 'time', 'CFL')
-                dt_diffusion = CFL_diffusion * pow(self.mesh.get_min_spacing(), 2) / nu
+                dt_diffusion = CFL_diffusion * pow(self.mesh.get_min_spacing(), 2) / gamma
             else:
                 dt_diffusion = self.params('solver', 'time', 'dt')
-                CFL_diffusion = dt_diffusion * nu / pow(self.mesh.get_min_spacing(), 2)
+                CFL_diffusion = dt_diffusion * gamma / pow(self.mesh.get_min_spacing(), 2)
         
         if self.has_advection:
             if self.cfl_based_timestepping:

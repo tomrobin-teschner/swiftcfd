@@ -3,7 +3,7 @@ import swiftcfd
 def run():
     # create parameters
     params = swiftcfd.parameters()
-    params.read_from_file('input/heatedCavity.toml')
+    params.read_from_file('input/heatedCavitySingle.toml')
 
     # create mesh
     mesh = swiftcfd.mesh(params)
@@ -17,7 +17,7 @@ def run():
     eqn = swiftcfd.heat_diffusion(params, mesh, 'T')
 
     # create time handler
-    time = swiftcfd.time(params, mesh, eqn.has_first_order_space_derivative, eqn.has_second_order_space_derivative)
+    time = swiftcfd.time(params, mesh, eqn)
 
     # create output
     out = swiftcfd.output(params, mesh, field_manager)
