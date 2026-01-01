@@ -5,13 +5,14 @@ class SolverFactory():
         pass
 
     def create(self, params, var_name):
-        solver = params.solver('linearSolver', 'solver', var_name)
-        preconditioner = params.solver('linearSolver', 'preconditioner', var_name)
+        solver = params('solver', 'linearSolver', 'solver', var_name)
+        preconditioner = params('solver', 'linearSolver', 'preconditioner', var_name)
 
         ksp = PETSc.KSP().create()
         ksp.setInitialGuessNonzero(True)
 
-        # set solver``
+        # set solver
+        # available solver types: https://petsc.org/release/petsc4py/reference/petsc4py.PETSc.KSP.Type.html#petsc4py.PETSc.KSP.Type
         if solver == 'RICHARDSON':
             ksp.setType(PETSc.KSP.Type.RICHARDSON)
         elif solver == 'CG':
@@ -27,6 +28,7 @@ class SolverFactory():
             exit(1)
         
         # set preconditioner
+        # available preconditioners: https://petsc.org/release/petsc4py/reference/petsc4py.PETSc.PC.Type.html
         if preconditioner == 'JACOBI':
             ksp.getPC().setType(PETSc.PC.Type.JACOBI)
         elif preconditioner == 'ILU':
@@ -42,8 +44,8 @@ class SolverFactory():
             exit(1)
 
         # set solver tolerances
-        tolerance = params.solver('linearSolver', 'tolerance', var_name)
-        max_iterations = params.solver('linearSolver', 'maxIterations', var_name)
+        tolerance = params('solver', 'linearSolver', 'tolerance', var_name)
+        max_iterations = params('solver', 'linearSolver', 'maxIterations', var_name)
         ksp.setTolerances(rtol = tolerance, max_it = max_iterations)
 
         return ksp

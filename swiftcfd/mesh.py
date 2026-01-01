@@ -2,8 +2,7 @@ import numpy as np
 
 class Mesh():
     def __init__(self, params):
-        self.params = params
-        self.num_blocks = len(self.params.mesh())
+        self.num_blocks = len(params('mesh'))
 
         self.x_start = np.zeros(self.num_blocks)
         self.x_end = np.zeros(self.num_blocks)
@@ -18,12 +17,12 @@ class Mesh():
 
         for i in range(0, self.num_blocks):
             block = f'block{i + 1}'
-            self.x_start[i] = self.params.mesh(block, 'x', 'start')
-            self.x_end[i] = self.params.mesh(block, 'x', 'end')
-            self.y_start[i] = self.params.mesh(block, 'y', 'start')
-            self.y_end[i] = self.params.mesh(block, 'y', 'end')
-            self.num_x[i] = int(self.params.mesh(block, 'x', 'num'))
-            self.num_y[i] = int(self.params.mesh(block, 'y', 'num'))
+            self.x_start[i] = params('mesh', block, 'x', 'start')
+            self.x_end[i] = params('mesh', block, 'x', 'end')
+            self.y_start[i] = params('mesh', block, 'y', 'start')
+            self.y_end[i] = params('mesh', block, 'y', 'end')
+            self.num_x[i] = int(params('mesh', block, 'x', 'num'))
+            self.num_y[i] = int(params('mesh', block, 'y', 'num'))
 
             self.points_per_block.append(self.num_x[i] * self.num_y[i])
             self.total_points += self.points_per_block[i]

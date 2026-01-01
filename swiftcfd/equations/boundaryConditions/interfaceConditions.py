@@ -2,8 +2,7 @@ from swiftcfd.equations.boundaryConditions.boundaryConditions import BCType
 from swiftcfd.equations.boundaryConditions.cornerPoint import CornerPoint
 
 class InterfaceConditions():
-    def __init__(self, params, mesh, bc):
-        self.params = params
+    def __init__(self, mesh, bc):
         self.mesh = mesh
         self.bc = bc
         self.corner_points = CornerPoint(mesh, bc)

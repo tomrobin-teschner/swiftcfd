@@ -27,26 +27,8 @@ class LinearAlgebraSolver():
         self.b = PETSc.Vec().createSeq(self.total_points)
 
         # create linear solver
-        # available solver types: https://petsc.org/release/petsc4py/reference/petsc4py.PETSc.KSP.Type.html#petsc4py.PETSc.KSP.Type
-        # available preconditioners: https://petsc.org/release/petsc4py/reference/petsc4py.PETSc.PC.Type.html
         self.ksp = SolverFactory().create(params, self.var_name)
-        self.ksp.setOperators(self.A)
-        # self.
-
-        # # GMRES
-        # self.ksp = PETSc.KSP().create()
-
-        # # self.ksp.setType(PETSc.KSP.Type.GMRES)
-        # # self.ksp.getPC().setType(PETSc.PC.Type.JACOBI)
-        
-        # self.ksp.setType(PETSc.KSP.Type.RICHARDSON)
-        # self.ksp.getPC().setType(PETSc.PC.Type.ILU)
-
-        
-
-
-        # # set tolerances and max iteration
-        
+        self.ksp.setOperators(self.A)        
     
     def reset_A(self):
         self.A.zeroEntries()

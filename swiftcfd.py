@@ -3,13 +3,14 @@ import swiftcfd
 def run():
     # create parameters
     params = swiftcfd.parameters()
+    params.read_from_file('input/heatedCavity.toml')
 
     # create mesh
     mesh = swiftcfd.mesh(params)
     mesh.create()
 
     # add to field manager
-    field_manager = swiftcfd.field_manager(params, mesh)
+    field_manager = swiftcfd.field_manager(mesh)
     field_manager.add_field('T')
 
     # create governign equation

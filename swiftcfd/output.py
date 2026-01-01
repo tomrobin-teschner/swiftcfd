@@ -15,7 +15,7 @@ class Output():
                     remove(join('output', file))
 
     def write(self, iteration = -1):
-        case = self.params.solver('output', 'filename')
+        case = self.params('solver', 'output', 'filename')
         filename = case
 
         if iteration != -1:

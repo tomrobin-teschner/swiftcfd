@@ -20,15 +20,15 @@ class BoundaryConditions():
             bc_types = {}
             bc_values = {}
 
-            east_type = params.bc(block_id, "east", self.var_name, "type")
-            west_type = params.bc(block_id, "west", self.var_name, "type")
-            north_type = params.bc(block_id, "north", self.var_name, "type")
-            south_type = params.bc(block_id, "south", self.var_name, "type")
+            east_type = params('boundaryCondition', block_id, "east", self.var_name, "type")
+            west_type = params('boundaryCondition', block_id, "west", self.var_name, "type")
+            north_type = params('boundaryCondition', block_id, "north", self.var_name, "type")
+            south_type = params('boundaryCondition', block_id, "south", self.var_name, "type")
 
-            east_value = params.bc(block_id, "east", self.var_name, "value")
-            west_value = params.bc(block_id, "west", self.var_name, "value")
-            north_value = params.bc(block_id, "north", self.var_name, "value")
-            south_value = params.bc(block_id, "south", self.var_name, "value")
+            east_value = params('boundaryCondition', block_id, "east", self.var_name, "value")
+            west_value = params('boundaryCondition', block_id, "west", self.var_name, "value")
+            north_value = params('boundaryCondition', block_id, "north", self.var_name, "value")
+            south_value = params('boundaryCondition', block_id, "south", self.var_name, "value")
 
             bc_types["east"] = east_type
             bc_types["west"] = west_type

@@ -2,8 +2,7 @@ import numpy as np
 from petsc4py import PETSc
 
 class Field():
-    def __init__(self, params, mesh, name):
-        self.params = params
+    def __init__(self, mesh, name):
         self.mesh = mesh
         self.name = name
         self.old = None

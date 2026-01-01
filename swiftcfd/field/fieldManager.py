@@ -1,14 +1,13 @@
 from swiftcfd.field.field import Field
 
 class FieldManager():
-    def __init__(self, params, mesh):
-        self.params = params
+    def __init__(self, mesh):
         self.mesh = mesh
         self.fields = {}
 
     def add_field(self, field_name):
-        field = Field(self.params, self.mesh, field_name)
-        field.old = Field(self.params, self.mesh, field_name + '_old')
+        field = Field(self.mesh, field_name)
+        field.old = Field(self.mesh, field_name + '_old')
         self.fields[field.name] = field
 
     def get_field(self, name):

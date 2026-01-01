@@ -1,0 +1,87 @@
+### ----------------------------- ###
+### ----- SOLVER PROPERTIES ----- ###
+### ----------------------------- ###
+[solver.fluid]
+    # fluid viscosity
+    nu = 1e-3
+
+    # thermal expansion coefficient
+    alpha = 1e-3
+
+[solver.time]
+    # use CFL based time stepping
+    CFLBasedTimeStepping = false
+
+    # CFL number (only used if CFLBasedTimeStepping is set to true)
+    CFL = 10.0
+
+    # time step (only used if CFLBasedTimeStepping is set to false)
+    dt  = 10.0
+
+    # end time of the simulation
+    endTime = 500.0
+
+[solver.linearSolver]
+    # Linear solver for the implicit treatment. Available solvers are:
+    # RICHARDSON, CG, BCGS, GMRES
+    solver = {T = "GMRES"}
+
+    # Preconditioner for the implicit treatment. Available preconditioners are:
+    # JACOBI, ILU, SOR, NONE
+    preconditioner = {T = "JACOBI"}
+
+    # relative tolerance to reach for the linear solver within each time step
+    tolerance = {T = 1e-8}
+
+    # max allowable iterations by the implicit solver
+    maxIterations = {T = 1000}
+
+[solver.output]
+    # filename used to write out the solution
+    filename = "heatedCavity"
+
+### --------------------------- ###
+### ----- MESH PROPERTIES ----- ###
+### --------------------------- ###
+[mesh.block1]
+    x = {start = 0.0, end = 0.5, num = 21}
+    y = {start = 0.0, end = 0.5, num = 21}
+
+[mesh.block2]
+    x = {start = 0.5, end = 1.0, num = 21}
+    y = {start = 0.0, end = 0.5, num = 21}
+
+[mesh.block3]
+    x = {start = 0.0, end = 0.5, num = 21}
+    y = {start = 0.5, end = 1.0, num = 21}
+
+[mesh.block4]
+    x = {start = 0.5, end = 1.0, num = 21}
+    y = {start = 0.5, end = 1.0, num = 21}
+
+### ------------------------------------------ ###
+### ----- BOUNDARY CONDITIONS PROPERTIES ----- ###
+### ------------------------------------------ ###
+[boundaryCondition.block1]
+    east =  {T = {type = "interface", value = 2}}
+    west =  {T = {type = "dirichlet", value = 0.0}}
+    north = {T = {type = "interface", value = 3}}
+    south = {T = {type = "dirichlet", value = 0.0}}
+
+[boundaryCondition.block2]
+    east =  {T = {type = "dirichlet", value = 0.0}}
+    west =  {T = {type = "interface", value = 1}}
+    north = {T = {type = "interface", value = 4}}
+    south = {T = {type = "dirichlet", value = 0.0}}
+
+[boundaryCondition.block3]
+    east =  {T = {type = "interface", value = 4}}
+    west =  {T = {type = "dirichlet", value = 0.0}}
+    north = {T = {type = "dirichlet", value = 1.0}}
+    south = {T = {type = "interface", value = 1}}
+
+[boundaryCondition.block4]
+    east =  {T = {type = "dirichlet", value = 0.0}}
+    west =  {T = {type = "interface", value = 3}}
+    north = {T = {type = "dirichlet", value = 1.0}}
+    south = {T = {type = "interface", value = 2}}

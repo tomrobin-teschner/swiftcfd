@@ -8,23 +8,23 @@ class Time():
         self.has_advection = has_advection
         self.has_diffusion = has_diffusion
 
-        self.cfl_based_timestepping = self.params.solver('time', 'CFLBasedTimeStepping')
-        self.end_time = self.params.solver('time', 'endTime')
+        self.cfl_based_timestepping = self.params('solver', 'time', 'CFLBasedTimeStepping')
+        self.end_time = self.params('solver', 'time', 'endTime')
         self.current_time = 0.0        
     
     def compute_dt(self, *fields):
         if self.has_diffusion:
-            nu = self.params.solver('fluid', 'nu')
+            nu = self.params('solver', 'fluid', 'nu')
             if self.cfl_based_timestepping:
-                CFL_diffusion = self.params.solver('time', 'CFL')
+                CFL_diffusion = self.params('solver', 'time', 'CFL')
                 dt_diffusion = CFL_diffusion * pow(self.mesh.get_min_spacing(), 2) / nu
             else:
-                dt_diffusion = self.params.solver('time', 'dt')
+                dt_diffusion = self.params('solver', 'time', 'dt')
                 CFL_diffusion = dt_diffusion * nu / pow(self.mesh.get_min_spacing(), 2)
         
         if self.has_advection:
             if self.cfl_based_timestepping:
-                CFL_advection = self.params.solver('time', 'CFL')
+                CFL_advection = self.params('solver', 'time', 'CFL')
                 
                 dt_advection = float_info.max
                 for field in fields:
@@ -35,7 +35,7 @@ class Time():
                             if temp_dt < dt_advection:
                                 dt_advection = temp_dt
             else:
-                dt_advection = self.params.solver('time', 'dt')
+                dt_advection = self.params('solver', 'time', 'dt')
 
                 CFL_advection = float_info.max
                 for field in fields:

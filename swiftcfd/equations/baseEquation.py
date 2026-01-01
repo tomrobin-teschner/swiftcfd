@@ -9,15 +9,15 @@ class BaseEquation(ABC):
         self.params = params
         self.mesh = mesh
         self.var_name = var_name
-        self.bc = BoundaryConditions(params, mesh, var_name)
-        self.ic = InterfaceConditions(params, mesh, self.bc)
+        self.bc = BoundaryConditions(self.params, self.mesh, self.var_name)
+        self.ic = InterfaceConditions(self.mesh, self.bc)
 
         self.has_first_order_time_derivative = False
         self.has_first_order_space_derivative = False
         self.has_second_order_space_derivative = False
         self.has_source = False
 
-        self.solver = LinearAlgebraSolver(params, mesh, var_name)
+        self.solver = LinearAlgebraSolver(self.params, self.mesh, self.var_name)
 
     def update(self, time, field):
         # ensure matrix and right-hand side vector are zeroed
