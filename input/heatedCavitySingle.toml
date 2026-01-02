@@ -10,7 +10,7 @@
     CFLBasedTimeStepping = false
 
     # CFL number (only used if CFLBasedTimeStepping is set to true)
-    CFL = 10.0
+    CFL = 0.25
 
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 10.0

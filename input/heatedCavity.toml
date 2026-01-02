@@ -10,7 +10,7 @@
     CFLBasedTimeStepping = false
 
     # CFL number (only used if CFLBasedTimeStepping is set to true)
-    CFL = 10.0
+    CFL = 0.25
 
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 10.0
@@ -25,7 +25,7 @@
 
     # Preconditioner for the implicit treatment. Available preconditioners are:
     # JACOBI, ILU, SOR, NONE
-    preconditioner = {T = "JACOBI"}
+    preconditioner = {T = "ILU"}
 
     # relative tolerance to reach for the linear solver within each time step
     tolerance = {T = 1e-8}

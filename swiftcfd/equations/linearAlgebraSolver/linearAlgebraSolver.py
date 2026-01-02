@@ -84,5 +84,5 @@ class LinearAlgebraSolver():
         # nz_used is the "non-zero" entries in the matrix. If there are as many
         # nz entries as there are rows, there is only one entry per row.
         # Thus, the matrix is diagonal and can be trivally inverted for
-        # explicit time integration 
+        # explicit time integration
         return info["nz_used"] == numer_of_rows

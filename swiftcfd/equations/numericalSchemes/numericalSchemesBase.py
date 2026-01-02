@@ -29,6 +29,10 @@ class NumericalSchemesBase(ABC):
     @abstractmethod
     def _compute_interior(self, block_id, solver, field):
         pass
+    
+    @abstractmethod
+    def get_right_hand_side_contribution(self, ij, ip1j, im1j, ijp1, ijm1, field):
+        pass
 
     def _apply_interface_conditions(self, block_id, solver, field):
-        self.ic.apply_interface_conditions(block_id, solver, field, self.coefficients)
+        self.ic.apply_interface_conditions(block_id, solver, field, self)

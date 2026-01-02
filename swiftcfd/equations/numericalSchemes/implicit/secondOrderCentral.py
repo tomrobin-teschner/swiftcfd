@@ -14,7 +14,6 @@ class SecondOrderCentral(NumericalSchemesBase):
                 'aw': multiplier * (-1.0/pow(dx, 2)),
                 'an': multiplier * (-1.0/pow(dy, 2)),
                 'as': multiplier * (-1.0/pow(dy, 2)),
-                'b': 0.0
             })
     
     def _compute_interior(self, block_id, solver, field):
@@ -30,3 +29,6 @@ class SecondOrderCentral(NumericalSchemesBase):
             solver.add_to_A(ap_index, aw_index, self.coefficients[block_id]['aw'])
             solver.add_to_A(ap_index, an_index, self.coefficients[block_id]['an'])
             solver.add_to_A(ap_index, as_index, self.coefficients[block_id]['as'])
+    
+    def get_right_hand_side_contribution(self, ij, ip1j, im1j, ijp1, ijm1, field):
+        return 0.0

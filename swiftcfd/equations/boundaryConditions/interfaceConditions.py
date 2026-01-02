@@ -7,26 +7,38 @@ class InterfaceConditions():
         self.bc = bc
         self.corner_points = CornerPoint(mesh, bc)
 
-    def apply_interface_conditions(self, block_id, solver, field, coefficients):      
+    def apply_interface_conditions(self, block_id, solver, field, scheme):      
         # check for east interface            
         if self.bc.bc_type[block_id]["east"] == BCType.interface:
             neighbour_id = int(self.bc.bc_value[block_id]["east"])
             east_index = 1
 
             for (i, j) in self.mesh.loop_east(block_id, 1):
-                ap_index = self.mesh.map3Dto1D(block_id, i, j)
-                ae_index = self.mesh.map3Dto1D(neighbour_id, east_index, j)
-                aw_index = self.mesh.map3Dto1D(block_id, i - 1, j)
-                an_index = self.mesh.map3Dto1D(block_id, i, j + 1)
-                as_index = self.mesh.map3Dto1D(block_id, i, j - 1)
-                b_index  = self.mesh.map3Dto1D(block_id, i, j)
+                ij = (block_id, i, j)
+                ip1j = (neighbour_id, east_index, j)
+                im1j = (block_id, i - 1, j)
+                ijp1 = (block_id, i, j + 1)
+                ijm1 = (block_id, i, j - 1)
 
-                solver.add_to_A(ap_index, ap_index, coefficients[block_id]['ap'])
-                solver.add_to_A(ap_index, ae_index, coefficients[neighbour_id]['ae'])
-                solver.add_to_A(ap_index, aw_index, coefficients[block_id]['aw'])
-                solver.add_to_A(ap_index, an_index, coefficients[block_id]['an'])
-                solver.add_to_A(ap_index, as_index, coefficients[block_id]['as'])
-                solver.add_to_b(b_index, coefficients[block_id]['b'] * field.old[block_id, i, j])
+                ap_index = self.mesh.map3Dto1D(*ij)
+                ae_index = self.mesh.map3Dto1D(*ip1j)
+                aw_index = self.mesh.map3Dto1D(*im1j)
+                an_index = self.mesh.map3Dto1D(*ijp1)
+                as_index = self.mesh.map3Dto1D(*ijm1)
+                b_index  = self.mesh.map3Dto1D(*ij)
+
+                if 'ap' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, ap_index, scheme.coefficients[block_id]['ap'])
+                if 'ae' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, ae_index, scheme.coefficients[neighbour_id]['ae'])
+                if 'aw' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, aw_index, scheme.coefficients[block_id]['aw'])
+                if 'an' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, an_index, scheme.coefficients[block_id]['an'])
+                if 'as' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, as_index, scheme.coefficients[block_id]['as'])
+                if 'b' in scheme.coefficients[block_id]:
+                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(ij, ip1j, im1j, ijp1, ijm1, field))
 
         # check for west interface
         if self.bc.bc_type[block_id]["west"] == BCType.interface:
@@ -34,19 +46,31 @@ class InterfaceConditions():
             west_index = int(self.mesh.num_x[neighbour_id] - 2)
 
             for (i, j) in self.mesh.loop_west(block_id, 1):
-                ap_index = self.mesh.map3Dto1D(block_id, i, j)
-                ae_index = self.mesh.map3Dto1D(block_id, i + 1, j)
-                aw_index = self.mesh.map3Dto1D(neighbour_id, west_index, j)
-                an_index = self.mesh.map3Dto1D(block_id, i, j + 1)
-                as_index = self.mesh.map3Dto1D(block_id, i, j - 1)
-                b_index  = self.mesh.map3Dto1D(block_id, i, j)
+                ij = (block_id, i, j)
+                ip1j = (block_id, i + 1, j)
+                im1j = (neighbour_id, west_index, j)
+                ijp1 = (block_id, i, j + 1)
+                ijm1 = (block_id, i, j - 1)
 
-                solver.add_to_A(ap_index, ap_index, coefficients[block_id]['ap'])
-                solver.add_to_A(ap_index, ae_index, coefficients[block_id]['ae'])
-                solver.add_to_A(ap_index, aw_index, coefficients[neighbour_id]['aw'])
-                solver.add_to_A(ap_index, an_index, coefficients[block_id]['an'])
-                solver.add_to_A(ap_index, as_index, coefficients[block_id]['as'])
-                solver.add_to_b(b_index, coefficients[block_id]['b'] * field.old[block_id, i, j])
+                ap_index = self.mesh.map3Dto1D(*ij)
+                ae_index = self.mesh.map3Dto1D(*ip1j)
+                aw_index = self.mesh.map3Dto1D(*im1j)
+                an_index = self.mesh.map3Dto1D(*ijp1)
+                as_index = self.mesh.map3Dto1D(*ijm1)
+                b_index  = self.mesh.map3Dto1D(*ij)
+
+                if 'ap' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, ap_index, scheme.coefficients[block_id]['ap'])
+                if 'ae' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, ae_index, scheme.coefficients[block_id]['ae'])
+                if 'aw' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, aw_index, scheme.coefficients[neighbour_id]['aw'])
+                if 'an' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, an_index, scheme.coefficients[block_id]['an'])
+                if 'as' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, as_index, scheme.coefficients[block_id]['as'])
+                if 'b' in scheme.coefficients[block_id]:
+                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(ij, ip1j, im1j, ijp1, ijm1, field))
                             
         # check for north interface
         if self.bc.bc_type[block_id]["north"] == BCType.interface:
@@ -54,19 +78,31 @@ class InterfaceConditions():
             north_index = 1
                 
             for (i, j) in self.mesh.loop_north(block_id, 1):
-                ap_index = self.mesh.map3Dto1D(block_id, i, j)
-                ae_index = self.mesh.map3Dto1D(block_id, i + 1, j)
-                aw_index = self.mesh.map3Dto1D(block_id, i - 1, j)
-                an_index = self.mesh.map3Dto1D(neighbour_id, i, north_index)
-                as_index = self.mesh.map3Dto1D(block_id, i, j - 1)
-                b_index  = self.mesh.map3Dto1D(block_id, i, j)
+                ij = (block_id, i, j)
+                ip1j = (block_id, i + 1, j)
+                im1j = (block_id, i - 1, j)
+                ijp1 = (neighbour_id, i, north_index)
+                ijm1 = (block_id, i, j - 1)
 
-                solver.add_to_A(ap_index, ap_index, coefficients[block_id]['ap'])
-                solver.add_to_A(ap_index, ae_index, coefficients[block_id]['ae'])
-                solver.add_to_A(ap_index, aw_index, coefficients[block_id]['aw'])
-                solver.add_to_A(ap_index, an_index, coefficients[block_id]['an'])
-                solver.add_to_A(ap_index, as_index, coefficients[block_id]['as'])
-                solver.add_to_b(b_index, coefficients[block_id]['b'] * field.old[block_id, i, j])
+                ap_index = self.mesh.map3Dto1D(*ij)
+                ae_index = self.mesh.map3Dto1D(*ip1j)
+                aw_index = self.mesh.map3Dto1D(*im1j)
+                an_index = self.mesh.map3Dto1D(*ijp1)
+                as_index = self.mesh.map3Dto1D(*ijm1)
+                b_index  = self.mesh.map3Dto1D(*ij)
+
+                if 'ap' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, ap_index, scheme.coefficients[block_id]['ap'])
+                if 'ae' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, ae_index, scheme.coefficients[block_id]['ae'])
+                if 'aw' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, aw_index, scheme.coefficients[block_id]['aw'])
+                if 'an' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, an_index, scheme.coefficients[block_id]['an'])
+                if 'as' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, as_index, scheme.coefficients[block_id]['as'])
+                if 'b' in scheme.coefficients[block_id]:
+                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(ij, ip1j, im1j, ijp1, ijm1, field))
 
         # check for south interface
         if self.bc.bc_type[block_id]["south"] == BCType.interface:
@@ -74,25 +110,28 @@ class InterfaceConditions():
             south_index = int(self.mesh.num_y[neighbour_id] - 2)
 
             for (i, j) in self.mesh.loop_south(block_id, 1):
-                ap_index = self.mesh.map3Dto1D(block_id, i, j)
-                ae_index = self.mesh.map3Dto1D(block_id, i + 1, j)
-                aw_index = self.mesh.map3Dto1D(block_id, i - 1, j)
-                an_index = self.mesh.map3Dto1D(block_id, i, j + 1)
-                as_index = self.mesh.map3Dto1D(neighbour_id, i, south_index)
-                b_index  = self.mesh.map3Dto1D(block_id, i, j)
+                ij = (block_id, i, j)
+                ip1j = (block_id, i + 1, j)
+                im1j = (block_id, i - 1, j)
+                ijp1 = (block_id, i, j + 1)
+                ijm1 = (neighbour_id, i, south_index)
 
-                solver.add_to_A(ap_index, ap_index, coefficients[block_id]['ap'])
-                solver.add_to_A(ap_index, ae_index, coefficients[block_id]['ae'])
-                solver.add_to_A(ap_index, aw_index, coefficients[block_id]['aw'])
-                solver.add_to_A(ap_index, an_index, coefficients[block_id]['an'])
-                solver.add_to_A(ap_index, as_index, coefficients[block_id]['as'])
-                solver.add_to_b(b_index, coefficients[block_id]['b'] * field.old[block_id, i, j])
-        
-        # # finally, check if corner points are present, and if so, add them to the system
-        # for corner in self.corner_points.internal_corner_points:
-        #     solver.add_to_A(corner['index']['ap'], corner['index']['ap'], coefficients[corner['block']['ap']]['ap'])
-        #     solver.add_to_A(corner['index']['ap'], corner['index']['ae'], coefficients[corner['block']['ae']]['ae'])
-        #     solver.add_to_A(corner['index']['ap'], corner['index']['aw'], coefficients[corner['block']['aw']]['aw'])
-        #     solver.add_to_A(corner['index']['ap'], corner['index']['an'], coefficients[corner['block']['an']]['an'])
-        #     solver.add_to_A(corner['index']['ap'], corner['index']['as'], coefficients[corner['block']['as']]['as'])
-        #     solver.add_to_b(corner['index']['b'], coefficients[corner['block']['b']]['b'] * field.old[corner['block']['ap'], i, j])
+                ap_index = self.mesh.map3Dto1D(*ij)
+                ae_index = self.mesh.map3Dto1D(*ip1j)
+                aw_index = self.mesh.map3Dto1D(*im1j)
+                an_index = self.mesh.map3Dto1D(*ijp1)
+                as_index = self.mesh.map3Dto1D(*ijm1)
+                b_index  = self.mesh.map3Dto1D(*ij)
+
+                if 'ap' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, ap_index, scheme.coefficients[block_id]['ap'])
+                if 'ae' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, ae_index, scheme.coefficients[block_id]['ae'])
+                if 'aw' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, aw_index, scheme.coefficients[block_id]['aw'])
+                if 'an' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, an_index, scheme.coefficients[block_id]['an'])
+                if 'as' in scheme.coefficients[block_id]:
+                    solver.add_to_A(ap_index, as_index, scheme.coefficients[block_id]['as'])
+                if 'b' in scheme.coefficients[block_id]:
+                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(ij, ip1j, im1j, ijp1, ijm1, field))
