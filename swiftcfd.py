@@ -3,7 +3,7 @@ import swiftcfd
 def run():
     # create parameters
     params = swiftcfd.parameters()
-    params.read_from_file('input/heatedCavitySingle.toml')
+    params.read_from_file('input/heatedCavity.toml')
 
     # create mesh
     mesh = swiftcfd.mesh(params)

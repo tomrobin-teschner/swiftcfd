@@ -10,7 +10,6 @@ class HeatDiffusion(BaseEquation):
         self.has_second_order_space_derivative = True
 
         self.dTdt = FirstOrderEuler(self.params, self.mesh, self.ic)
-        self.d2Tdx2 = soce(self.params, self.mesh, self.ic)
         self.d2Tdx2 = SecondOrderCentral(self.params, self.mesh, self.ic)
 
     def first_order_time_derivative(self, time, field):

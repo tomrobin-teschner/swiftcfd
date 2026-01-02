@@ -9,6 +9,10 @@ class FirstOrderEuler(NumericalSchemesBase):
         for block_id in range(0, self.mesh.num_blocks):
             self.coefficients.append({
                 'ap': 1.0/dt * multiplier,
+                'ae': 0.0,
+                'aw': 0.0,
+                'an': 0.0,
+                'as': 0.0,
                 'b':  1.0/dt * multiplier
             })
     
