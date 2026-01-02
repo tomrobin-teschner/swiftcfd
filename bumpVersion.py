@@ -31,8 +31,11 @@ def update_version(major, minor, patch):
         print(f'Current version: {major}.{minor}.{patch}')
         if argv[1] == '+major':
             major += 1
+            minor = 0
+            patch = 0
         elif argv[1] == '+minor':
             minor += 1
+            patch = 0
         elif argv[1] == '+patch':
             patch += 1
         elif argv[1] == '-major':
