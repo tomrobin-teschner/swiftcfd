@@ -22,6 +22,10 @@ def run():
     # create output
     out = swiftcfd.output(params, mesh, field_manager)
 
+    # create performance statistics
+    stats = swiftcfd.performance_statistics()
+    stats.timer_start()
+
     # loop over time
     iter = 1
     while (time.not_reached_end_time()):
@@ -40,6 +44,9 @@ def run():
         # convergence checking
         is_diagonal, num_iterations, res_norm, has_converged = eqn.solver.get_solver_statistics()
 
+        # update statistics
+        stats.add_timestep_statistics(eqn)
+
         if is_diagonal:
             print(f'Time: {time.current_time:.2e}, dt: {dt:.1f}, CFL: {CFL:.2f}')
         else:
@@ -47,9 +54,11 @@ def run():
         # save solution animation
         out.write(iter)
         iter += 1
-    
-    # report max temperature value
-    print(f'\nMax temperature value: {field_manager.fields['T']._data.max():.2f}\n')
 
+    # print statistics to console
+    stats.timer_end()
+    stats.print_statistics()
+
+    
 if __name__ == '__main__':
     run()

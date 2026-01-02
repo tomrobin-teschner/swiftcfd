@@ -25,7 +25,7 @@
 
     # Preconditioner for the implicit treatment. Available preconditioners are:
     # JACOBI, ILU, SOR, NONE
-    preconditioner = {T = "JACOBI"}
+    preconditioner = {T = "ILU"}
 
     # relative tolerance to reach for the linear solver within each time step
     tolerance = {T = 1e-8}

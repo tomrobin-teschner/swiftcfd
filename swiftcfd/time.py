@@ -12,7 +12,10 @@ class Time():
 
         self.cfl_based_timestepping = self.params('solver', 'time', 'CFLBasedTimeStepping')
         self.end_time = self.params('solver', 'time', 'endTime')
-        self.current_time = 0.0        
+        self.current_time = 0.0
+
+        self.CFL = 0.0
+        self.dt = 0.0   
     
     def compute_dt(self, *fields):
         if self.has_diffusion:
@@ -49,11 +52,17 @@ class Time():
                                 CFL_advection = temp_CFL
         
         if self.has_advection == True and self.has_diffusion == False:
-            return df_advection, CFL_advection
+            self.dt = dt_advection
+            self.CFL = CFL_advection
+            return self.dt, self.CFL
         elif self.has_advection == False and self.has_diffusion == True:
-            return dt_diffusion, CFL_diffusion
+            self.dt = dt_diffusion
+            self.CFL = CFL_diffusion
+            return self.dt, self.CFL
         else:
-            return min(dt_diffusion, dt_advection), min(CFL_diffusion, CFL_advection)
+            self.dt = min(dt_diffusion, dt_advection)
+            self.CFL = min(CFL_diffusion, CFL_advection)
+            return self.dt, self.CFL
 
     def not_reached_end_time(self):
         return self.current_time < self.end_time
