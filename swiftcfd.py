@@ -38,10 +38,12 @@ def run():
         time.current_time += dt
 
         # convergence checking
-        num_iterations, res_norm, has_converged = eqn.solver.get_solver_statistics()
+        is_diagonal, num_iterations, res_norm, has_converged = eqn.solver.get_solver_statistics()
 
-        print(f'Time: {time.current_time:<8}, dt: {dt:.1f}, CFL: {CFL:.2f}, iterations: {num_iterations:<5}, res_norm: {res_norm:.3e}, has_converged: {has_converged}')
-        
+        if is_diagonal:
+            print(f'Time: {time.current_time:.2e}, dt: {dt:.1f}, CFL: {CFL:.2f}')
+        else:
+            print(f'Time: {time.current_time:.2e}, dt: {dt:.1f}, CFL: {CFL:.2f}, iterations: {num_iterations:<5}, res_norm: {res_norm:.3e}, has_converged: {has_converged}')
         # save solution animation
         out.write(iter)
         iter += 1

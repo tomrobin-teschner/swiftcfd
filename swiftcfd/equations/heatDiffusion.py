@@ -1,6 +1,6 @@
 from swiftcfd.equations.baseEquation import BaseEquation
-from swiftcfd.equations.numericalSchemes.firstOrderEuler import FirstOrderEuler
-from swiftcfd.equations.numericalSchemes.secondOrderCentral import SecondOrderCentral
+from swiftcfd.equations.numericalSchemes.implicit.firstOrderEuler import FirstOrderEuler
+from swiftcfd.equations.numericalSchemes.implicit.secondOrderCentral import SecondOrderCentral
 
 class HeatDiffusion(BaseEquation):
     def __init__(self, params, mesh, var_name):
@@ -10,6 +10,7 @@ class HeatDiffusion(BaseEquation):
         self.has_second_order_space_derivative = True
 
         self.dTdt = FirstOrderEuler(self.params, self.mesh, self.ic)
+        self.d2Tdx2 = soce(self.params, self.mesh, self.ic)
         self.d2Tdx2 = SecondOrderCentral(self.params, self.mesh, self.ic)
 
     def first_order_time_derivative(self, time, field):

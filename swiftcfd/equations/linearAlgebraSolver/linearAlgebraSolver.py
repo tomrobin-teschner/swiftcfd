@@ -12,6 +12,7 @@ class LinearAlgebraSolver():
         self.total_points = mesh.total_points
         self.mesh = mesh
         self.var_name = var_name
+        self.is_diagonal = True
 
         # initialise petsc for usage
         petsc_init()
@@ -60,11 +61,28 @@ class LinearAlgebraSolver():
         return vec
 
     def solve(self, field):
+        # check if matrix can be inverted trivally (only contains diagonal)
+        self.is_diagonal = self.__check_for_diagonal_matrix()
+
+        # convert field to PETSc compatible vector with zero copy
         field_petsc = self.field_to_petsc_vec(field)
-        self.ksp.solve(self.b, field_petsc)
+
+        if self.is_diagonal:
+            field_petsc.pointwiseDivide(self.b, self.A.getDiagonal())
+        else:
+            self.ksp.solve(self.b, field_petsc)
 
     def get_solver_statistics(self):
         num_iterations = self.ksp.getIterationNumber()
         res_norm = self.ksp.getResidualNorm()
         has_converged = self.ksp.getConvergedReason() >= 0
-        return num_iterations, res_norm, has_converged
+        return self.is_diagonal, num_iterations, res_norm, has_converged
+
+    def __check_for_diagonal_matrix(self):
+        numer_of_rows, _ = self.A.getSize()
+        info = self.A.getInfo(PETSc.Mat.InfoType.LOCAL)
+        # nz_used is the "non-zero" entries in the matrix. If there are as many
+        # nz entries as there are rows, there is only one entry per row.
+        # Thus, the matrix is diagonal and can be trivally inverted for
+        # explicit time integration 
+        return info["nz_used"] == numer_of_rows

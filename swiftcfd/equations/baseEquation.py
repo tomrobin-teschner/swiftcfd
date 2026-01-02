@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from swiftcfd.equations.boundaryConditions.boundaryConditions import BoundaryConditions
 from swiftcfd.equations.boundaryConditions.interfaceConditions import InterfaceConditions
+from swiftcfd.equations.boundaryConditions.cornerPoint import CornerPoint
 from swiftcfd.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
 
 class BaseEquation(ABC):
@@ -11,6 +12,7 @@ class BaseEquation(ABC):
         self.var_name = var_name
         self.bc = BoundaryConditions(self.params, self.mesh, self.var_name)
         self.ic = InterfaceConditions(self.mesh, self.bc)
+        self.cp = CornerPoint(self.mesh, self.bc)
 
         self.has_first_order_time_derivative = False
         self.has_first_order_space_derivative = False
@@ -37,6 +39,9 @@ class BaseEquation(ABC):
         # set coefficients based on boundary conditions
         self.bc.apply_boundary_conditions(self.solver, field)
 
+        # set corner points
+        self.cp.apply_corner_points(self.solver, field)
+
         # assemble matrix
         self.solver.assemble()
 
@@ -44,7 +49,7 @@ class BaseEquation(ABC):
         self.solver.solve(field)
 
         # adjust corner points
-        self.ic.corner_points.average_field_at_corner_point(field)
+        self.cp.average_field_at_corner_point(field)
 
     def first_order_time_derivative(self, time, field):
         """Handle time derivatives of the equation."""

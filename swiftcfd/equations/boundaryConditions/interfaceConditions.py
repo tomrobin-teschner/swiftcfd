@@ -88,11 +88,11 @@ class InterfaceConditions():
                 solver.add_to_A(ap_index, as_index, coefficients[block_id]['as'])
                 solver.add_to_b(b_index, coefficients[block_id]['b'] * field.old[block_id, i, j])
         
-        # finally, check if corner points are present, and if so, add them to the system
-        for corner in self.corner_points.internal_corner_points:
-            solver.add_to_A(corner['index']['ap'], corner['index']['ap'], coefficients[corner['block']['ap']]['ap'])
-            solver.add_to_A(corner['index']['ap'], corner['index']['ae'], coefficients[corner['block']['ae']]['ae'])
-            solver.add_to_A(corner['index']['ap'], corner['index']['aw'], coefficients[corner['block']['aw']]['aw'])
-            solver.add_to_A(corner['index']['ap'], corner['index']['an'], coefficients[corner['block']['an']]['an'])
-            solver.add_to_A(corner['index']['ap'], corner['index']['as'], coefficients[corner['block']['as']]['as'])
-            solver.add_to_b(corner['index']['b'], coefficients[corner['block']['b']]['b'] * field.old[corner['block']['ap'], i, j])
+        # # finally, check if corner points are present, and if so, add them to the system
+        # for corner in self.corner_points.internal_corner_points:
+        #     solver.add_to_A(corner['index']['ap'], corner['index']['ap'], coefficients[corner['block']['ap']]['ap'])
+        #     solver.add_to_A(corner['index']['ap'], corner['index']['ae'], coefficients[corner['block']['ae']]['ae'])
+        #     solver.add_to_A(corner['index']['ap'], corner['index']['aw'], coefficients[corner['block']['aw']]['aw'])
+        #     solver.add_to_A(corner['index']['ap'], corner['index']['an'], coefficients[corner['block']['an']]['an'])
+        #     solver.add_to_A(corner['index']['ap'], corner['index']['as'], coefficients[corner['block']['as']]['as'])
+        #     solver.add_to_b(corner['index']['b'], coefficients[corner['block']['b']]['b'] * field.old[corner['block']['ap'], i, j])

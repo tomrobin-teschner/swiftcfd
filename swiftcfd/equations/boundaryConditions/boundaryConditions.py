@@ -70,14 +70,14 @@ class BoundaryConditions():
             
             # north boundary
             if self.bc_type[block]["north"] is not BCType.interface:
-                for (i, j) in self.mesh.loop_north(block):
+                for (i, j) in self.mesh.loop_north(block, 1):
                     index = self.mesh.map3Dto1D(block, i, j)
                     solver.add_to_A(index, index, 1)
                     solver.add_to_b(index, self.get_bc_value(field, i, j, block, "north"))
             
             # south boundary
             if self.bc_type[block]["south"] is not BCType.interface:
-                for (i, j) in self.mesh.loop_south(block):
+                for (i, j) in self.mesh.loop_south(block, 1):
                     index = self.mesh.map3Dto1D(block, i, j)
                     solver.add_to_A(index, index, 1)
                     solver.add_to_b(index, self.get_bc_value(field, i, j, block, "south"))
