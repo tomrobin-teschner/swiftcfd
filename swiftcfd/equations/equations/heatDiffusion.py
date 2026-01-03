@@ -3,8 +3,8 @@ from swiftcfd.equations.numericalSchemes.implicit.firstOrderEuler import FirstOr
 from swiftcfd.equations.numericalSchemes.implicit.secondOrderCentral import SecondOrderCentral
 
 class HeatDiffusion(BaseEquation):
-    def __init__(self, params, mesh, var_name):
-        super().__init__(params, mesh, var_name)
+    def __init__(self, params, mesh):
+        super().__init__(params, mesh, self.get_variable_name())
         
         self.has_first_order_time_derivative = True
         self.has_second_order_space_derivative = True
@@ -22,3 +22,6 @@ class HeatDiffusion(BaseEquation):
     def get_diffusion_coefficients(self):
         alpha = self.params('solver', 'fluid', 'alpha')
         return alpha
+
+    def get_variable_name(self):
+        return 'T'

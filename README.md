@@ -1,6 +1,6 @@
 # swiftcfd
 
-![Static Badge](https://img.shields.io/badge/Version-0.16.0-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.17.0-blue)
 
 A library to quickly prototype 2D CFD solvers using the finite difference method on a Cartesian grid and implicit time integration.
 

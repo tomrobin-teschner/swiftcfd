@@ -70,3 +70,7 @@ class BaseEquation(ABC):
     @abstractmethod
     def get_diffusion_coefficients(self):
         pass
+
+    @abstractmethod
+    def get_variable_name(self):
+        pass

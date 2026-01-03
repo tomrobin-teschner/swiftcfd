@@ -57,15 +57,12 @@ class Time():
         if self.has_advection == True and self.has_diffusion == False:
             self.dt = dt_advection
             self.CFL = CFL_advection
-            return self.dt, self.CFL
         elif self.has_advection == False and self.has_diffusion == True:
             self.dt = dt_diffusion
             self.CFL = CFL_diffusion
-            return self.dt, self.CFL
         else:
             self.dt = min(dt_diffusion, dt_advection)
             self.CFL = min(CFL_diffusion, CFL_advection)
-            return self.dt, self.CFL
 
     def not_reached_end_time(self):
         return self.current_time < self.end_time
