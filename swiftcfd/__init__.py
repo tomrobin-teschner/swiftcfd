@@ -4,4 +4,5 @@ from swiftcfd.output import Output as output
 from swiftcfd.field.fieldManager import FieldManager as field_manager
 from swiftcfd.time import Time as time
 from swiftcfd.equations.equations.heatDiffusion import HeatDiffusion as heat_diffusion
+from swiftcfd.log import Log as log
 from swiftcfd.performanceStatistics import PerformanceStatistics as performance_statistics

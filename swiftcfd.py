@@ -26,6 +26,9 @@ def run():
     stats = swiftcfd.performance_statistics()
     stats.timer_start()
 
+    # logger class to print output to console
+    log = swiftcfd.log()
+
     # loop over time
     while (time.not_reached_end_time()):
         # copy solution
@@ -46,10 +49,10 @@ def run():
         # update statistics
         stats.add_timestep_statistics(eqn)
 
-        if is_diagonal:
-            print(f'Time: {time.current_time:.2e}, dt: {dt:.1f}, CFL: {CFL:.2f}')
-        else:
-            print(f'Time: {time.current_time:.2e}, dt: {dt:.1f}, CFL: {CFL:.2f}, iterations: {num_iterations:<5}, res_norm: {res_norm:.3e}, has_converged: {has_converged}')
+        # print time step statistics
+        log.print_time_step(time, eqn)
+
+        
         
         # # save solution animation
         # out.write(time.timestep)
