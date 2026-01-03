@@ -7,12 +7,15 @@ class Time():
         self.mesh = mesh
         self.has_advection = eqn.has_first_order_space_derivative
         self.has_diffusion = eqn.has_second_order_space_derivative
+
         if self.has_diffusion:
             self.diffusion_coefficient = eqn.get_diffusion_coefficients()
 
         self.cfl_based_timestepping = self.params('solver', 'time', 'CFLBasedTimeStepping')
         self.end_time = self.params('solver', 'time', 'endTime')
+
         self.current_time = 0.0
+        self.timestep = 0
 
         self.CFL = 0.0
         self.dt = 0.0   
@@ -66,3 +69,9 @@ class Time():
 
     def not_reached_end_time(self):
         return self.current_time < self.end_time
+
+    def update_time(self):
+        self.current_time += self.dt
+        self.timestep += 1
+
+    

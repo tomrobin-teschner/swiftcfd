@@ -8,24 +8,28 @@ class Output():
         self.mesh = mesh
         self.field_manager = field_manager
 
-        # check content in output folder and remove old solution files
-        if exists('output'):
-            for file in listdir('output'):
-                if file.endswith('.dat'):
-                    remove(join('output', file))
+        # create output folder if not exists and delete old files
+        if not exists('output'):
+            mkdir('output')
+
+        for file in listdir('output'):
+            if file.endswith('.dat'):
+                remove(join('output', file))
 
     def write(self, iteration = -1):
         case = self.params('solver', 'output', 'filename')
+        writing_frequency = self.params('solver', 'output', 'writingFrequency')
         filename = case
 
-        if iteration != -1:
-            filename += f'_{iteration:010d}.dat' 
+        if iteration == -1:
+            filename += '.dat' 
+            self._write_tecplot(case, filename)
         else:
-            filename += '.dat'
+            if iteration % writing_frequency == 0:
+                filename += f'_{iteration:010d}.dat' 
+                self._write_tecplot(case, filename)        
 
-        if not exists('output'):
-            mkdir('output')
-        
+    def _write_tecplot(self, case, filename):
         with open(join('output', filename), 'w') as f:
             f.write(f'TITLE = "{case}"\n')
             f.write('VARIABLES = "x", "y"')

@@ -37,6 +37,9 @@
     # filename used to write out the solution
     filename = "heatedCavity"
 
+    # write output file every X time steps
+    writingFrequency = 10
+
 ### --------------------------- ###
 ### ----- MESH PROPERTIES ----- ###
 ### --------------------------- ###

@@ -27,7 +27,6 @@ def run():
     stats.timer_start()
 
     # loop over time
-    iter = 1
     while (time.not_reached_end_time()):
         # copy solution
         field_manager.update()
@@ -39,7 +38,7 @@ def run():
         eqn.update(time, field_manager.fields['T'])
 
         # update time steps
-        time.current_time += dt
+        time.update_time()
 
         # convergence checking
         is_diagonal, num_iterations, res_norm, has_converged = eqn.solver.get_solver_statistics()
@@ -51,13 +50,16 @@ def run():
             print(f'Time: {time.current_time:.2e}, dt: {dt:.1f}, CFL: {CFL:.2f}')
         else:
             print(f'Time: {time.current_time:.2e}, dt: {dt:.1f}, CFL: {CFL:.2f}, iterations: {num_iterations:<5}, res_norm: {res_norm:.3e}, has_converged: {has_converged}')
-        # save solution animation
-        out.write(iter)
-        iter += 1
+        
+        # # save solution animation
+        # out.write(time.timestep)
 
     # print statistics to console
     stats.timer_end()
     stats.print_statistics()
+
+    # write solution
+    out.write()
 
     
 if __name__ == '__main__':
