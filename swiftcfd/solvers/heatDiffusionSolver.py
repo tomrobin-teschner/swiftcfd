@@ -52,8 +52,9 @@ def run(filename):
         # print time step statistics
         log.print_time_step(time, TEqn)
         
-        # # save solution animation
-        # output.write(time.timestep)
+        # save solution animation
+        if params('solver', 'output', 'writingFrequency') > 0 and time.timestep % params('solver', 'output', 'writingFrequency') == 0:
+            output.write(time.timestep)
 
     # print statistics to console
     stats.timer_end()
