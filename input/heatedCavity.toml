@@ -1,6 +1,11 @@
 ### ----------------------------- ###
 ### ----- SOLVER PROPERTIES ----- ###
 ### ----------------------------- ###
+[solver.equation]
+    # Specify the solver to use. Available solvers are:
+    # heatDiffusion, pressureProjection
+    solver = 'heatDiffusion'
+
 [solver.fluid]
     # thermal expansion coefficient
     alpha = 1e-3
