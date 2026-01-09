@@ -2,29 +2,33 @@ from swiftcfd.equations.numericalSchemes.numericalSchemesBase import NumericalSc
 from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
 from math import pow
 
-class SecondOrderCentral(NumericalSchemesBase):
+class LaxFriedrichs(NumericalSchemesBase):
     def __init__(self, params, mesh, bc):
         super().__init__(params, mesh, bc)
 
     def _compute_coefficients(self, direction, time, field, multiplier):
         for block_id in range(0, self.mesh.num_blocks):
             dx, dy = self.mesh.get_spacing(block_id)
+            dt = time.dt
             if direction == WRT.x:
                 self.coefficients.append({
-                    'ap': multiplier * ( 2.0/pow(dx, 2)),
-                    'ae': multiplier * (-1.0/pow(dx, 2)),
-                    'aw': multiplier * (-1.0/pow(dx, 2)),
+                    'ap': 0.5,
+                    'ae': -0.25,
+                    'aw': -0.25,
+                    'dt': dt,
                 })
             elif direction == WRT.y:
                 self.coefficients.append({
-                    'ap': multiplier * ( 2.0/pow(dy, 2)),
-                    'an': multiplier * (-1.0/pow(dy, 2)),
-                    'as': multiplier * (-1.0/pow(dy, 2)),
+                    'ap': 0.5,
+                    'an': -0.25,
+                    'as': -0.25,
+                    'dt': dt,
                 })
             else:
                 raise NotImplementedError
     
     def _compute_interior(self, direction, block_id, solver, field):
+        dx, dy = self.mesh.get_spacing(block_id)
         for (i, j) in self.mesh.internal_loop_single_block(block_id):
             ap_index = self.mesh.map3Dto1D(block_id, i, j)
             solver.add_to_A(ap_index, ap_index, self.coefficients[block_id]['ap'])
@@ -41,4 +45,23 @@ class SecondOrderCentral(NumericalSchemesBase):
                 solver.add_to_A(ap_index, as_index, self.coefficients[block_id]['as'])
     
     def get_right_hand_side_contribution(self, direction, ij, ip1j, im1j, ijp1, ijm1, field):
-        return 0.0
+        block1, i1, j1 = ij
+        block2, i2, j2 = ip1j
+        block3, i3, j3 = im1j
+        block4, i4, j4 = ijp1
+        block5, i5, j5 = ijm1
+
+        dx, dy = self.mesh.get_spacing(block1)
+        dt = self.coefficients[block1]['dt']
+
+        phi_ij  = field.old[block1, i1, j1]
+        if direction == WRT.x:
+            phi_ip1 = field.old[block2, i2, j2]
+            phi_im1 = field.old[block3, i3, j3]
+            RHS = phi_ij - (dt / (2.0 * dx)) * (phi_ip1 - phi_im1)
+        elif direction == WRT.y:
+            phi_jp1 = field.old[block4, i4, j4]
+            phi_jm1 = field.old[block5, i5, j5]
+            RHS = phi_ij - (dt / (2.0 * dy)) * (phi_jp1 - phi_jm1)
+        
+        return RHS

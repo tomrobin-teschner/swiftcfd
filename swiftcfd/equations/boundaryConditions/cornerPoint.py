@@ -123,7 +123,7 @@ class CornerPoint:
         
     def __set_average_neumann(self, corner, solver, field):
         value1 = field.old[corner["block"], corner["i"], corner["jp1"]]
-        value1 = field.old[corner["block"], corner["ip1"], corner["j"]]
+        value2 = field.old[corner["block"], corner["ip1"], corner["j"]]
         average = (value1 + value2) / 2
 
         solver.add_to_A(corner["ap_index"], corner["ap_index"], 1)
