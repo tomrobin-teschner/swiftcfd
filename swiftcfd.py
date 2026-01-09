@@ -1,6 +1,6 @@
 import swiftcfd
 
-def run(filename):
+def run():
     # read command line arguments
     cla_parser = swiftcfd.command_line_argument_parser()
 
@@ -13,20 +13,16 @@ def run(filename):
     mesh.create()
 
     # create governign equation
-    TEqn = swiftcfd.equation_factory(params, mesh).create('heatDiffusion')
-
-    # add to field manager
-    field_manager = swiftcfd.field_manager(mesh)
-    field_manager.add_field(TEqn.var_name)
+    equations, field_manager = swiftcfd.equation_factory(params, mesh).create()
 
     # create time handler
-    time = swiftcfd.time(params, mesh, TEqn)
+    time = swiftcfd.time(params, mesh, field_manager, equations)
 
     # create output
     output = swiftcfd.output(params, mesh, field_manager)
 
     # create performance statistics
-    stats = swiftcfd.performance_statistics()
+    stats = swiftcfd.performance_statistics(equations)
     stats.timer_start()
 
     # logger class to print output to console
@@ -38,23 +34,27 @@ def run(filename):
         field_manager.update()
 
         # compute time step
-        time.compute_dt(field_manager.fields[TEqn.var_name])
+        time.compute_dt()
 
-        # update equation for current timestep
-        TEqn.solve(time, field_manager.fields[TEqn.var_name])
+        for eqn in equations:
+            # update equation for current timestep
+            eqn.solve(time, field_manager.fields[eqn.var_name])
+            
+            # convergence checking
+            is_diagonal, num_iterations, res_norm, has_converged = eqn.solver.get_solver_statistics()
+
+            # update statistics
+            stats.add_timestep_statistics(eqn)
+
+            # # print time step statistics
+            log.print_time_step(time, eqn)
+        
+        # create a new line
+        print('')
 
         # update time steps
         time.update_time()
 
-        # convergence checking
-        is_diagonal, num_iterations, res_norm, has_converged = TEqn.solver.get_solver_statistics()
-
-        # update statistics
-        stats.add_timestep_statistics(TEqn)
-
-        # print time step statistics
-        log.print_time_step(time, TEqn)
-        
         # save solution animation
         if params('solver', 'output', 'writingFrequency') > 0 and time.timestep % params('solver', 'output', 'writingFrequency') == 0:
             output.write(time.timestep)
@@ -67,4 +67,4 @@ def run(filename):
     output.write()
 
 if __name__ == '__main__':
-    run('parameters.json')
+    run()

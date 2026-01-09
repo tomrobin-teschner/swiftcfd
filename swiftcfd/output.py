@@ -27,7 +27,7 @@ class Output():
         else:
             if iteration % writing_frequency == 0:
                 filename += f'_{iteration:010d}.dat' 
-                self._write_tecplot(case, filename)        
+                self._write_tecplot(case, filename)
 
     def _write_tecplot(self, case, filename):
         with open(join('output', filename), 'w') as f:

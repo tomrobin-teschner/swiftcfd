@@ -11,7 +11,7 @@ class Field():
         self._data = np.zeros(self.mesh.total_points, dtype=PETSc.ScalarType())
 
     def update_solution(self):
-        self.old._data = self._data
+        np.copyto(self.old._data, self._data)
 
     def __getitem__(self, idx):
         block_id, i, j = idx

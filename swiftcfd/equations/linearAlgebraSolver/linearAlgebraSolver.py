@@ -1,9 +1,6 @@
 from petsc4py import PETSc
 from petsc4py import init as petsc_init
 
-import numpy as np
-import matplotlib.pyplot as plt
-
 from swiftcfd.equations.linearAlgebraSolver.solverFactory import SolverFactory
 
 class LinearAlgebraSolver():

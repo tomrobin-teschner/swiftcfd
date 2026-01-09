@@ -1,6 +1,6 @@
 # swiftcfd
 
-![Static Badge](https://img.shields.io/badge/Version-0.18.0-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.18.1-blue)
 
 A library to quickly prototype 2D CFD solvers using the finite difference method on a Cartesian grid and implicit time integration.
 
@@ -14,7 +14,7 @@ The following lines will install the requirements to run this solver:
 export PETSC_CONFIGURE_OPTIONS="--download-fblaslapack=1"
 python3 -m venv .venv
 source .venv/bin/activate
-.venv/bin/python3 -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 The installation will download and compile PETSc, which can take a good 10 minutes or so, without any output being shown to the screen.
 
