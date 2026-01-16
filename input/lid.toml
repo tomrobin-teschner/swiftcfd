@@ -44,6 +44,9 @@
     # under-relaxation factor for the implicit solver
     underRelaxation = {u = 0.5, v = 0.5, p = 0.5}
 
+    # number of picard iterations
+    picardIterations = 5
+
 [solver.output]
     # filename used to write out the solution
     filename = "lid"

@@ -24,7 +24,7 @@
     dt  = 5.0
 
     # end time of the simulation
-    endTime = 1000.0
+    endTime = 100.0
 
 [solver.linearSolver]
     # Linear solver for the implicit treatment. Available solvers are:
@@ -43,6 +43,9 @@
 
     # under-relaxation factor for the implicit solver
     underRelaxation = {u = 0.5, v = 0.5, p = 0.5}
+
+    # number of picard iterations
+    picardIterations = 5
 
 [solver.output]
     # filename used to write out the solution
