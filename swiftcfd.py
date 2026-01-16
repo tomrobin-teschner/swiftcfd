@@ -17,8 +17,8 @@ def run():
     # create governign equation
     equations, field_manager = swiftcfd.equation_factory(params, mesh).create()
 
-    # create time handler
-    time = swiftcfd.time(params, mesh, field_manager, equations)
+    # create runtime handler
+    runtime = swiftcfd.runtime(params, mesh, field_manager, equations)
 
     # create output
     output = swiftcfd.output(params, mesh, field_manager)
@@ -31,44 +31,43 @@ def run():
     log = swiftcfd.log()
 
     # loop over time
-    while (time.not_reached_end_time()):
+    while (runtime.not_reached_end_time()):
         # copy solution
-        field_manager.update()
+        field_manager.update_solution()
 
         # compute time step
-        time.compute_dt()
+        runtime.compute_dt()
 
-        # perform any pre-solve tasks
-        for eqn in equations:
-            eqn.pre_solve_task(time)
+        # linearisation step through picard iterations
+        while(runtime.not_reached_final_picard_iteration()):
+            # update picard solution
+            field_manager.update_picard_solution()
 
-        # solve equations
-        for eqn in equations:
-            # update equation for current timestep
-            eqn.solve(time)
+            # perform any pre-solve tasks
+            for eqn in equations:
+                eqn.pre_solve_task(runtime)
+
+            # solve equations
+            for eqn in equations:
+                # update equation for current timestep
+                eqn.solve(runtime)
+                
+                # update statistics
+                stats.add_timestep_statistics(eqn)
             
-            # update statistics
-            stats.add_timestep_statistics(eqn)
-        
-        # perform any post-solve tasks
-        for eqn in equations:
-            eqn.post_solve_task(time)
-        
-        # print(equations[0].solver.A.getDiagonal().getArray())
-        # print(equations[0].solver.A.getDiagonal().getArray().min())
-        # print(equations[0].solver.A.getDiagonal().getArray().max())
-        # print(len(equations[0].solver.A.getDiagonal().getArray()))
-        # exit()
+            # perform any post-solve tasks
+            for eqn in equations:
+                eqn.post_solve_task(runtime)
 
-        # print time step statistics
-        log.print_time_step(time, equations)
+            # print time step statistics
+            log.print_time_step(runtime, equations)
         
         # update time steps
-        time.update_time()
+        runtime.update_time()
 
         # save solution animation
-        if params('solver', 'output', 'writingFrequency') > 0 and time.timestep % params('solver', 'output', 'writingFrequency') == 0:
-            output.write(time.timestep)
+        if params('solver', 'output', 'writingFrequency') > 0 and runtime.timestep % params('solver', 'output', 'writingFrequency') == 0:
+            output.write(runtime.timestep)
 
     # print statistics to console
     stats.timer_end()

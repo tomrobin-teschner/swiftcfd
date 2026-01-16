@@ -67,6 +67,11 @@ class Pressure(BaseEquation):
             # grad_v_y = (vn - vs) / dy
 
             # rhs = (rho / dt) * (grad_u_x + grad_v_y)
+
+            # print(equations[0].solver.A.getDiagonal().getArray())
+            # print(equations[0].solver.A.getDiagonal().getArray().min())
+            # print(equations[0].solver.A.getDiagonal().getArray().max())
+            # print(len(equations[0].solver.A.getDiagonal().getArray()))
             
             # currently missing rhie-chow interpolation
             rhs = (rho / dt) * (self.grad_u.x[block, i, j] + self.grad_v.y[block, i, j])

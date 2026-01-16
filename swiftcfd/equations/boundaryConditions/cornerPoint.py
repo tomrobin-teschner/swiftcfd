@@ -122,8 +122,8 @@ class CornerPoint:
             solver.add_to_b(corner["ap_index"], value2)
         
     def __set_average_neumann(self, corner, solver, field):
-        value1 = field.old[corner["block"], corner["i"], corner["jp1"]]
-        value2 = field.old[corner["block"], corner["ip1"], corner["j"]]
+        value1 = field.picard_old[corner["block"], corner["i"], corner["jp1"]]
+        value2 = field.picard_old[corner["block"], corner["ip1"], corner["j"]]
         average = (value1 + value2) / 2
 
         solver.add_to_A(corner["ap_index"], corner["ap_index"], 1)
@@ -137,15 +137,15 @@ class CornerPoint:
 
         solver.add_to_A(corner["ap_index"], corner["ap_index"], 1)
         if bc_type1 == BCType.neumann:
-            value1 = field.old[corner["block"], corner["ip1"], corner["j"]]
+            value1 = field.picard_old[corner["block"], corner["ip1"], corner["j"]]
             solver.add_to_b(corner["ap_index"], value1)
         elif bc_type2 == BCType.neumann:
-            value2 = field.old[corner["block"], corner["i"], corner["jp1"]]
+            value2 = field.picard_old[corner["block"], corner["i"], corner["jp1"]]
             solver.add_to_b(corner["ap_index"], value2)
     
     def __set_interface(self, corner, solver, field):
-        value1 = field.old[corner["block"], corner["ip1"], corner["j"]]
-        value2 = field.old[corner["block"], corner["i"], corner["jp1"]]
+        value1 = field.picard_old[corner["block"], corner["ip1"], corner["j"]]
+        value2 = field.picard_old[corner["block"], corner["i"], corner["jp1"]]
 
         solver.add_to_A(corner["ap_index"], corner["ap_index"], 1)
         solver.add_to_b(corner["ap_index"], (value1 + value2) / 2)

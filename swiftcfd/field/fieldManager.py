@@ -8,6 +8,7 @@ class FieldManager():
     def add_field(self, field_name):
         field = Field(self.mesh, field_name)
         field.old = Field(self.mesh, field_name + '_old')
+        field.picard_old = Field(self.mesh, field_name + 'picard_old')
         self.fields[field.name] = field
 
     def get_field(self, name):
@@ -16,6 +17,10 @@ class FieldManager():
     def get_all_fields(self):
         return self.fields
 
-    def update(self):
+    def update_solution(self):
         for _, field in self.fields.items():
             field.update_solution()
+
+    def update_picard_solution(self):
+        for _, field in self.fields.items():
+            field.update_picard_solution()

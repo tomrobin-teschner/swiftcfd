@@ -3,7 +3,7 @@ from math import pow
 from swiftcfd.equations.boundaryConditions.boundaryConditions import BCType
 from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
 
-class Time():
+class Runtime():
     def __init__(self, params, mesh, field_manager, equations):
         self.params = params
         self.mesh = mesh
@@ -16,9 +16,14 @@ class Time():
         # check if viscous dissipation is present
         self.has_diffusion = any(eq.has_second_order_space_derivative for eq in self.equations)
 
+        # linearisation related settings
+        self.num_picard_iterations = self.params('solver', 'linearSolver', 'picardIterations')
+        self.current_picard_iteration = 0
+        
+        # time information
         self.cfl_based_timestepping = self.params('solver', 'time', 'CFLBasedTimeStepping')
         self.end_time = self.params('solver', 'time', 'endTime')
-
+        
         self.current_time = 0.0
         self.timestep = 0
 
@@ -114,6 +119,14 @@ class Time():
 
     def not_reached_end_time(self):
         return self.current_time < self.end_time
+
+    def not_reached_final_picard_iteration(self):
+        if self.current_picard_iteration < self.num_picard_iterations:
+            self.current_picard_iteration += 1
+            return True
+        else:
+            self.current_picard_iteration = 0
+            return False
 
     def update_time(self):
         self.current_time += self.dt

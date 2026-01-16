@@ -16,8 +16,8 @@ class FirstOrderUpwind(NumericalSchemesBase):
         for (i, j) in self.mesh.internal_loop_single_block(block_id):
             
             if direction == WRT.x:
-                max_u = max(self.field_manager.fields[pv.velocity_x.name()].old[block_id, i, j], 0.0)
-                min_u = min(self.field_manager.fields[pv.velocity_x.name()].old[block_id, i, j], 0.0)
+                max_u = max(self.field_manager.fields[pv.velocity_x.name()].picard_old[block_id, i, j], 0.0)
+                min_u = min(self.field_manager.fields[pv.velocity_x.name()].picard_old[block_id, i, j], 0.0)
 
                 ap_index = self.mesh.map3Dto1D(block_id, i, j)
                 ae_index = self.mesh.map3Dto1D(block_id, i + 1, j)
@@ -32,8 +32,8 @@ class FirstOrderUpwind(NumericalSchemesBase):
                 solver.add_to_A(ap_index, aw_index, aw_value)
 
             elif direction == WRT.y:
-                max_v = max(self.field_manager.fields[pv.velocity_y.name()].old[block_id, i, j], 0.0)
-                min_v = min(self.field_manager.fields[pv.velocity_y.name()].old[block_id, i, j], 0.0)
+                max_v = max(self.field_manager.fields[pv.velocity_y.name()].picard_old[block_id, i, j], 0.0)
+                min_v = min(self.field_manager.fields[pv.velocity_y.name()].picard_old[block_id, i, j], 0.0)
 
                 ap_index = self.mesh.map3Dto1D(block_id, i, j)
                 an_index = self.mesh.map3Dto1D(block_id, i, j + 1)
@@ -47,8 +47,8 @@ class FirstOrderUpwind(NumericalSchemesBase):
                 solver.add_to_A(ap_index, an_index, an_value)
                 solver.add_to_A(ap_index, as_index, as_value)
 
-            # max_phi = max(field.old[block_id, i, j], 0.0)
-            # min_phi = min(field.old[block_id, i, j], 0.0)
+            # max_phi = max(field.picard_old[block_id, i, j], 0.0)
+            # min_phi = min(field.picard_old[block_id, i, j], 0.0)
             
             # ap_index = self.mesh.map3Dto1D(block_id, i, j)
             # ap_value = max_phi * inv_dx - min_phi * inv_dy

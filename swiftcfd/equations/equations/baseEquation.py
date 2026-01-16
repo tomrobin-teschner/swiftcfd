@@ -72,7 +72,7 @@ class BaseEquation(ABC):
         for (block, i, j) in self.mesh.internal_loop_all_blocks():
             self.field_manager.fields[self.get_variable_name()][block, i, j] = \
                 alpha * self.field_manager.fields[self.get_variable_name()][block, i, j] + \
-                (1.0 - alpha) * self.field_manager.fields[self.get_variable_name()].old[block, i, j]
+                (1.0 - alpha) * self.field_manager.fields[self.get_variable_name()].picard_old[block, i, j]
 
     def first_order_time_derivative(self, time):
         """Handle time derivatives of the equation."""

@@ -76,10 +76,10 @@ class LinearAlgebraSolver():
         return self.is_diagonal, num_iterations, res_norm, has_converged
 
     def __check_for_diagonal_matrix(self):
-        numer_of_rows, _ = self.A.getSize()
+        number_of_rows, _ = self.A.getSize()
         info = self.A.getInfo(PETSc.Mat.InfoType.LOCAL)
         # nz_used is the "non-zero" entries in the matrix. If there are as many
         # nz entries as there are rows, there is only one entry per row.
         # Thus, the matrix is diagonal and can be trivally inverted for
         # explicit time integration
-        return info["nz_used"] == numer_of_rows
+        return info["nz_used"] == number_of_rows
