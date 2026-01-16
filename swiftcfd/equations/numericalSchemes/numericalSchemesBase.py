@@ -10,36 +10,37 @@ class WRT(Enum):
     y = auto()
 
 class NumericalSchemesBase(ABC):
-    def __init__(self, params, mesh, interface_condition):
+    def __init__(self, params, mesh, interface_condition, field_manager):
         self.params = params
         self.mesh = mesh
         self.ic = interface_condition
+        self.field_manager = field_manager
         self.coefficients = []
 
-    def apply(self, direction, solver, time, field, multiplier = 1.0):
+    def apply(self, direction, solver, time, var_name, multiplier = 1.0):
         # compute latest coefficients
         self.coefficients = []
-        self._compute_coefficients(direction, time, field, multiplier)
+        self._compute_coefficients(direction, time, var_name, multiplier)
 
         # get matrix coefficients for all blocks
         for block_id in range(0, self.mesh.num_blocks):
             # apply numerical scheme on interior elements
-            self._compute_interior(direction, block_id, solver, field)
+            self._compute_interior(direction, block_id, solver, var_name)
 
             # apply boundary conditions on internal elements
-            self._apply_interface_conditions(block_id, solver, field)
+            self._apply_interface_conditions(block_id, solver, var_name)
     
     @abstractmethod
-    def _compute_coefficients(self, direction, block_id, time, field, multiplier):
+    def _compute_coefficients(self, direction, block_id, time, var_name, multiplier):
         pass
     
     @abstractmethod
-    def _compute_interior(self, direction, block_id, solver, field):
+    def _compute_interior(self, direction, block_id, solver, var_name):
         pass
     
     @abstractmethod
-    def get_right_hand_side_contribution(self, direction, ij, ip1j, im1j, ijp1, ijm1, field):
+    def get_right_hand_side_contribution(self, direction, ij, ip1j, im1j, ijp1, ijm1, var_name):
         pass
 
-    def _apply_interface_conditions(self, block_id, solver, field):
-        self.ic.apply_interface_conditions(block_id, solver, field, self)
+    def _apply_interface_conditions(self, block_id, solver, var_name):
+        self.ic.apply_interface_conditions(block_id, solver, var_name, self)

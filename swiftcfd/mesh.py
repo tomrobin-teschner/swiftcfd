@@ -74,6 +74,12 @@ class Mesh():
         dx = self.x[block_id][1][0] - self.x[block_id][0][0]
         dy = self.y[block_id][0][1] - self.y[block_id][0][0]
         return dx, dy
+    
+    def loop_all(self):
+        for block in range(0, self.num_blocks):
+            for i in range(0, self.num_x[block]):
+                for j in range(0, self.num_y[block]):
+                    yield block, i, j
 
     def internal_loop_all_blocks(self):
         for block in range(0, self.num_blocks):

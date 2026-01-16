@@ -8,6 +8,3 @@ from swiftcfd.equations.equations.heatDiffusion import HeatDiffusion as heat_dif
 from swiftcfd.log import Log as log
 from swiftcfd.performanceStatistics import PerformanceStatistics as performance_statistics
 from swiftcfd.equations.equations.equationFactory import EquationFactory as equation_factory
-
-from swiftcfd.solvers import heatDiffusionSolver as heat_diffusion_solver
-from swiftcfd.solvers import fsppSolver as fspp_solver

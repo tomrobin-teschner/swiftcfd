@@ -1,3 +1,4 @@
+from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
 from swiftcfd.equations.boundaryConditions.boundaryConditions import BCType
 from swiftcfd.equations.boundaryConditions.cornerPoint import CornerPoint
 
@@ -7,7 +8,7 @@ class InterfaceConditions():
         self.bc = bc
         self.corner_points = CornerPoint(mesh, bc)
 
-    def apply_interface_conditions(self, block_id, solver, field, scheme):      
+    def apply_interface_conditions(self, block_id, solver, var_name, scheme):      
         # check for east interface            
         if self.bc.bc_type[block_id]["east"] == BCType.interface:
             neighbour_id = int(self.bc.bc_value[block_id]["east"])
@@ -38,7 +39,7 @@ class InterfaceConditions():
                 if 'as' in scheme.coefficients[block_id]:
                     solver.add_to_A(ap_index, as_index, scheme.coefficients[block_id]['as'])
                 if 'b' in scheme.coefficients[block_id]:
-                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(ij, ip1j, im1j, ijp1, ijm1, field))
+                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(WRT.x, ij, ip1j, im1j, ijp1, ijm1, var_name))
 
         # check for west interface
         if self.bc.bc_type[block_id]["west"] == BCType.interface:
@@ -70,7 +71,7 @@ class InterfaceConditions():
                 if 'as' in scheme.coefficients[block_id]:
                     solver.add_to_A(ap_index, as_index, scheme.coefficients[block_id]['as'])
                 if 'b' in scheme.coefficients[block_id]:
-                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(ij, ip1j, im1j, ijp1, ijm1, field))
+                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(WRT.x, ij, ip1j, im1j, ijp1, ijm1, var_name))
                             
         # check for north interface
         if self.bc.bc_type[block_id]["north"] == BCType.interface:
@@ -102,7 +103,7 @@ class InterfaceConditions():
                 if 'as' in scheme.coefficients[block_id]:
                     solver.add_to_A(ap_index, as_index, scheme.coefficients[block_id]['as'])
                 if 'b' in scheme.coefficients[block_id]:
-                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(ij, ip1j, im1j, ijp1, ijm1, field))
+                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(WRT.y, ij, ip1j, im1j, ijp1, ijm1, var_name))
 
         # check for south interface
         if self.bc.bc_type[block_id]["south"] == BCType.interface:
@@ -134,4 +135,4 @@ class InterfaceConditions():
                 if 'as' in scheme.coefficients[block_id]:
                     solver.add_to_A(ap_index, as_index, scheme.coefficients[block_id]['as'])
                 if 'b' in scheme.coefficients[block_id]:
-                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(ij, ip1j, im1j, ijp1, ijm1, field))
+                    solver.add_to_b(b_index, scheme.get_right_hand_side_contribution(WRT.y, ij, ip1j, im1j, ijp1, ijm1, var_name))

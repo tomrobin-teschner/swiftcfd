@@ -11,7 +11,7 @@ class Time():
         self.equations = equations
 
         # check if velocity is a primitive variable
-        self.has_advection = any(eq.var_name == pv.velocity_x.name() or eq.var_name == pv.velocity_y.name() for eq in self.equations)
+        self.has_advection = any(eq.get_variable_name() == pv.velocity_x.name() or eq.get_variable_name() == pv.velocity_y.name() for eq in self.equations)
 
         # check if viscous dissipation is present
         self.has_diffusion = any(eq.has_second_order_space_derivative for eq in self.equations)

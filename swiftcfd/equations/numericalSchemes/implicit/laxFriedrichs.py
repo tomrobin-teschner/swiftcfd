@@ -3,10 +3,10 @@ from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
 from math import pow
 
 class LaxFriedrichs(NumericalSchemesBase):
-    def __init__(self, params, mesh, bc):
-        super().__init__(params, mesh, bc)
+    def __init__(self, params, mesh, ic, field_manager):
+        super().__init__(params, mesh, ic, field_manager)
 
-    def _compute_coefficients(self, direction, time, field, multiplier):
+    def _compute_coefficients(self, direction, time, var_name, multiplier):
         for block_id in range(0, self.mesh.num_blocks):
             dx, dy = self.mesh.get_spacing(block_id)
             dt = time.dt
@@ -27,7 +27,7 @@ class LaxFriedrichs(NumericalSchemesBase):
             else:
                 raise NotImplementedError
     
-    def _compute_interior(self, direction, block_id, solver, field):
+    def _compute_interior(self, direction, block_id, solver, var_name):
         dx, dy = self.mesh.get_spacing(block_id)
         for (i, j) in self.mesh.internal_loop_single_block(block_id):
             ap_index = self.mesh.map3Dto1D(block_id, i, j)
@@ -44,7 +44,7 @@ class LaxFriedrichs(NumericalSchemesBase):
                 solver.add_to_A(ap_index, an_index, self.coefficients[block_id]['an'])
                 solver.add_to_A(ap_index, as_index, self.coefficients[block_id]['as'])
     
-    def get_right_hand_side_contribution(self, direction, ij, ip1j, im1j, ijp1, ijm1, field):
+    def get_right_hand_side_contribution(self, direction, ij, ip1j, im1j, ijp1, ijm1, var_name):
         block1, i1, j1 = ij
         block2, i2, j2 = ip1j
         block3, i3, j3 = im1j
@@ -54,14 +54,14 @@ class LaxFriedrichs(NumericalSchemesBase):
         dx, dy = self.mesh.get_spacing(block1)
         dt = self.coefficients[block1]['dt']
 
-        phi_ij  = field.old[block1, i1, j1]
+        phi_ij  = self.field_manager.fields[var_name].old[block1, i1, j1]
         if direction == WRT.x:
-            phi_ip1 = field.old[block2, i2, j2]
-            phi_im1 = field.old[block3, i3, j3]
+            phi_ip1 = self.field_manager.fields[var_name].old[block2, i2, j2]
+            phi_im1 = self.field_manager.fields[var_name].old[block3, i3, j3]
             RHS = phi_ij - (dt / (2.0 * dx)) * (phi_ip1 - phi_im1)
         elif direction == WRT.y:
-            phi_jp1 = field.old[block4, i4, j4]
-            phi_jm1 = field.old[block5, i5, j5]
+            phi_jp1 = self.field_manager.fields[var_name].old[block4, i4, j4]
+            phi_jm1 = self.field_manager.fields[var_name].old[block5, i5, j5]
             RHS = phi_ij - (dt / (2.0 * dy)) * (phi_jp1 - phi_jm1)
         
         return RHS

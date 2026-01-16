@@ -5,23 +5,25 @@ from swiftcfd.equations.numericalSchemes.implicit.firstOrderEuler import FirstOr
 from swiftcfd.equations.numericalSchemes.implicit.secondOrderCentral import SecondOrderCentral
 
 class HeatDiffusion(BaseEquation):
-    def __init__(self, params, mesh):
-        super().__init__(params, mesh, self.get_variable_name())
+    def __init__(self, params, mesh, field_manager):
+        super().__init__(params, mesh, field_manager)
         
         self.has_first_order_time_derivative = True
         self.has_second_order_space_derivative = True
 
-        self.dTdt = FirstOrderEuler(self.params, self.mesh, self.ic)
-        self.d2Tdx2 = SecondOrderCentral(self.params, self.mesh, self.ic)
-        self.d2Tdy2 = SecondOrderCentral(self.params, self.mesh, self.ic)
+        constructor_arguments = (self.params, self.mesh, self.ic, self.field_manager)
 
-    def first_order_time_derivative(self, time, field):
-        self.dTdt.apply(WRT.t, self.solver, time, field)
+        self.dTdt = FirstOrderEuler(*constructor_arguments)
+        self.d2Tdx2 = SecondOrderCentral(*constructor_arguments)
+        self.d2Tdy2 = SecondOrderCentral(*constructor_arguments)
 
-    def second_order_space_derivative(self, time, field):
+    def first_order_time_derivative(self, time):
+        self.dTdt.apply(WRT.t, self.solver, time, self.get_variable_name())
+
+    def second_order_space_derivative(self, time):
         alpha = self.params('solver', 'fluid', 'alpha')
-        self.d2Tdx2.apply(WRT.x, self.solver, time, field, alpha)
-        self.d2Tdy2.apply(WRT.y, self.solver, time, field, alpha)
+        self.d2Tdx2.apply(WRT.x, self.solver, time, self.get_variable_name(), -1.0 * alpha)
+        self.d2Tdy2.apply(WRT.y, self.solver, time, self.get_variable_name(), -1.0 * alpha)
     
     def get_diffusion_coefficients(self):
         alpha = self.params('solver', 'fluid', 'alpha')

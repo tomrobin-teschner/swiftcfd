@@ -9,7 +9,7 @@ class PerformanceStatistics:
         self.solver_time = 0
         
         # create dictionary that holds iterations for each iteration and each variable
-        var_names = [eq.var_name for eq in equations]
+        var_names = [eq.get_variable_name() for eq in equations]
         self.iterations = {}
         for var in var_names:
             self.iterations[var] = []
@@ -23,7 +23,7 @@ class PerformanceStatistics:
 
     def add_timestep_statistics(self, equation):
         is_diagonal, num_iterations, res_norm, has_converged = equation.solver.get_solver_statistics()
-        self.iterations[equation.var_name].append(num_iterations)
+        self.iterations[equation.get_variable_name()].append(num_iterations)
 
     def print_statistics(self):
         print(f'\nSimulation finished in {self.solver_time:.2f} seconds.')

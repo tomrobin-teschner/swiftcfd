@@ -2,6 +2,8 @@ from os.path import join, exists
 from os import listdir, remove
 from os import mkdir
 
+from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
+
 class Output():
     def __init__(self, params, mesh, field_manager):
         self.params = params

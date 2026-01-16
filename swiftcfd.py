@@ -1,5 +1,7 @@
 import swiftcfd
 
+from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
+
 def run():
     # read command line arguments
     cla_parser = swiftcfd.command_line_argument_parser()
@@ -36,22 +38,31 @@ def run():
         # compute time step
         time.compute_dt()
 
+        # perform any pre-solve tasks
+        for eqn in equations:
+            eqn.pre_solve_task(time)
+
+        # solve equations
         for eqn in equations:
             # update equation for current timestep
-            eqn.solve(time, field_manager.fields[eqn.var_name])
+            eqn.solve(time)
             
-            # convergence checking
-            is_diagonal, num_iterations, res_norm, has_converged = eqn.solver.get_solver_statistics()
-
             # update statistics
             stats.add_timestep_statistics(eqn)
-
-            # # print time step statistics
-            log.print_time_step(time, eqn)
         
-        # create a new line
-        print('')
+        # perform any post-solve tasks
+        for eqn in equations:
+            eqn.post_solve_task(time)
+        
+        # print(equations[0].solver.A.getDiagonal().getArray())
+        # print(equations[0].solver.A.getDiagonal().getArray().min())
+        # print(equations[0].solver.A.getDiagonal().getArray().max())
+        # print(len(equations[0].solver.A.getDiagonal().getArray()))
+        # exit()
 
+        # print time step statistics
+        log.print_time_step(time, equations)
+        
         # update time steps
         time.update_time()
 
