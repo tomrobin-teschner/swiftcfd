@@ -41,6 +41,13 @@
     # number of picard iterations
     picardIterations = 1
 
+[solver.convergence]
+    # residual tolerance for picard iteration convergence
+    picard_tolerance = {T = 1}
+
+    # residual tolerance for the overall simulation
+    convergence_tolerance = {T = 1e-10}
+
 [solver.output]
     # filename used to write out the solution
     filename = "heatedCavity"

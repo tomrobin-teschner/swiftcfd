@@ -47,6 +47,13 @@
     # number of picard iterations
     picardIterations = 5
 
+[solver.convergence]
+    # residual tolerance for picard iteration convergence
+    picard_tolerance = {u = 1e-4, v = 1e-4, p = 1e-4}
+
+    # residual tolerance for the overall simulation
+    convergence_tolerance = {u = 1e-10, v = 1e-10, p = 1e-10}
+
 [solver.output]
     # filename used to write out the solution
     filename = "channel"
