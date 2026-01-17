@@ -9,30 +9,27 @@ class Output():
         self.params = params
         self.mesh = mesh
         self.field_manager = field_manager
+        self.case = self.params('solver', 'output', 'filename')
+        self.writing_frequency = self.params('solver', 'output', 'writingFrequency')
+        self.out_folder = join('output', self.case)
 
         # create output folder if not exists and delete old files
-        if not exists('output'):
-            mkdir('output')
-
-        for file in listdir('output'):
-            if file.endswith('.dat'):
-                remove(join('output', file))
+        if not exists(self.out_folder):
+            mkdir(self.out_folder)
 
     def write(self, iteration = -1):
-        case = self.params('solver', 'output', 'filename')
-        writing_frequency = self.params('solver', 'output', 'writingFrequency')
-        filename = case
+        filename = self.case
 
         if iteration == -1:
             filename += '.dat' 
-            self._write_tecplot(case, filename)
+            self._write_tecplot(self.case, filename)
         else:
-            if iteration % writing_frequency == 0:
+            if iteration % self.writing_frequency == 0:
                 filename += f'_{iteration:010d}.dat' 
-                self._write_tecplot(case, filename)
+                self._write_tecplot(self.case, filename)
 
     def _write_tecplot(self, case, filename):
-        with open(join('output', filename), 'w') as f:
+        with open(join(self.out_folder, filename), 'w') as f:
             f.write(f'TITLE = "{case}"\n')
             f.write('VARIABLES = "x", "y"')
             for key, _ in self.field_manager.fields.items():

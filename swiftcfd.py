@@ -24,7 +24,7 @@ def run():
     output = swiftcfd.output(params, mesh, field_manager)
 
     # create performance statistics
-    stats = swiftcfd.performance_statistics(equations)
+    stats = swiftcfd.performance_statistics(params, equations)
     stats.timer_start()
 
     # logger class to print output to console
@@ -71,7 +71,7 @@ def run():
 
     # print statistics to console
     stats.timer_end()
-    stats.print_statistics()
+    stats.write_statistics()
 
     # write solution
     output.write()
