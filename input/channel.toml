@@ -24,7 +24,7 @@
     dt  = 5.0
 
     # end time of the simulation
-    endTime = 100.0
+    endTime = 1000.0
 
 [solver.linearSolver]
     # Linear solver for the implicit treatment. Available solvers are:
@@ -44,15 +44,15 @@
     # under-relaxation factor for the implicit solver
     underRelaxation = {u = 0.5, v = 0.5, p = 0.5}
 
+[solver.convergence]
     # number of picard iterations
     picardIterations = 5
 
-[solver.convergence]
     # residual tolerance for picard iteration convergence
-    picard_tolerance = {u = 1e-4, v = 1e-4, p = 1e-4}
+    picard_tolerance = {u = 1e-3, v = 1e-3, p = 1e-3}
 
     # residual tolerance for the overall simulation
-    convergence_tolerance = {u = 1e-10, v = 1e-10, p = 1e-10}
+    convergence_tolerance = {u = 1e-8, v = 1e-8, p = 1e-8}
 
 [solver.output]
     # filename used to write out the solution

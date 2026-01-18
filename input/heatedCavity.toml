@@ -38,10 +38,10 @@
     # max allowable iterations by the implicit solver
     maxIterations = {T = 1000}
 
+[solver.convergence]
     # number of picard iterations
     picardIterations = 1
-
-[solver.convergence]
+    
     # residual tolerance for picard iteration convergence
     picard_tolerance = {T = 1}
 

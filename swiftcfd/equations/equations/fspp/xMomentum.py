@@ -13,6 +13,8 @@ class xMomentum(BaseEquation):
         self.has_first_order_space_derivative = True
         self.has_second_order_space_derivative = True
 
+        self.requires_linearisation = True
+
         constructor_arguments = (self.params, self.mesh, self.ic, self.field_manager)
 
         self.dudt = FirstOrderEuler(*constructor_arguments)

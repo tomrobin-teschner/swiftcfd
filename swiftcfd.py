@@ -30,16 +30,22 @@ def run():
     # logger class to print output to console
     log = swiftcfd.log()
 
+    # create residual calculating object
+    residuals = swiftcfd.residuals(params, field_manager)
+
     # loop over time
-    while (runtime.not_reached_end_time()):
+    while (runtime.has_not_reached_final_time()):
         # copy solution
         field_manager.update_solution()
 
         # compute time step
         runtime.compute_dt()
 
+        # print time info to console
+        log.print_time_info(runtime)
+
         # linearisation step through picard iterations
-        while(runtime.not_reached_final_picard_iteration()):
+        while(runtime.has_not_reached_final_picard_iteration()):
             # update picard solution
             field_manager.update_picard_solution()
 
@@ -58,16 +64,31 @@ def run():
             # perform any post-solve tasks
             for eqn in equations:
                 eqn.post_solve_task(runtime)
+            
+            # compute picard residuals
+            has_converged = residuals.check_picard_convergence(runtime)
 
             # print time step statistics
-            log.print_time_step(runtime, equations)
+            log.print_picard_iteration(runtime, equations, residuals)
+
+            if has_converged:
+                break
         
         # update time steps
         runtime.update_time()
 
+        # cehck for simulation convergence
+        has_converged = residuals.check_convergence(runtime)
+
+        # print convergence information for current time step
+        log.print_convergence_info(runtime, equations, residuals)
+
         # save solution animation
         if params('solver', 'output', 'writingFrequency') > 0 and runtime.timestep % params('solver', 'output', 'writingFrequency') == 0:
             output.write(runtime.timestep)
+
+        if has_converged:
+            break
 
     # print statistics to console
     stats.timer_end()
@@ -75,6 +96,9 @@ def run():
 
     # write solution
     output.write()
+
+    # write residuals
+    residuals.write()
 
 if __name__ == '__main__':
     run()

@@ -17,7 +17,7 @@ class Runtime():
         self.has_diffusion = any(eq.has_second_order_space_derivative for eq in self.equations)
 
         # linearisation related settings
-        self.num_picard_iterations = self.params('solver', 'linearSolver', 'picardIterations')
+        self.num_picard_iterations = self.params('solver', 'convergence', 'picardIterations')
         self.current_picard_iteration = 0
         
         # time information
@@ -117,16 +117,19 @@ class Runtime():
             self.dt = min(dt_diffusion, dt_advection)
             self.CFL = min(CFL_diffusion, CFL_advection)
 
-    def not_reached_end_time(self):
-        return self.current_time < self.end_time
-
-    def not_reached_final_picard_iteration(self):
-        if self.current_picard_iteration < self.num_picard_iterations:
-            self.current_picard_iteration += 1
-            return True
+    def has_not_reached_final_time(self):
+        if self.current_time >= self.end_time:
+            return False
         else:
+            return True
+
+    def has_not_reached_final_picard_iteration(self):
+        self.current_picard_iteration += 1
+        if self.current_picard_iteration > self.num_picard_iterations:
             self.current_picard_iteration = 0
             return False
+        else:
+            return True
 
     def update_time(self):
         self.current_time += self.dt

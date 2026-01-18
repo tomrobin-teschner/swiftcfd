@@ -44,10 +44,10 @@
     # under-relaxation factor for the implicit solver
     underRelaxation = {u = 0.5, v = 0.5, p = 0.5}
 
+[solver.convergence]
     # number of picard iterations
     picardIterations = 5
 
-[solver.convergence]
     # residual tolerance for picard iteration convergence
     picard_tolerance = {u = 1e-4, v = 1e-4, p = 1e-4}
 
