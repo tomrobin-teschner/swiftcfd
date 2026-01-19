@@ -78,9 +78,6 @@ class Pressure(BaseEquation):
             self.solver.add_to_b(index, rhs)
 
     def post_solve_task(self, runtime):
-        if not runtime.is_final_picard_iteration():
-            return
-
         rho = self.params('solver', 'fluid', 'rho')
         dt = runtime.dt
         self.grad_p.compute()
