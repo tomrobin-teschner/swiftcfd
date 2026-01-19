@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from petsc4py import PETSc
+
 from swiftcfd.equations.boundaryConditions.boundaryConditions import BoundaryConditions
 from swiftcfd.equations.boundaryConditions.interfaceConditions import InterfaceConditions
 from swiftcfd.equations.boundaryConditions.cornerPoint import CornerPoint
@@ -37,11 +39,6 @@ class BaseEquation(ABC):
         pass
 
     def solve(self, runtime):
-        # only solve if picard iterations are required, otherwise only at last picard iteration
-        if not self.requires_linearisation:
-            if runtime.current_picard_iteration != runtime.num_picard_iterations:
-                return
-            
         # ensure matrix and right-hand side vector are zeroed
         self.solver.reset_A()
         self.solver.reset_b()

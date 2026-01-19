@@ -47,32 +47,5 @@ class FirstOrderUpwind(NumericalSchemesBase):
                 solver.add_to_A(ap_index, an_index, an_value)
                 solver.add_to_A(ap_index, as_index, as_value)
 
-            # max_phi = max(field.picard_old[block_id, i, j], 0.0)
-            # min_phi = min(field.picard_old[block_id, i, j], 0.0)
-            
-            # ap_index = self.mesh.map3Dto1D(block_id, i, j)
-            # ap_value = max_phi * inv_dx - min_phi * inv_dy
-            # solver.add_to_A(ap_index, ap_index, ap_value)
-
-            # if direction == WRT.x:
-            #     ae_index = self.mesh.map3Dto1D(block_id, i + 1, j)
-            #     aw_index = self.mesh.map3Dto1D(block_id, i - 1, j)
-
-            #     ae_value =  inv_dx * min_phi
-            #     aw_value = -inv_dx * max_phi
-
-            #     solver.add_to_A(ap_index, ae_index, ae_value)
-            #     solver.add_to_A(ap_index, aw_index, aw_value)
-
-            # elif direction == WRT.y:
-            #     an_index = self.mesh.map3Dto1D(block_id, i, j + 1)
-            #     as_index = self.mesh.map3Dto1D(block_id, i, j - 1)
-
-            #     an_value =  inv_dy * min_phi
-            #     as_value = -inv_dy * max_phi
-
-            #     solver.add_to_A(ap_index, an_index, an_value)
-            #     solver.add_to_A(ap_index, as_index, as_value)
-
     def get_right_hand_side_contribution(self, direction, ij, ip1j, im1j, ijp1, ijm1, var_name):
         return 0.0

@@ -114,8 +114,12 @@ class Runtime():
             self.dt = dt_diffusion
             self.CFL = CFL_diffusion
         else:
-            self.dt = min(dt_diffusion, dt_advection)
-            self.CFL = min(CFL_diffusion, CFL_advection)
+            if dt_diffusion > dt_advection:
+                self.dt = dt_advection
+                self.CFL = CFL_advection
+            else:
+                self.dt = dt_diffusion
+                self.CFL = CFL_diffusion
 
     def has_not_reached_final_time(self):
         if self.current_time >= self.end_time:
@@ -130,6 +134,9 @@ class Runtime():
             return False
         else:
             return True
+
+    def is_final_picard_iteration(self):
+        return self.current_picard_iteration == self.num_picard_iterations
 
     def update_time(self):
         self.current_time += self.dt

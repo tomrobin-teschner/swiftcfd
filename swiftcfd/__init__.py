@@ -8,4 +8,4 @@ from swiftcfd.residuals import Residuals as residuals
 from swiftcfd.equations.equations.heatDiffusion import HeatDiffusion as heat_diffusion
 from swiftcfd.log import Log as log
 from swiftcfd.performanceStatistics import PerformanceStatistics as performance_statistics
-from swiftcfd.equations.equations.equationFactory import EquationFactory as equation_factory
+from swiftcfd.equations.equations.equationManager import EquationManager as equation_manager

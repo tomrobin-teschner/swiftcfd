@@ -18,7 +18,7 @@ class Log:
         print(self.term.move_xy(70, 0) + f'dt: {dt:.2e}')
 
     def print_picard_iteration(self, runtime, equations, residuals):
-        print(self.term.move_xy(0, 1) + f'Picard iteration: {runtime.current_picard_iteration}/{runtime.num_picard_iterations}')
+        print(self.term.move_xy(0, 1) + f'Picard iteration: {runtime.current_picard_iteration:>4}/{runtime.num_picard_iterations}')
 
         row = 2
         for equation in equations:

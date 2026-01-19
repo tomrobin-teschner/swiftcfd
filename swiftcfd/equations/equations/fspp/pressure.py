@@ -77,9 +77,12 @@ class Pressure(BaseEquation):
             rhs = (rho / dt) * (self.grad_u.x[block, i, j] + self.grad_v.y[block, i, j])
             self.solver.add_to_b(index, rhs)
 
-    def post_solve_task(self, time):
+    def post_solve_task(self, runtime):
+        if not runtime.is_final_picard_iteration():
+            return
+
         rho = self.params('solver', 'fluid', 'rho')
-        dt = time.dt
+        dt = runtime.dt
         self.grad_p.compute()
 
         for (block, i, j) in self.mesh.internal_loop_all_blocks():

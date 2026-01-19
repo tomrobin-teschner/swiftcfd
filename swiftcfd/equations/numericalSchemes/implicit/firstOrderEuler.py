@@ -4,8 +4,8 @@ class FirstOrderEuler(NumericalSchemesBase):
     def __init__(self, params, mesh, ic, field_manager):
         super().__init__(params, mesh, ic, field_manager)
 
-    def _compute_coefficients(self, direction, time, var_name, multiplier):
-        dt = time.dt
+    def _compute_coefficients(self, direction, runtime, var_name, multiplier):
+        dt = runtime.dt
         for block_id in range(0, self.mesh.num_blocks):
             self.coefficients.append({
                 'ap': 1.0/dt * multiplier,

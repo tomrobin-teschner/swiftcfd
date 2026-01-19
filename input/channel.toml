@@ -21,10 +21,10 @@
     CFL = 50.0
 
     # time step (only used if CFLBasedTimeStepping is set to false)
-    dt  = 5.0
+    dt  = 1.0
 
     # end time of the simulation
-    endTime = 1000.0
+    endTime = 20.0
 
 [solver.linearSolver]
     # Linear solver for the implicit treatment. Available solvers are:
@@ -42,11 +42,11 @@
     maxIterations = {u = 1000, v = 1000, p = 1000}
 
     # under-relaxation factor for the implicit solver
-    underRelaxation = {u = 0.5, v = 0.5, p = 0.5}
+    underRelaxation = {u = 0.2, v = 0.2, p = 0.2}
 
 [solver.convergence]
     # number of picard iterations
-    picardIterations = 5
+    picardIterations = 500
 
     # residual tolerance for picard iteration convergence
     picard_tolerance = {u = 1e-3, v = 1e-3, p = 1e-3}

@@ -15,28 +15,29 @@ def run():
     mesh.create()
 
     # create governign equation
-    equations, field_manager = swiftcfd.equation_factory(params, mesh).create()
+    eqm = swiftcfd.equation_manager(params, mesh)
+    # equations, field_manager = swiftcfd.equation_factory(params, mesh).create()
 
     # create runtime handler
-    runtime = swiftcfd.runtime(params, mesh, field_manager, equations)
+    runtime = swiftcfd.runtime(params, mesh, eqm.field_manager, eqm.equations)
 
     # create output
-    output = swiftcfd.output(params, mesh, field_manager)
+    output = swiftcfd.output(params, mesh, eqm.field_manager)
 
     # create performance statistics
-    stats = swiftcfd.performance_statistics(params, equations)
+    stats = swiftcfd.performance_statistics(params, eqm.equations)
     stats.timer_start()
 
     # logger class to print output to console
     log = swiftcfd.log()
 
     # create residual calculating object
-    residuals = swiftcfd.residuals(params, field_manager)
+    residuals = swiftcfd.residuals(params, eqm.field_manager)
 
     # loop over time
     while (runtime.has_not_reached_final_time()):
         # copy solution
-        field_manager.update_solution()
+        eqm.field_manager.update_solution()
 
         # compute time step
         runtime.compute_dt()
@@ -47,32 +48,23 @@ def run():
         # linearisation step through picard iterations
         while(runtime.has_not_reached_final_picard_iteration()):
             # update picard solution
-            field_manager.update_picard_solution()
+            eqm.field_manager.update_picard_solution()
 
-            # perform any pre-solve tasks
-            for eqn in equations:
-                eqn.pre_solve_task(runtime)
-
-            # solve equations
-            for eqn in equations:
-                # update equation for current timestep
-                eqn.solve(runtime)
-                
-                # update statistics
-                stats.add_timestep_statistics(eqn)
-            
-            # perform any post-solve tasks
-            for eqn in equations:
-                eqn.post_solve_task(runtime)
+            # solve non-linear equations (e.q. momentum equations)
+            eqm.solve_non_linear_equations(runtime, stats)
             
             # compute picard residuals
             has_converged = residuals.check_picard_convergence(runtime)
 
             # print time step statistics
-            log.print_picard_iteration(runtime, equations, residuals)
+            log.print_picard_iteration(runtime, eqm.equations, residuals)
 
             if has_converged:
+                runtime.current_picard_iteration = 0
                 break
+
+        # solve linear equations (e.g. pressure poisson, temperature)
+        eqm.solve_linear_equations(runtime, stats)
         
         # update time steps
         runtime.update_time()
@@ -81,7 +73,7 @@ def run():
         has_converged = residuals.check_convergence(runtime)
 
         # print convergence information for current time step
-        log.print_convergence_info(runtime, equations, residuals)
+        log.print_convergence_info(runtime, eqm.equations, residuals)
 
         # save solution animation
         if params('solver', 'output', 'writingFrequency') > 0 and runtime.timestep % params('solver', 'output', 'writingFrequency') == 0:
