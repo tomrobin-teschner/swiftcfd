@@ -88,25 +88,25 @@ class BoundaryConditions():
                 return self.bc_value[block]["east"]
             elif self.bc_type[block]["east"] == BCType.neumann:
                 dx, _ = self.mesh.get_spacing(block)
-                return field.picard_old[block, i - 1, j] + dx * self.bc_value[block]["east"]
+                return field[block, i - 1, j] + dx * self.bc_value[block]["east"]
 
         elif face == "west":
             if self.bc_type[block]["west"] == BCType.dirichlet:
                 return self.bc_value[block]["west"]
             elif self.bc_type[block]["west"] == BCType.neumann:
                 dx, _ = self.mesh.get_spacing(block)
-                return field.picard_old[block, i + 1, j] - dx * self.bc_value[block]["west"]
+                return field[block, i + 1, j] - dx * self.bc_value[block]["west"]
 
         elif face == "north":
             if self.bc_type[block]["north"] == BCType.dirichlet:
                 return self.bc_value[block]["north"]
             elif self.bc_type[block]["north"] == BCType.neumann:
                 _, dy = self.mesh.get_spacing(block)
-                return field.picard_old[block, i, j - 1] + dy * self.bc_value[block]["north"]
+                return field[block, i, j - 1] + dy * self.bc_value[block]["north"]
 
         elif face == "south":
             if self.bc_type[block]["south"] == BCType.dirichlet:
                 return self.bc_value[block]["south"]
             elif self.bc_type[block]["south"] == BCType.neumann:
                 _, dy = self.mesh.get_spacing(block)
-                return field.picard_old[block, i, j + 1] - dy * self.bc_value[block]["south"]
+                return field[block, i, j + 1] - dy * self.bc_value[block]["south"]
