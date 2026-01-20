@@ -12,10 +12,10 @@
 
 [solver.time]
     # use CFL based time stepping
-    CFLBasedTimeStepping = false
+    CFLBasedTimeStepping = true
 
     # CFL number (only used if CFLBasedTimeStepping is set to true)
-    CFL = 0.25
+    CFL = 10.0
 
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 10.0
@@ -37,6 +37,9 @@
 
     # max allowable iterations by the implicit solver
     maxIterations = {T = 1000}
+
+    # under-relaxation factor for the implicit solver
+    underRelaxation = {T = 1.0}
 
 [solver.convergence]
     # number of picard iterations
@@ -60,10 +63,10 @@
 ### --------------------------- ###
 [mesh.block1]
     # start/end location and number of points to use in the x direction
-    x = {start = 0.0, end = 1.0, num = 41}
+    x = {start = 0.0, end = 1.0, num = 21}
 
     # start/end location and number of points to use in the y direction
-    y = {start = 0.0, end = 1.0, num = 41}
+    y = {start = 0.0, end = 1.0, num = 21}
 
 ### ------------------------------------------ ###
 ### ----- BOUNDARY CONDITIONS PROPERTIES ----- ###

@@ -24,12 +24,12 @@
     dt  = 1.0
 
     # end time of the simulation
-    endTime = 20.0
+    endTime = 5.0
 
 [solver.linearSolver]
     # Linear solver for the implicit treatment. Available solvers are:
     # RICHARDSON, CG, BCGS, GMRES
-    solver = {u = "GMRES", v="GMRES", p="CG"}
+    solver = {u = "GMRES", v="GMRES", p="GMRES"}
 
     # Preconditioner for the implicit treatment. Available preconditioners are:
     # JACOBI, ILU, SOR, NONE
@@ -42,11 +42,11 @@
     maxIterations = {u = 1000, v = 1000, p = 1000}
 
     # under-relaxation factor for the implicit solver
-    underRelaxation = {u = 0.2, v = 0.2, p = 0.2}
+    underRelaxation = {u = 0.7, v = 0.7, p = 0.7}
 
 [solver.convergence]
     # number of picard iterations
-    picardIterations = 500
+    picardIterations = 100
 
     # residual tolerance for picard iteration convergence
     picard_tolerance = {u = 1e-3, v = 1e-3, p = 1e-3}
