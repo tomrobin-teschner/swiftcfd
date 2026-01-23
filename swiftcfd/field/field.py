@@ -6,12 +6,14 @@ class Field():
         self.mesh = mesh
         self.name = name
         self.old = None
+        self.oldold = None
         self.picard_old = None
 
         # solution data
         self._data = np.zeros(self.mesh.total_points, dtype=PETSc.ScalarType())
 
     def update_solution(self):
+        np.copyto(self.oldold._data, self.old._data)
         np.copyto(self.old._data, self._data)
 
     def update_picard_solution(self):

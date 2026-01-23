@@ -36,17 +36,17 @@
     preconditioner = {u = "ILU", v="ILU", p="ILU"}
 
     # relative tolerance to reach for the linear solver within each time step
-    tolerance = {u = 1e-8, v = 1e-8, p = 1e-8}
+    tolerance = {u = 1e-10, v = 1e-10, p = 1e-10}
 
     # max allowable iterations by the implicit solver
-    maxIterations = {u = 1000, v = 1000, p = 1000}
+    maxIterations = {u = 100, v = 100, p = 100}
 
     # under-relaxation factor for the implicit solver
     underRelaxation = {u = 0.7, v = 0.7, p = 0.7}
 
 [solver.convergence]
     # number of picard iterations
-    picardIterations = 100
+    picardIterations = 5
 
     # residual tolerance for picard iteration convergence
     picard_tolerance = {u = 1e-3, v = 1e-3, p = 1e-3}

@@ -2,6 +2,7 @@ from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables a
 from swiftcfd.equations.equations.baseEquation import BaseEquation
 from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
 from swiftcfd.equations.numericalSchemes.implicit.firstOrderEuler import FirstOrderEuler
+from swiftcfd.equations.numericalSchemes.implicit.secondOrderBackwards import SecondOrderBackwards
 from swiftcfd.equations.numericalSchemes.implicit.firstOrderUpwind import FirstOrderUpwind
 from swiftcfd.equations.numericalSchemes.implicit.secondOrderCentral import SecondOrderCentral
 

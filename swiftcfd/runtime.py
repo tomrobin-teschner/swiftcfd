@@ -29,6 +29,7 @@ class Runtime():
 
         self.CFL = 0.0
         self.dt = 0.0
+        self.old_dt = 0.0
 
         # set up class
         self.__max_dirichlet_bc_value()
@@ -64,6 +65,10 @@ class Runtime():
             nu = 0.0
 
     def compute_dt(self):
+        # store old dt value
+        self.old_dt = self.dt
+
+        # now compute new time step value
         if self.has_diffusion:
             gamma = self.diffusion_coefficient
             if self.cfl_based_timestepping:

@@ -52,7 +52,7 @@ def run():
 
             # solve non-linear equations (e.q. momentum equations)
             eqm.solve_non_linear_equations(runtime, stats)
-            
+
             # compute picard residuals
             has_converged = residuals.check_picard_convergence(runtime)
 

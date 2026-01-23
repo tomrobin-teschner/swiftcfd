@@ -88,7 +88,7 @@ class Pressure(BaseEquation):
 
             self.field_manager.fields[pv.velocity_x.name()][block, i, j] = u
             self.field_manager.fields[pv.velocity_y.name()][block, i, j] = v
-    
+
     def get_diffusion_coefficients(self):
         pass
 
