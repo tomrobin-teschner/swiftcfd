@@ -4,6 +4,7 @@ from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
 from swiftcfd.equations.numericalSchemes.implicit.firstOrderEuler import FirstOrderEuler
 from swiftcfd.equations.numericalSchemes.implicit.secondOrderBackwards import SecondOrderBackwards
 from swiftcfd.equations.numericalSchemes.implicit.firstOrderUpwind import FirstOrderUpwind
+from swiftcfd.equations.numericalSchemes.implicit.secondOrderUpwind import SecondOrderUpwind
 from swiftcfd.equations.numericalSchemes.implicit.secondOrderCentral import SecondOrderCentral
 
 class xMomentum(BaseEquation):
@@ -18,9 +19,9 @@ class xMomentum(BaseEquation):
 
         constructor_arguments = (self.params, self.mesh, self.ic, self.field_manager)
 
-        self.dudt = FirstOrderEuler(*constructor_arguments)
-        self.dudx = FirstOrderUpwind(*constructor_arguments)
-        self.dudy = FirstOrderUpwind(*constructor_arguments)
+        self.dudt = SecondOrderBackwards(*constructor_arguments)
+        self.dudx = SecondOrderUpwind(*constructor_arguments)
+        self.dudy = SecondOrderUpwind(*constructor_arguments)
 
         self.d2udx2 = SecondOrderCentral(*constructor_arguments)
         self.d2udy2 = SecondOrderCentral(*constructor_arguments)

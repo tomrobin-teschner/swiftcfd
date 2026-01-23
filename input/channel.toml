@@ -18,7 +18,7 @@
     CFLBasedTimeStepping = false
 
     # CFL number (only used if CFLBasedTimeStepping is set to true)
-    CFL = 50.0
+    CFL = 10.0
 
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 1.0
@@ -46,7 +46,7 @@
 
 [solver.convergence]
     # number of picard iterations
-    picardIterations = 5
+    picardIterations = 500
 
     # residual tolerance for picard iteration convergence
     picard_tolerance = {u = 1e-3, v = 1e-3, p = 1e-3}

@@ -18,7 +18,7 @@ class LinearAlgebraSolver():
         self.A = PETSc.Mat().create()
         self.A.setSizes([self.total_points, self.total_points])
         self.A.setType(PETSc.Mat.Type.SEQAIJ)
-        self.A.setPreallocationNNZ(5)
+        self.A.setPreallocationNNZ(9)
         self.A.setUp()
 
         # create right-hand side vector

@@ -1,6 +1,6 @@
 # swiftcfd
 
-![Static Badge](https://img.shields.io/badge/Version-0.22.0-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.23.0-blue)
 
 > [!WARNING]  
 > This project is work in progress and in version 0.X, expect breaking changes with new features.
