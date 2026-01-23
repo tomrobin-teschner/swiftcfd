@@ -26,6 +26,19 @@
     # end time of the simulation
     endTime = 100.0
 
+[solver.schemes]
+    # time-integration scheme to use. Available schemes are:
+    # firstOrderEuler, secondOrderBackwards
+    timeIntegrationScheme = 'secondOrderBackwards'
+
+    # non-linear scheme to use. Available schemes are:
+    # firstOrderUpwind, secondOrderUpwind
+    nonLinearScheme = 'secondOrderUpwind'
+
+    # diffusion scheme to use. Available schemes are:
+    # secondOrderCentral
+    diffusionScheme = 'secondOrderCentral'
+
 [solver.linearSolver]
     # Linear solver for the implicit treatment. Available solvers are:
     # RICHARDSON, CG, BCGS, GMRES
@@ -42,7 +55,7 @@
     maxIterations = {u = 1000, v = 1000, p = 1000}
 
     # under-relaxation factor for the implicit solver
-    underRelaxation = {u = 0.5, v = 0.5, p = 0.5}
+    underRelaxation = {u = 0.3, v = 0.3, p = 0.3}
 
 [solver.convergence]
     # number of picard iterations
@@ -59,7 +72,7 @@
     filename = "lid"
 
     # write output file every X time steps (set to 0 if no animation should be written)
-    writingFrequency = 1
+    writingFrequency = 0
 
 ### --------------------------- ###
 ### ----- MESH PROPERTIES ----- ###

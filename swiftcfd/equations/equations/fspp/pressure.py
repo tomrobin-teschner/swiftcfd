@@ -1,7 +1,7 @@
 from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
 from swiftcfd.equations.equations.baseEquation import BaseEquation
 from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
-from swiftcfd.equations.numericalSchemes.implicit.secondOrderCentral import SecondOrderCentral
+from swiftcfd.equations.numericalSchemes.numericalSchemeFactory import NumericalSchemeFactory
 from swiftcfd.gradients.firstOrderGradient import FirstOrderGradient as gradient
 
 class Pressure(BaseEquation):
@@ -11,10 +11,10 @@ class Pressure(BaseEquation):
         self.has_second_order_space_derivative = True
         self.has_source = True
 
-        constructor_arguments = (self.params, self.mesh, self.ic, self.field_manager)
+        numerical_schemes = NumericalSchemeFactory(self.params, self.mesh, self.ic, self.field_manager)
 
-        self.d2pdx2 = SecondOrderCentral(*constructor_arguments)
-        self.d2pdy2 = SecondOrderCentral(*constructor_arguments)
+        self.d2pdx2 = numerical_schemes.create_second_order_space_derivative_scheme(self)
+        self.d2pdy2 = numerical_schemes.create_second_order_space_derivative_scheme(self)
 
         self.grad_u = gradient(self.mesh, self.field_manager, pv.velocity_x.name())
         self.grad_v = gradient(self.mesh, self.field_manager, pv.velocity_y.name())
@@ -72,11 +72,13 @@ class Pressure(BaseEquation):
             # print(equations[0].solver.A.getDiagonal().getArray().min())
             # print(equations[0].solver.A.getDiagonal().getArray().max())
             # print(len(equations[0].solver.A.getDiagonal().getArray()))
+
+                
             
             # currently missing rhie-chow interpolation
             rhs = (rho / dt) * (self.grad_u.x[block, i, j] + self.grad_v.y[block, i, j])
             self.solver.add_to_b(index, rhs)
-
+            
     def post_solve_task(self, runtime):
         rho = self.params('solver', 'fluid', 'rho')
         dt = runtime.dt

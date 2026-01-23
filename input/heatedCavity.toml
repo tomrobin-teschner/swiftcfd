@@ -23,6 +23,15 @@
     # end time of the simulation
     endTime = 500.0
 
+[solver.schemes]
+    # time-integration scheme to use. Available schemes are:
+    # firstOrderEuler, secondOrderBackwards
+    timeIntegrationScheme = 'secondOrderBackwards'
+
+    # diffusion scheme to use. Available schemes are:
+    # secondOrderCentral
+    diffusionScheme = 'secondOrderCentral'
+
 [solver.linearSolver]
     # Linear solver for the implicit treatment. Available solvers are:
     # RICHARDSON, CG, BCGS, GMRES

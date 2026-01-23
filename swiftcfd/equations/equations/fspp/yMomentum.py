@@ -1,11 +1,7 @@
 from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
 from swiftcfd.equations.equations.baseEquation import BaseEquation
 from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
-from swiftcfd.equations.numericalSchemes.implicit.firstOrderEuler import FirstOrderEuler
-from swiftcfd.equations.numericalSchemes.implicit.secondOrderBackwards import SecondOrderBackwards
-from swiftcfd.equations.numericalSchemes.implicit.firstOrderUpwind import FirstOrderUpwind
-from swiftcfd.equations.numericalSchemes.implicit.secondOrderUpwind import SecondOrderUpwind
-from swiftcfd.equations.numericalSchemes.implicit.secondOrderCentral import SecondOrderCentral
+from swiftcfd.equations.numericalSchemes.numericalSchemeFactory import NumericalSchemeFactory
 
 class yMomentum(BaseEquation):
     def __init__(self, params, mesh, field_manager):
@@ -17,14 +13,14 @@ class yMomentum(BaseEquation):
 
         self.requires_linearisation = True
 
-        constructor_arguments = (self.params, self.mesh, self.ic, self.field_manager)
+        numerical_schemes = NumericalSchemeFactory(self.params, self.mesh, self.ic, self.field_manager)
 
-        self.dvdt = SecondOrderBackwards(*constructor_arguments)
-        self.dvdx = SecondOrderUpwind(*constructor_arguments)
-        self.dvdy = SecondOrderUpwind(*constructor_arguments)
+        self.dvdt = numerical_schemes.create_time_integration_scheme(self)
+        self.dvdx = numerical_schemes.create_first_order_space_derivative_scheme(self)
+        self.dvdy = numerical_schemes.create_first_order_space_derivative_scheme(self)
 
-        self.d2vdx2 = SecondOrderCentral(*constructor_arguments)
-        self.d2vdy2 = SecondOrderCentral(*constructor_arguments)
+        self.d2vdx2 = numerical_schemes.create_second_order_space_derivative_scheme(self)
+        self.d2vdy2 = numerical_schemes.create_second_order_space_derivative_scheme(self)
 
     def first_order_time_derivative(self, time):
         self.dvdt.apply(WRT.t, self.solver, time, self.get_variable_name())
