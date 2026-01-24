@@ -16,7 +16,6 @@ def run():
 
     # create governign equation
     eqm = swiftcfd.equation_manager(params, mesh)
-    # equations, field_manager = swiftcfd.equation_factory(params, mesh).create()
 
     # create runtime handler
     runtime = swiftcfd.runtime(params, mesh, eqm.field_manager, eqm.equations)

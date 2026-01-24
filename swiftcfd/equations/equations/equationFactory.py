@@ -24,7 +24,7 @@ class EquationFactory:
         elif solver_name == 'pressureProjection':
             equations.append(fspp_xMomentum(self.params, self.mesh, field_manager))
             equations.append(fspp_yMomentum(self.params, self.mesh, field_manager))
-            equations.append(pressure(self.params, self.mesh, field_manager))
+            equations.append(pressure(self.params, self.mesh, field_manager, equations[0].solver, equations[1].solver))
         else:
             print(f'Unknown solver "{solver_name}" selected')
             print('Available equations: heatDiffusion, pressureProjection')

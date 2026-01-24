@@ -22,17 +22,17 @@ class yMomentum(BaseEquation):
         self.d2vdx2 = numerical_schemes.create_second_order_space_derivative_scheme(self)
         self.d2vdy2 = numerical_schemes.create_second_order_space_derivative_scheme(self)
 
-    def first_order_time_derivative(self, time):
-        self.dvdt.apply(WRT.t, self.solver, time, self.get_variable_name())
+    def first_order_time_derivative(self, runtime):
+        self.dvdt.apply(WRT.t, self.solver, runtime, self.get_variable_name())
 
-    def first_order_space_derivative(self, time):
-        self.dvdx.apply(WRT.x, self.solver, time, self.get_variable_name())
-        self.dvdy.apply(WRT.y, self.solver, time, self.get_variable_name())
+    def first_order_space_derivative(self, runtime):
+        self.dvdx.apply(WRT.x, self.solver, runtime, self.get_variable_name())
+        self.dvdy.apply(WRT.y, self.solver, runtime, self.get_variable_name())
 
-    def second_order_space_derivative(self, time):
+    def second_order_space_derivative(self, runtime):
         nu = self.params('solver', 'fluid', 'nu')
-        self.d2vdx2.apply(WRT.x, self.solver, time, self.get_variable_name(), -1.0 * nu)
-        self.d2vdy2.apply(WRT.y, self.solver, time, self.get_variable_name(), -1.0 * nu)
+        self.d2vdx2.apply(WRT.x, self.solver, runtime, self.get_variable_name(), -1.0 * nu)
+        self.d2vdy2.apply(WRT.y, self.solver, runtime, self.get_variable_name(), -1.0 * nu)
     
     def get_diffusion_coefficients(self):
         nu = self.params('solver', 'fluid', 'nu')

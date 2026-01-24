@@ -17,13 +17,13 @@ class HeatDiffusion(BaseEquation):
         self.d2Tdx2 = SecondOrderCentral(*constructor_arguments)
         self.d2Tdy2 = SecondOrderCentral(*constructor_arguments)
 
-    def first_order_time_derivative(self, time):
-        self.dTdt.apply(WRT.t, self.solver, time, self.get_variable_name())
+    def first_order_time_derivative(self, runtime):
+        self.dTdt.apply(WRT.t, self.solver, runtime, self.get_variable_name())
 
-    def second_order_space_derivative(self, time):
+    def second_order_space_derivative(self, runtime):
         alpha = self.params('solver', 'fluid', 'alpha')
-        self.d2Tdx2.apply(WRT.x, self.solver, time, self.get_variable_name(), -1.0 * alpha)
-        self.d2Tdy2.apply(WRT.y, self.solver, time, self.get_variable_name(), -1.0 * alpha)
+        self.d2Tdx2.apply(WRT.x, self.solver, runtime, self.get_variable_name(), -1.0 * alpha)
+        self.d2Tdy2.apply(WRT.y, self.solver, runtime, self.get_variable_name(), -1.0 * alpha)
     
     def get_diffusion_coefficients(self):
         alpha = self.params('solver', 'fluid', 'alpha')
