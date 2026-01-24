@@ -15,10 +15,10 @@
 
 [solver.time]
     # time step (only used if CFLBasedTimeStepping is set to false)
-    dt  = 1.0
+    dt  = 0.01
 
     # end time of the simulation
-    endTime = 100.0
+    endTime = 1.0
 
 [solver.schemes]
     # time-integration scheme to use. Available schemes are:
