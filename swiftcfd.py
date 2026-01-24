@@ -38,9 +38,6 @@ def run():
         # copy solution
         eqm.field_manager.update_solution()
 
-        # compute time step
-        runtime.compute_dt()
-
         # print time info to console
         log.print_time_info(runtime)
 

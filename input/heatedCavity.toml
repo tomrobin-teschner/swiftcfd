@@ -11,12 +11,6 @@
     alpha = 1e-3
 
 [solver.time]
-    # use CFL based time stepping
-    CFLBasedTimeStepping = false
-
-    # CFL number (only used if CFLBasedTimeStepping is set to true)
-    CFL = 0.25
-
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 10.0
 

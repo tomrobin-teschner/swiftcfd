@@ -21,15 +21,13 @@ class Runtime():
         self.current_picard_iteration = 0
         
         # time information
-        self.cfl_based_timestepping = self.params('solver', 'time', 'CFLBasedTimeStepping')
         self.end_time = self.params('solver', 'time', 'endTime')
         
         self.current_time = 0.0
         self.timestep = 0
 
+        self.dt = self.params('solver', 'time', 'dt')
         self.CFL = 0.0
-        self.dt = 0.0
-        self.old_dt = 0.0
 
         # set up class
         self.__max_dirichlet_bc_value()
@@ -64,67 +62,28 @@ class Runtime():
         except:
             nu = 0.0
 
-    def compute_dt(self):
-        # store old dt value
-        self.old_dt = self.dt
-
+    def compute_CFL(self):
         # now compute new time step value
         if self.has_diffusion:
             gamma = self.diffusion_coefficient
-            if self.cfl_based_timestepping:
-                CFL_diffusion = self.params('solver', 'time', 'CFL')
-                dt_diffusion = CFL_diffusion * pow(self.mesh.get_min_spacing(), 2) / gamma
-            else:
-                dt_diffusion = self.params('solver', 'time', 'dt')
-                CFL_diffusion = dt_diffusion * gamma / pow(self.mesh.get_min_spacing(), 2)
+            CFL_diffusion = self.dt * gamma / pow(self.mesh.get_min_spacing(), 2)
 
         if self.has_advection:
-            if self.cfl_based_timestepping:
-                CFL_advection = self.params('solver', 'time', 'CFL')
-                
-                dt_advection = float_info.max
-                for block in range(0, self.mesh.num_blocks):
-                    dx, dy = self.mesh.get_spacing(block)
-                    for (i, j) in self.mesh.internal_loop_single_block(block):
-                        u_velocity = self.field_manager.get_field(pv.velocity_x.name())[block, i, j]
-                        v_velocity = self.field_manager.get_field(pv.velocity_y.name())[block, i, j]
-                        u_mag = pow(u_velocity, 2) + pow(v_velocity, 2)
+            CFL_advection = float_info.max
+            for block in range(0, self.mesh.num_blocks):
+                dx, dy = self.mesh.get_spacing(block)
+                for (i, j) in self.mesh.internal_loop_single_block(block):
+                    u_velocity = self.field_manager.get_field(pv.velocity_x.name())[block, i, j]
+                    v_velocity = self.field_manager.get_field(pv.velocity_y.name())[block, i, j]
+                    u_mag = pow(u_velocity, 2) + pow(v_velocity, 2)
 
-                        temp_dt = CFL_advection * min(dx, dy) / u_mag
-                        if temp_dt < dt_advection:
-                            dt_advection = temp_dt
-                dt_at_BC = CFL_advection * min(dx, dy) / self.max_dirichlet_value
-                dt_advection = min(dt_advection, dt_at_BC)
-            else:
-                dt_advection = self.params('solver', 'time', 'dt')
+                    temp_CFL = u_mag * self.dt / min(dx, dy)
+                    if temp_CFL < CFL_advection:
+                        CFL_advection = temp_CFL
+            CFL_at_BC = self.max_dirichlet_value * self.dt / min(dx, dy)
+            CFL_advection = min(CFL_advection, CFL_at_BC)
 
-                CFL_advection = float_info.max
-                for block in range(0, self.mesh.num_blocks):
-                    dx, dy = self.mesh.get_spacing(block)
-                    for (i, j) in self.mesh.internal_loop_single_block(block):
-                        u_velocity = self.field_manager.get_field(pv.velocity_x.name())[block, i, j]
-                        v_velocity = self.field_manager.get_field(pv.velocity_y.name())[block, i, j]
-                        u_mag = pow(u_velocity, 2) + pow(v_velocity, 2)
-
-                        temp_CFL = u_mag * dt_advection / min(dx, dy)
-                        if temp_CFL < CFL_advection:
-                            CFL_advection = temp_CFL
-                CFL_at_BC = self.max_dirichlet_value * dt_advection / min(dx, dy)
-                CFL_advection = min(CFL_advection, CFL_at_BC)
-        
-        if self.has_advection == True and self.has_diffusion == False:
-            self.dt = dt_advection
-            self.CFL = CFL_advection
-        elif self.has_advection == False and self.has_diffusion == True:
-            self.dt = dt_diffusion
-            self.CFL = CFL_diffusion
-        else:
-            if dt_diffusion > dt_advection:
-                self.dt = dt_advection
-                self.CFL = CFL_advection
-            else:
-                self.dt = dt_diffusion
-                self.CFL = CFL_diffusion
+        self.CFL = max(CFL_diffusion, CFL_advection)
 
     def has_not_reached_final_time(self):
         if self.current_time >= self.end_time:

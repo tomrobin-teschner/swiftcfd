@@ -33,7 +33,6 @@ class Pressure(BaseEquation):
     def source(self, runtime):
         rho = self.params('solver', 'fluid', 'rho')
         dt = runtime.dt
-        old_dt = runtime.old_dt
 
         self.grad_u.compute()
         self.grad_v.compute()
@@ -124,7 +123,7 @@ class Pressure(BaseEquation):
                 divergence = (u_e_corrected - u_w_corrected) / dx + (v_n_corrected - v_s_corrected) / dy
 
                 if self.uses_second_order_time_integration:
-                    rhs = (3.0 * rho / (dt + old_dt)) * divergence
+                    rhs = (3.0 * rho / (2.0 * dt)) * divergence
                 else:
                     rhs = (rho / dt) * divergence
                 
@@ -133,11 +132,10 @@ class Pressure(BaseEquation):
     def post_solve_task(self, runtime):
         rho = self.params('solver', 'fluid', 'rho')
         dt = runtime.dt
-        old_dt = runtime.old_dt
         self.grad_p.compute()
 
         if self.uses_second_order_time_integration:
-            multiplier = 1.0 / 3.0 * ((dt + old_dt) / rho)
+            multiplier = (2.0 * dt) / (3.0 * rho)
         else:
             multiplier = dt / rho
 

@@ -6,12 +6,11 @@ class SecondOrderBackwards(NumericalSchemesBase):
 
     def _compute_coefficients(self, direction, runtime, var_name, multiplier):
         dt = runtime.dt
-        dt_old = runtime.old_dt
         if runtime.timestep > 1:
             for block_id in range(0, self.mesh.num_blocks):
                 self.coefficients.append({
-                    'ap': 3.0/(dt + dt_old) * multiplier,
-                    'b':  1.0/(dt + dt_old) * multiplier,
+                    'ap': 3.0/(2.0 * dt) * multiplier,
+                    'b':  1.0/(2.0 * dt) * multiplier,
                     'is_second_order': True
                 })
         else:

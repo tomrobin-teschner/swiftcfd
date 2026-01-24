@@ -6,9 +6,8 @@ class Log:
         print(self.term.home + self.term.clear, end='')
     
     def print_time_info(self, runtime):
-        # print(self.term.home + self.term.clear)
-
         current_time = runtime.current_time
+        runtime.compute_CFL()
         cfl = runtime.CFL
         dt = runtime.dt
 

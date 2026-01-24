@@ -14,12 +14,6 @@
     rho = 1.0
 
 [solver.time]
-    # use CFL based time stepping
-    CFLBasedTimeStepping = false
-
-    # CFL number (only used if CFLBasedTimeStepping is set to true)
-    CFL = 10.0
-
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 1.0
 
