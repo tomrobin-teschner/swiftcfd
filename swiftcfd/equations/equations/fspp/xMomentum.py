@@ -1,6 +1,6 @@
-from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
+from swiftcfd.enums import PrimitiveVariables as pv
 from swiftcfd.equations.equations.baseEquation import BaseEquation
-from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
+from swiftcfd.enums import WRT
 from swiftcfd.equations.numericalSchemes.numericalSchemeFactory import NumericalSchemeFactory
 
 class xMomentum(BaseEquation):

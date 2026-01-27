@@ -1,9 +1,4 @@
-from enum import Enum, auto
-
-class BCType(Enum):
-    dirichlet = auto()
-    neumann = auto()
-    interface = auto()
+from swiftcfd.enums import BCType
 
 class BoundaryConditions():
     def __init__(self, params, mesh, var_name):

@@ -1,11 +1,5 @@
 from enum import Enum, auto
-from swiftcfd.equations.boundaryConditions.boundaryConditions import BCType
-
-class CornerType(Enum):
-    BOTTOM_LEFT = auto()
-    BOTTOM_RIGHT = auto()
-    TOP_LEFT = auto()
-    TOP_RIGHT = auto()
+from swiftcfd.enums import BCType, CornerType
 
 class CornerPoint:
     def __init__(self, mesh, bc):

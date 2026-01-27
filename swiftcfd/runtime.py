@@ -1,7 +1,7 @@
 from sys import float_info
 from math import pow
-from swiftcfd.equations.boundaryConditions.boundaryConditions import BCType
-from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
+from swiftcfd.enums import BCType
+from swiftcfd.enums import PrimitiveVariables as pv
 
 class Runtime():
     def __init__(self, params, mesh, field_manager, equations):

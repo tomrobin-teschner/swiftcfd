@@ -1,6 +1,6 @@
 from swiftcfd.equations.numericalSchemes.numericalSchemesBase import NumericalSchemesBase
-from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
-from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
+from swiftcfd.enums import WRT
+from swiftcfd.enums import PrimitiveVariables as pv
 
 class FirstOrderUpwind(NumericalSchemesBase):
     def __init__(self, params, mesh, ic, field_manager):

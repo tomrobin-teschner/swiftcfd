@@ -1,5 +1,22 @@
 from enum import Enum, auto
 
+class BCType(Enum):
+    dirichlet = auto()
+    neumann = auto()
+    interface = auto()
+
+class CornerType(Enum):
+    BOTTOM_LEFT = auto()
+    BOTTOM_RIGHT = auto()
+    TOP_LEFT = auto()
+    TOP_RIGHT = auto()
+
+# WRT = with respect to, indicates which direction the numerical scheme is applied to
+class WRT(Enum):
+    t = auto()
+    x = auto()
+    y = auto()
+
 class PrimitiveVariables(Enum):
     velocity_x = auto()
     velocity_y = auto()

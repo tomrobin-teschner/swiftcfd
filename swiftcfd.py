@@ -1,6 +1,6 @@
 import swiftcfd
 
-from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
+from swiftcfd.enums import PrimitiveVariables as pv
 
 def run():
     # read command line arguments

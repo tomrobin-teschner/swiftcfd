@@ -1,5 +1,5 @@
 from swiftcfd.equations.numericalSchemes.numericalSchemesBase import NumericalSchemesBase
-from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
+from swiftcfd.enums import WRT
 from math import pow
 
 class LaxFriedrichs(NumericalSchemesBase):

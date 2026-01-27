@@ -3,12 +3,6 @@ from enum import Enum, auto
 
 from swiftcfd.equations.boundaryConditions.boundaryConditions import BoundaryConditions
 
-# WRT = with respect to, indicates which direction the numerical scheme is applied to
-class WRT(Enum):
-    t = auto()
-    x = auto()
-    y = auto()
-
 class NumericalSchemesBase(ABC):
     def __init__(self, params, mesh, interface_condition, field_manager):
         self.params = params
@@ -37,6 +31,10 @@ class NumericalSchemesBase(ABC):
     @abstractmethod
     def _compute_interior(self, direction, block_id, solver, var_name):
         pass
+
+    # @abstractmethod
+    # def _edge_treatment(self, direction, block_id, solver, var_name):
+    #     pass
     
     @abstractmethod
     def get_right_hand_side_contribution(self, direction, ij, ip1j, im1j, ijp1, ijm1, var_name):

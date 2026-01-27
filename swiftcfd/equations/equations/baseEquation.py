@@ -6,7 +6,7 @@ from swiftcfd.equations.boundaryConditions.boundaryConditions import BoundaryCon
 from swiftcfd.equations.boundaryConditions.interfaceConditions import InterfaceConditions
 from swiftcfd.equations.boundaryConditions.cornerPoint import CornerPoint
 from swiftcfd.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
-from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
+from swiftcfd.enums import PrimitiveVariables as pv
 
 class BaseEquation(ABC):
     def __init__(self, params, mesh, field_manager):

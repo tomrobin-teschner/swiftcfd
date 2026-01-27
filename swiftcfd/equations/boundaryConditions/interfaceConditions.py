@@ -1,5 +1,5 @@
-from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
-from swiftcfd.equations.boundaryConditions.boundaryConditions import BCType
+from swiftcfd.enums import WRT
+from swiftcfd.enums import BCType
 from swiftcfd.equations.boundaryConditions.cornerPoint import CornerPoint
 
 class InterfaceConditions():

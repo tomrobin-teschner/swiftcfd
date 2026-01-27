@@ -1,6 +1,6 @@
-from swiftcfd.equations.equations.primitiveVariables import PrimitiveVariables as pv
+from swiftcfd.enums import PrimitiveVariables as pv
 from swiftcfd.equations.equations.baseEquation import BaseEquation
-from swiftcfd.equations.numericalSchemes.numericalSchemesBase import WRT
+from swiftcfd.enums import WRT
 from swiftcfd.equations.numericalSchemes.numericalSchemeFactory import NumericalSchemeFactory
 from swiftcfd.gradients.firstOrderGradient import FirstOrderGradient as gradient
 
@@ -93,6 +93,9 @@ class Pressure(BaseEquation):
                 du = V / ap_u[index]
                 dv = V / ap_v[index]
 
+                # du = V / (rho * 3.0 / (2.0 * dt))
+                # dv = V / (rho * 3.0 / (2.0 * dt))
+
                 # pressure gradient at faces
                 dp_e = (pip1 - pi) / dx
                 dp_w = (pi - pim1) / dx
@@ -120,9 +123,10 @@ class Pressure(BaseEquation):
                 v_n_corrected = v_n - dv * (dp_n - dp_n_interpolated)
                 v_s_corrected = v_s - dv * (dp_s - dp_s_interpolated)
 
-                divergence = (u_e_corrected - u_w_corrected) / dx + (v_n_corrected - v_s_corrected) / dy
+                # divergence = (u_e_corrected - u_w_corrected) / dx + (v_n_corrected - v_s_corrected) / dy
+                divergence = self.grad_u.x[block, i, j] + self.grad_v.y[block, i, j]
 
-                if self.uses_second_order_time_integration:
+                if self.uses_second_order_time_integration and runtime.timestep > 1:
                     rhs = (3.0 * rho / (2.0 * dt)) * divergence
                 else:
                     rhs = (rho / dt) * divergence
@@ -134,7 +138,7 @@ class Pressure(BaseEquation):
         dt = runtime.dt
         self.grad_p.compute()
 
-        if self.uses_second_order_time_integration:
+        if self.uses_second_order_time_integration and runtime.timestep > 1:
             multiplier = (2.0 * dt) / (3.0 * rho)
         else:
             multiplier = dt / rho
