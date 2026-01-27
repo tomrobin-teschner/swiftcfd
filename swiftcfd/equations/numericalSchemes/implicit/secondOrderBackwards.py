@@ -34,11 +34,5 @@ class SecondOrderBackwards(NumericalSchemesBase):
 
     def get_right_hand_side_contribution(self, direction, ij, ip1j, im1j, ijp1, ijm1, var_name):
         block1, i1, j1 = ij
-        multiplier = self.coefficients[block1]['b']
-        is_second_order = self.coefficients[block1]['is_second_order']
-
-        if is_second_order:
-            return multiplier * (4.0 * self.field_manager.fields[var_name].old[block1, i1, j1] - \
-                self.field_manager.fields[var_name].oldold[block1, i1, j1])
-        else:
-            return multiplier * self.field_manager.fields[var_name].old[block1, i1, j1]
+        return self.coefficients[block1]['b'][0] * self.field_manager.fields[var_name].old[block1, i1, j1] + \
+                self.coefficients[block1]['b'][1] * self.field_manager.fields[var_name].oldold[block1, i1, j1]
