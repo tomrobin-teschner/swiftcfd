@@ -1,7 +1,12 @@
 from swiftcfd.equations.equations.equationFactory import EquationFactory as equation_factory
 
+from petsc4py import init as petsc_init
+
 class EquationManager:
     def __init__(self, params, mesh):
+        # initialise petsc for usage, required by the linear solver within each equation
+        petsc_init()
+
         self.params = params
         self.mesh = mesh
         self.equations, self.field_manager = equation_factory(params, mesh).create()

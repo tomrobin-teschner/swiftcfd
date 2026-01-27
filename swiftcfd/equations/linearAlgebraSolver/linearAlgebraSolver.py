@@ -11,9 +11,6 @@ class LinearAlgebraSolver():
         self.var_name = var_name
         self.is_diagonal = True
 
-        # initialise petsc for usage
-        petsc_init()
-
         # create coefficient matrix A
         self.A = PETSc.Mat().create()
         self.A.setSizes([self.total_points, self.total_points])
@@ -21,12 +18,18 @@ class LinearAlgebraSolver():
         self.A.setPreallocationNNZ(9)
         self.A.setUp()
 
+        # TODO: generalise this for fully neumann type equations only
+        if var_name == 'p':
+            ns = PETSc.NullSpace().create(constant=True)
+            self.A.setNullSpace(ns)
+            self.A.setNearNullSpace(ns)
+
         # create right-hand side vector
         self.b = PETSc.Vec().createSeq(self.total_points)
 
         # create linear solver
         self.ksp = SolverFactory().create(params, self.var_name)
-        self.ksp.setOperators(self.A)        
+        self.ksp.setOperators(self.A)
     
     def reset_A(self):
         self.A.zeroEntries()
@@ -53,11 +56,18 @@ class LinearAlgebraSolver():
         self.b.assemblyBegin()
         self.b.assemblyEnd()
 
+        # if self.var_name == 'p':
+        #     self.A.setOption(PETSc.Mat.Option.SYMMETRIC, True)
+        #     self.A.setOption(PETSc.Mat.Option.SPD, True)
+
     def field_to_petsc_vec(self, field):
         vec = PETSc.Vec().createWithArray(field._data)
         return vec
 
     def solve(self, field):
+        self.ksp.reset()
+        self.ksp.setOperators(self.A)
+
         # check if matrix can be inverted trivally (only contains diagonal)
         self.is_diagonal = self.__check_for_diagonal_matrix()
 
@@ -68,6 +78,26 @@ class LinearAlgebraSolver():
             field_petsc.pointwiseDivide(self.b, self.A.getDiagonal())
         else:
             self.ksp.solve(self.b, field_petsc)
+
+    def view(self):
+        viewer = PETSc.Viewer().createASCII(f"{self.var_name}.txt")
+        viewer.pushFormat(PETSc.Viewer.Format.ASCII_INFO)
+        self.A.view(viewer)
+        viewer.destroy()
+
+        viewer = PETSc.Viewer().createASCII(f"{self.var_name}_values.txt")
+        viewer.pushFormat(PETSc.Viewer.Format.ASCII_MATLAB)
+        self.A.view(viewer)
+        viewer.destroy()
+
+        viewer = PETSc.Viewer().createASCII(f"{self.var_name}_structure.txt")
+        viewer.pushFormat(PETSc.Viewer.Format.ASCII_DENSE)
+        self.A.view(viewer)
+        viewer.destroy()
+
+        # sigma_max, sigma_min = self.ksp.computeExtremeSingularValues()
+        # cond_est = sigma_max / sigma_min
+        # self.condition_number.append(cond_est)
 
     def get_solver_statistics(self):
         num_iterations = self.ksp.getIterationNumber()
