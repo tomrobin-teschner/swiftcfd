@@ -35,11 +35,28 @@ class SolverFactory():
             ksp.getPC().setType(PETSc.PC.Type.ILU)
         elif preconditioner == 'SOR':
             ksp.getPC().setType(PETSc.PC.Type.SOR)
+        elif preconditioner == 'GAMG':
+            ksp.getPC().setType("gamg")
+            opts = PETSc.Options()
+            opts["pc_gamg_type"] = "agg"
+            opts["pc_gamg_threshold"] = 0.01
+            opts["pc_gamg_square_graph"] = 1
+            # opts["mg_levels_ksp_type"] = "chebyshev"
+            # opts["mg_levels_pc_type"] = "jacobi"
+            opts["mg_levels_ksp_type"] = "richardson"
+            opts["mg_levels_pc_type"]  = "jacobi"
+            # opts["mg_levels_pc_type"] = "ilu"
+            # opts["mg_levels_pc_factor_levels"] = 0
+            opts["mg_levels_ksp_max_it"] = 3
+            opts["mg_coarse_ksp_type"] = "preonly"
+            opts["mg_coarse_pc_type"] = "lu"
+
+            ksp.setFromOptions()
         elif preconditioner == 'NONE':
             ksp.getPC().setType(PETSc.PC.Type.NONE)
         else:
             print(f'Unknown preconditioner "{preconditioner}" selected')
-            print('Available solvers: JACOBI, ILU, SOR, NONE')
+            print('Available solvers: JACOBI, ILU, SOR, GAMG, NONE')
             print('Exiting now ...')
             exit(1)
 
@@ -47,5 +64,7 @@ class SolverFactory():
         tolerance = params('solver', 'linearSolver', 'tolerance', var_name)
         max_iterations = params('solver', 'linearSolver', 'maxIterations', var_name)
         ksp.setTolerances(rtol = tolerance, max_it = max_iterations)
+
+        # ksp.setComputeSingularValues(True)
 
         return ksp
