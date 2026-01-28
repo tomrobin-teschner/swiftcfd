@@ -21,10 +21,10 @@ class Runtime():
         self.current_picard_iteration = 0
         
         # time information
-        self.end_time = self.params('solver', 'time', 'endTime')
+        self.total_timesteps = self.params('solver', 'time', 'timesteps')
         
         self.current_time = 0.0
-        self.timestep = 0
+        self.current_timestep = 0
 
         self.dt = self.params('solver', 'time', 'dt')
         self.CFL = 0.0
@@ -63,6 +63,9 @@ class Runtime():
             nu = 0.0
 
     def compute_CFL(self):
+        CFL_diffusion = 0.0
+        CFL_advection = 0.0
+        
         # now compute new time step value
         if self.has_diffusion:
             gamma = self.diffusion_coefficient
@@ -86,7 +89,7 @@ class Runtime():
         self.CFL = max(CFL_diffusion, CFL_advection)
 
     def has_not_reached_final_time(self):
-        if self.current_time >= self.end_time:
+        if self.current_timestep == self.total_timesteps:
             return False
         else:
             return True
@@ -104,6 +107,6 @@ class Runtime():
 
     def update_time(self):
         self.current_time += self.dt
-        self.timestep += 1
+        self.current_timestep += 1
 
     

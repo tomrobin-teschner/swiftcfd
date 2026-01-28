@@ -72,8 +72,8 @@ def run():
         log.print_convergence_info(runtime, eqm.equations, residuals)
 
         # save solution animation
-        if params('solver', 'output', 'writingFrequency') > 0 and runtime.timestep % params('solver', 'output', 'writingFrequency') == 0:
-            output.write(runtime.timestep)
+        if params('solver', 'output', 'writingFrequency') > 0 and runtime.current_timestep % params('solver', 'output', 'writingFrequency') == 0:
+            output.write(runtime.current_timestep)
 
         if has_converged:
             break

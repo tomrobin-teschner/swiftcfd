@@ -14,8 +14,8 @@
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 10.0
 
-    # end time of the simulation
-    endTime = 500.0
+    # number of time steps to perform
+    timesteps = 50
 
 [solver.schemes]
     # time-integration scheme to use. Available schemes are:

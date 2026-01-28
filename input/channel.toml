@@ -17,8 +17,8 @@
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 1.0
 
-    # end time of the simulation
-    endTime = 100.0
+    # number of time steps to perform
+    timesteps = 100
 
 [solver.schemes]
     # time-integration scheme to use. Available schemes are:
@@ -27,7 +27,7 @@
 
     # non-linear scheme to use. Available schemes are:
     # firstOrderUpwind, secondOrderUpwind
-    nonLinearScheme = 'secondOrderUpwind'
+    nonLinearScheme = 'firstOrderUpwind'
 
     # diffusion scheme to use. Available schemes are:
     # secondOrderCentral
@@ -36,10 +36,10 @@
 [solver.linearSolver]
     # Linear solver for the implicit treatment. Available solvers are:
     # RICHARDSON, CG, BCGS, GMRES
-    solver = {u = "GMRES", v="GMRES", p="GMRES"}
+    solver = {u = "BCGS", v="BCGS", p="BCGS"}
 
     # Preconditioner for the implicit treatment. Available preconditioners are:
-    # JACOBI, ILU, SOR, NONE
+    # JACOBI, ILU, SOR, GAMG, NONE
     preconditioner = {u = "ILU", v="ILU", p="ILU"}
 
     # relative tolerance to reach for the linear solver within each time step
@@ -49,7 +49,7 @@
     maxIterations = {u = 1000, v = 1000, p = 1000}
 
     # under-relaxation factor for the implicit solver
-    underRelaxation = {u = 0.7, v = 0.7, p = 0.7}
+    underRelaxation = {u = 1.0, v = 1.0, p = 1.0}
 
 [solver.convergence]
     # number of picard iterations
@@ -73,10 +73,10 @@
 ### --------------------------- ###
 [mesh.block1]
     # start/end location and number of points to use in the x direction
-    x = {start = 0.0, end = 10.0, num = 51}
+    x = {start = 0.0, end = 10.0, num = 5}
 
     # start/end location and number of points to use in the y direction
-    y = {start = 0.0, end = 1.0, num = 21}
+    y = {start = 0.0, end = 1.0, num = 5}
 
 ### ------------------------------------------ ###
 ### ----- BOUNDARY CONDITIONS PROPERTIES ----- ###
@@ -84,7 +84,7 @@
 [boundaryCondition.block1]
     # boundary conditions in the east direction. Available boundary conditions are:
     # dirichlet, neumann, interface
-    east =  {u = {type = "neumann", value = 0.0}, v = {type = "neumann", value = 0.0}, p = {type = "dirichlet", value = 0.0}}
+    east =  {u = {type = "neumann", value = 0.0}, v = {type = "neumann", value = 0.0}, p = {type = "neumann", value = 0.0}}
 
     # boundary conditions in the west direction. Available boundary conditions are:
     # dirichlet, neumann, interface

@@ -14,8 +14,8 @@
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 10.0
 
-    # end time of the simulation
-    endTime = 500.0
+    # number of time steps to perform
+    timesteps = 500
 
 [solver.schemes]
     # time-integration scheme to use. Available schemes are:
@@ -32,11 +32,11 @@
     solver = {T = "GMRES"}
 
     # Preconditioner for the implicit treatment. Available preconditioners are:
-    # JACOBI, ILU, SOR, NONE
+    # JACOBI, ILU, SOR, GAMG, NONE
     preconditioner = {T = "ILU"}
 
     # relative tolerance to reach for the linear solver within each time step
-    tolerance = {T = 1e-8}
+    tolerance = {T = 1e-12}
 
     # max allowable iterations by the implicit solver
     maxIterations = {T = 1000}
@@ -59,7 +59,7 @@
     filename = "heatedCavity"
 
     # write output file every X time steps
-    writingFrequency = 10
+    writingFrequency = 0
 
 ### --------------------------- ###
 ### ----- MESH PROPERTIES ----- ###
@@ -77,11 +77,11 @@
 [boundaryCondition.block1]
     # boundary conditions in the east direction. Available boundary conditions are:
     # dirichlet, neumann, interface
-    east =  {T = {type = "dirichlet", value = 0.0}}
+    east =  {T = {type = "neumann", value = 0.0}}
 
     # boundary conditions in the west direction. Available boundary conditions are:
     # dirichlet, neumann, interface
-    west =  {T = {type = "dirichlet", value = 0.0}}
+    west =  {T = {type = "neumann", value = 0.0}}
 
     # boundary conditions in the north direction. Available boundary conditions are:
     # dirichlet, neumann, interface

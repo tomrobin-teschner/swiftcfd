@@ -58,7 +58,7 @@ class Residuals:
         for var_name, field in self.field_manager.get_all_fields().items():
             self.convergence_residual[var_name].append(np.linalg.norm(field._data - field.old._data))
         
-        if runtime.timestep == 1:
+        if runtime.current_timestep == 1:
             for var_name, value in self.convergence_residual.items():
                 if value[0] > 0.0:
                     self.convergence_norm[var_name] = value[0]

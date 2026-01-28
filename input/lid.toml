@@ -17,8 +17,8 @@
     # time step (only used if CFLBasedTimeStepping is set to false)
     dt  = 0.01
 
-    # end time of the simulation
-    endTime = 1.0
+    # number of time steps to perform
+    timesteps = 100
 
 [solver.schemes]
     # time-integration scheme to use. Available schemes are:
@@ -36,7 +36,7 @@
 [solver.linearSolver]
     # Linear solver for the implicit treatment. Available solvers are:
     # RICHARDSON, CG, BCGS, GMRES
-    solver = {u = "GMRES", v="GMRES", p="CG"}
+    solver = {u = "GMRES", v="GMRES", p="GMRES"}
 
     # Preconditioner for the implicit treatment. Available preconditioners are:
     # JACOBI, ILU, SOR, NONE
@@ -49,7 +49,7 @@
     maxIterations = {u = 1000, v = 1000, p = 1000}
 
     # under-relaxation factor for the implicit solver
-    underRelaxation = {u = 0.3, v = 0.3, p = 0.3}
+    underRelaxation = {u = 1.0, v = 1.0, p = 1.0}
 
 [solver.convergence]
     # number of picard iterations

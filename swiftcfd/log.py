@@ -11,10 +11,10 @@ class Log:
         cfl = runtime.CFL
         dt = runtime.dt
 
-        print(self.term.move_xy(0,  0) + f'Time step: {runtime.timestep + 1:<5}')
-        print(self.term.move_xy(20, 0) + f'Current time: {runtime.current_time:.2e}')
-        print(self.term.move_xy(50, 0) + f'CFL: {cfl:.2e}')
-        print(self.term.move_xy(70, 0) + f'dt: {dt:.2e}')
+        print(self.term.move_xy(0,  0) + f'Time step: {runtime.current_timestep + 1:>5}/{runtime.total_timesteps:<5}')
+        print(self.term.move_xy(25, 0) + f'Current time: {runtime.current_time:.2e}')
+        print(self.term.move_xy(55, 0) + f'CFL: {cfl:.2e}')
+        print(self.term.move_xy(75, 0) + f'dt: {dt:.2e}')
 
     def print_picard_iteration(self, runtime, equations, residuals):
         print(self.term.move_xy(0, 1) + f'Picard iteration: {runtime.current_picard_iteration:>4}/{runtime.num_picard_iterations}')
