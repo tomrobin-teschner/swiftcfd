@@ -28,6 +28,14 @@ class CornerPoint:
                 ap_index, i, j = self.__get_corner_point_index(block, key)
                 ip1, jp1 = self.__get_neighbour_indices(key, i, j)               
 
+                if self.bc.is_fully_neumann() and block == 0:
+                    # this solver has fully neumann boundary condition and we need to fix the value in one cell
+                    # overwrite BCType so that we ensure a reference value of 0 is set in the bottom left corner
+                    bc_type1 = BCType.dirichlet
+                    bc_type2 = BCType.dirichlet
+                    bc_value1 = 0
+                    bc_value2 = 0
+
                 corner[key] = {
                     "bc_type1": bc_type1, "bc_type2": bc_type2,
                     "bc_value1": bc_value1, "bc_value2": bc_value2,

@@ -47,61 +47,75 @@ class BoundaryConditions():
             self.bc_type.append(bc_types)
             self.bc_value.append(bc_values)
 
-    def apply_boundary_conditions(self, solver, field):
+    def get_bc_type(self, block, face):
+        return self.bc_type[block][face]
+
+    def get_bc_value(self, block, face):
+        return self.bc_value[block][face]
+
+    def is_fully_neumann(self):
+        fully_neumann = True
         for block in range(0, self.mesh.num_blocks):
-            # east boundary
-            if self.bc_type[block]["east"] is not BCType.interface:
-                for (i, j) in self.mesh.loop_east(block, 1):
-                    index = self.mesh.map3Dto1D(block, i, j)
-                    solver.add_to_A(index, index, 1)
-                    solver.add_to_b(index, self.get_bc_value(field, i, j, block, "east"))
+            for face in ["east", "west", "north", "south"]:
+                if self.bc_type[block][face] != BCType.neumann:
+                    fully_neumann = False
+        return fully_neumann
 
-            # west boundary
-            if self.bc_type[block]["west"] is not BCType.interface:
-                for (i, j) in self.mesh.loop_west(block, 1):
-                    index = self.mesh.map3Dto1D(block, i, j)
-                    solver.add_to_A(index, index, 1)
-                    solver.add_to_b(index, self.get_bc_value(field, i, j, block, "west"))
+    # def apply_boundary_conditions(self, solver, field):
+    #     for block in range(0, self.mesh.num_blocks):
+    #         # east boundary
+    #         if self.bc_type[block]["east"] is not BCType.interface:
+    #             for (i, j) in self.mesh.loop_east(block, 1):
+    #                 index = self.mesh.map3Dto1D(block, i, j)
+    #                 solver.add_to_A(index, index, 1)
+    #                 solver.add_to_b(index, self.get_bc_value(field, i, j, block, "east"))
+
+    #         # west boundary
+    #         if self.bc_type[block]["west"] is not BCType.interface:
+    #             for (i, j) in self.mesh.loop_west(block, 1):
+    #                 index = self.mesh.map3Dto1D(block, i, j)
+    #                 solver.add_to_A(index, index, 1)
+    #                 solver.add_to_b(index, self.get_bc_value(field, i, j, block, "west"))
             
-            # north boundary
-            if self.bc_type[block]["north"] is not BCType.interface:
-                for (i, j) in self.mesh.loop_north(block, 1):
-                    index = self.mesh.map3Dto1D(block, i, j)
-                    solver.add_to_A(index, index, 1)
-                    solver.add_to_b(index, self.get_bc_value(field, i, j, block, "north"))
+    #         # north boundary
+    #         if self.bc_type[block]["north"] is not BCType.interface:
+    #             for (i, j) in self.mesh.loop_north(block, 1):
+    #                 index = self.mesh.map3Dto1D(block, i, j)
+    #                 solver.add_to_A(index, index, 1)
+    #                 solver.add_to_b(index, self.get_bc_value(field, i, j, block, "north"))
             
-            # south boundary
-            if self.bc_type[block]["south"] is not BCType.interface:
-                for (i, j) in self.mesh.loop_south(block, 1):
-                    index = self.mesh.map3Dto1D(block, i, j)
-                    solver.add_to_A(index, index, 1)
-                    solver.add_to_b(index, self.get_bc_value(field, i, j, block, "south"))
+    #         # south boundary
+    #         if self.bc_type[block]["south"] is not BCType.interface:
+    #             for (i, j) in self.mesh.loop_south(block, 1):
+    #                 index = self.mesh.map3Dto1D(block, i, j)
+    #                 solver.add_to_A(index, index, 1)
+    #                 solver.add_to_b(index, self.get_bc_value(field, i, j, block, "south"))
     
-    def get_bc_value(self, field, i, j, block, face):
-        if face == "east":
-            if self.bc_type[block]["east"] == BCType.dirichlet:
-                return self.bc_value[block]["east"]
-            elif self.bc_type[block]["east"] == BCType.neumann:
-                dx, _ = self.mesh.get_spacing(block)
-                return field[block, i - 1, j] + dx * self.bc_value[block]["east"]
+    # def get_bc_value(self, field, i, j, block, face):
+    #     if face == "east":
+    #         if self.bc_type[block]["east"] == BCType.dirichlet:
+    #             return self.bc_value[block]["east"]
+    #         elif self.bc_type[block]["east"] == BCType.neumann:
+    #             dx, _ = self.mesh.get_spacing(block)
+    #             return field[block, i - 1, j] + dx * self.bc_value[block]["east"]
 
-        elif face == "west":
-            if self.bc_type[block]["west"] == BCType.dirichlet:
-                return self.bc_value[block]["west"]
-            elif self.bc_type[block]["west"] == BCType.neumann:
-                dx, _ = self.mesh.get_spacing(block)
-                return field[block, i + 1, j] - dx * self.bc_value[block]["west"]
+    #     elif face == "west":
+    #         if self.bc_type[block]["west"] == BCType.dirichlet:
+    #             return self.bc_value[block]["west"]
+    #         elif self.bc_type[block]["west"] == BCType.neumann:
+    #             dx, _ = self.mesh.get_spacing(block)
+    #             return field[block, i + 1, j] - dx * self.bc_value[block]["west"]
 
-        elif face == "north":
-            if self.bc_type[block]["north"] == BCType.dirichlet:
-                return self.bc_value[block]["north"]
-            elif self.bc_type[block]["north"] == BCType.neumann:
-                _, dy = self.mesh.get_spacing(block)
-                return field[block, i, j - 1] + dy * self.bc_value[block]["north"]
+    #     elif face == "north":
+    #         if self.bc_type[block]["north"] == BCType.dirichlet:
+    #             return self.bc_value[block]["north"]
+    #         elif self.bc_type[block]["north"] == BCType.neumann:
+    #             _, dy = self.mesh.get_spacing(block)
+    #             return field[block, i, j - 1] + dy * self.bc_value[block]["north"]
 
-        elif face == "south":
-            if self.bc_type[block]["south"] == BCType.dirichlet:
-                return self.bc_value[block]["south"]
-            elif self.bc_type[block]["south"] == BCType.neumann:
-                _, dy = self.mesh.get_spacing(block)
-                return field[block, i, j + 1] - dy * self.bc_value[block]["south"]
+    #     elif face == "south":
+    #         if self.bc_type[block]["south"] == BCType.dirichlet:
+    #             return self.bc_value[block]["south"]
+    #         elif self.bc_type[block]["south"] == BCType.neumann:
+    #             _, dy = self.mesh.get_spacing(block)
+    #             return field[block, i, j + 1] - dy * self.bc_value[block]["south"]

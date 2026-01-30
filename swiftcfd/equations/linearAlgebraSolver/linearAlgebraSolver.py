@@ -4,12 +4,13 @@ from petsc4py import init as petsc_init
 from swiftcfd.equations.linearAlgebraSolver.solverFactory import SolverFactory
 
 class LinearAlgebraSolver():
-    def __init__(self, params, mesh, var_name):
+    def __init__(self, params, mesh, var_name, has_nullspace):
         # total points in mesh
         self.total_points = mesh.total_points
         self.mesh = mesh
         self.var_name = var_name
         self.is_diagonal = True
+        self.has_nullspace = has_nullspace
 
         # create coefficient matrix A
         self.A = PETSc.Mat().create()
@@ -18,8 +19,8 @@ class LinearAlgebraSolver():
         self.A.setPreallocationNNZ(9)
         self.A.setUp()
 
-        # TODO: generalise this for fully neumann type equations only
-        if var_name == 'p':
+        # if the solver has fuly neumann conditions, remove the nullspace
+        if self.has_nullspace:
             ns = PETSc.NullSpace().create(constant=True)
             self.A.setNullSpace(ns)
             self.A.setNearNullSpace(ns)

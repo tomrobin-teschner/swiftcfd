@@ -7,6 +7,7 @@ from swiftcfd.equations.boundaryConditions.interfaceConditions import InterfaceC
 from swiftcfd.equations.boundaryConditions.cornerPoint import CornerPoint
 from swiftcfd.equations.linearAlgebraSolver.linearAlgebraSolver import LinearAlgebraSolver
 from swiftcfd.enums import PrimitiveVariables as pv
+from swiftcfd.enums import BCType
 
 class BaseEquation(ABC):
     def __init__(self, params, mesh, field_manager):
@@ -26,7 +27,7 @@ class BaseEquation(ABC):
         # specify whether this equation should be linearised (picard iterations will be applied)
         self.requires_linearisation = False
 
-        self.solver = LinearAlgebraSolver(self.params, self.mesh, self.get_variable_name())
+        self.solver = LinearAlgebraSolver(self.params, self.mesh, self.get_variable_name(), self.bc.is_fully_neumann())
 
         self.field_manager.add_field(self.get_variable_name())
 
@@ -53,14 +54,17 @@ class BaseEquation(ABC):
         if self.has_source:
             self.source(runtime)
 
-        # set coefficients based on boundary conditions
-        self.bc.apply_boundary_conditions(self.solver, self.field_manager.fields[self.get_variable_name()])
+        # apply dirichlet boundary conditions exactly once here
+        self.apply_dirichlet_boundary_conditions()
+        # self.bc.apply_boundary_conditions(self.solver, self.field_manager.fields[self.get_variable_name()])
 
         # set corner points
         self.cp.apply_corner_points(self.solver, self.field_manager.fields[self.get_variable_name()])
 
         # assemble matrix
         self.solver.assemble()
+        # self.solver.view()
+        # exit()
 
         # solver linear system of equations after coefficient matrix has been assembled
         self.solver.solve(self.field_manager.fields[self.get_variable_name()])
@@ -78,6 +82,18 @@ class BaseEquation(ABC):
             self.field_manager.fields[self.get_variable_name()][block, i, j] = \
                 alpha * self.field_manager.fields[self.get_variable_name()][block, i, j] + \
                 (1.0 - alpha) * self.field_manager.fields[self.get_variable_name()].picard_old[block, i, j]
+    
+    def apply_dirichlet_boundary_conditions(self):
+        faces = ["east", "west", "north", "south"]
+        face_loops = [self.mesh.loop_east, self.mesh.loop_west, self.mesh.loop_north, self.mesh.loop_south]
+        for block_id in range(0, self.mesh.num_blocks):
+            for i in range(0, len(faces)):
+                if self.bc.get_bc_type(block_id, faces[i]) == BCType.dirichlet:
+                    bc_value = self.bc.get_bc_value(block_id, faces[i])
+                    for (i, j) in face_loops[i](block_id, 1):
+                        ap_index = self.mesh.map3Dto1D(block_id, i, j)
+                        self.solver.add_to_A(ap_index, ap_index, 1.0)
+                        self.solver.add_to_b(ap_index, bc_value)
 
     def first_order_time_derivative(self, runtime):
         """Handle time derivatives of the equation."""

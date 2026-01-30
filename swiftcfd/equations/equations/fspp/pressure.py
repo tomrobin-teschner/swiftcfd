@@ -11,7 +11,7 @@ class Pressure(BaseEquation):
         self.has_second_order_space_derivative = True
         self.has_source = True
 
-        numerical_schemes = NumericalSchemeFactory(self.params, self.mesh, self.ic, self.field_manager)
+        numerical_schemes = NumericalSchemeFactory(self.params, self.mesh, self.bc, self.field_manager)
 
         self.d2pdx2 = numerical_schemes.create_second_order_space_derivative_scheme(self)
         self.d2pdy2 = numerical_schemes.create_second_order_space_derivative_scheme(self)
@@ -126,7 +126,7 @@ class Pressure(BaseEquation):
                 # divergence = (u_e_corrected - u_w_corrected) / dx + (v_n_corrected - v_s_corrected) / dy
                 divergence = self.grad_u.x[block, i, j] + self.grad_v.y[block, i, j]
 
-                if self.uses_second_order_time_integration and runtime.timestep > 1:
+                if self.uses_second_order_time_integration and runtime.current_timestep > 1:
                     rhs = (3.0 * rho / (2.0 * dt)) * divergence
                 else:
                     rhs = (rho / dt) * divergence
@@ -138,7 +138,7 @@ class Pressure(BaseEquation):
         dt = runtime.dt
         self.grad_p.compute()
 
-        if self.uses_second_order_time_integration and runtime.timestep > 1:
+        if self.uses_second_order_time_integration and runtime.current_timestep > 1:
             multiplier = (2.0 * dt) / (3.0 * rho)
         else:
             multiplier = dt / rho
