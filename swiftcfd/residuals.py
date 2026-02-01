@@ -86,4 +86,4 @@ class Residuals:
 
         case = self.params('solver', 'output', 'filename')
         out_folder = join('output', case)
-        df.to_csv(join(out_folder, 'residuals.csv'))
+        df.to_csv(join(out_folder, 'residuals.csv'), index=False)

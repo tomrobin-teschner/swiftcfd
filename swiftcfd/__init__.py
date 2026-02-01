@@ -1,7 +1,7 @@
 from swiftcfd.cla import CommandLineArgumentParser as command_line_argument_parser
 from swiftcfd.parameters import Parameters as parameters
 from swiftcfd.mesh import Mesh as mesh
-from swiftcfd.output import Output as output
+from swiftcfd.output.output import Output as output
 from swiftcfd.field.fieldManager import FieldManager as field_manager
 from swiftcfd.runtime import Runtime as runtime
 from swiftcfd.residuals import Residuals as residuals

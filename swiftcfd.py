@@ -21,8 +21,8 @@ def run():
     runtime = swiftcfd.runtime(params, mesh, eqm.field_manager, eqm.equations)
 
     # create output
-    output = swiftcfd.output(params, mesh, eqm.field_manager)
-
+    out_file = swiftcfd.output(params, mesh, eqm.field_manager)
+    
     # create performance statistics
     stats = swiftcfd.performance_statistics(params, eqm.equations)
     stats.timer_start()
@@ -73,7 +73,7 @@ def run():
 
         # save solution animation
         if params('solver', 'output', 'writingFrequency') > 0 and runtime.current_timestep % params('solver', 'output', 'writingFrequency') == 0:
-            output.write(runtime.current_timestep)
+            out_file.write_tecplot_file(runtime.current_timestep)
 
         if has_converged:
             break
@@ -82,11 +82,13 @@ def run():
     stats.timer_end()
     stats.write_statistics()
 
-    # write solution
-    output.write()
-
     # write residuals
     residuals.write()
+
+    # write solution
+    out_file.write_tecplot_file()
+    out_file.plot_contours()
+    out_file.plot_residuals()
 
 if __name__ == '__main__':
     run()
