@@ -3,6 +3,7 @@ from os import listdir, remove
 from os import mkdir
 
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import numpy as np
 import pandas as pd
 
@@ -64,7 +65,7 @@ class Output():
             vmin = np.inf
             vmax = -np.inf
 
-            # ---- first pass: global min/max for this field ----
+            # ---- first pass: get min/max for this subplot ----
             for block in range(self.mesh.num_blocks):
                 nx = self.mesh.num_x[block]
                 ny = self.mesh.num_y[block]
@@ -74,14 +75,14 @@ class Output():
                 vmin = min(vmin, field.min())
                 vmax = max(vmax, field.max())
 
-            # ---- second pass: plotting ----
+            # ---- second pass: plotting all blocks on the same subplot ----
+            cs = None
             for block in range(self.mesh.num_blocks):
                 nx = self.mesh.num_x[block]
                 ny = self.mesh.num_y[block]
                 offset = self.mesh.points_offset[block]
 
                 field = field_data._data[offset : offset + nx * ny].reshape(ny, nx)
-
                 x = self.mesh.x[block].T
                 y = self.mesh.y[block].T
 
@@ -90,15 +91,15 @@ class Output():
                     levels=20,
                     vmin=vmin,
                     vmax=vmax,
-                    cmap="viridis"
+                    cmap="jet"
                 )
 
             ax.set_aspect("equal")
             ax.set_ylabel(field_name)
 
-            # ---- colorbar on top of each subplot ----
-            cbar = fig.colorbar(
-                cs,
+            # ---- colorbar per subplot ----
+            fig.colorbar(
+                cs,          # link to the last QuadContourSet of this subplot
                 ax=ax,
                 orientation="horizontal",
                 location="top",
@@ -119,6 +120,7 @@ class Output():
     def plot_residuals(self):
         df = pd.read_csv(join(self.out_folder, 'residuals.csv'))
 
+        plt.style.use('bmh')
         fig, ax = plt.subplots()
 
         for var_name in df.columns:
