@@ -11,7 +11,9 @@ Swiftcfd is a 2D solver for cartesian, block-structured grids for fully implicit
 
 This CFD solver requires ```PETSc``` to run, which can only be compiled on UNIX. Either a UNIX environment (Linux / macOS) is required, or [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) on Windows. Since ```PETSc``` is compiled from source, you will need a basic development environment installed on your PC (Python3, a C++/C compiler, and autotools).
 
-For example, on WSL or a Ubuntu-based distribution, the following commands will install the required development tools:
+### UNIX (WSL) installation
+
+Using WSL or a Ubuntu-based distribution, the following commands will install the required development tools:
 
 ```bash
 sudo update
@@ -34,6 +36,28 @@ When closing the terminal and opening it again, you will need to load the virtua
 ```bash
 source .venv/bin/activate
 ```
+
+### Docker installation
+
+A ```Dockerfile``` is provided, from which an image can be build to run the python code inside a container. To use docker, you will first need to create an image:
+
+```
+docker build -t swiftcfd .
+```
+
+We can then build the container and map the folder with the container as a volume, so code changes and outputs are synched:
+
+```
+docker run --name swiftcfd-channel -v "$(pwd):/swiftcfd" swiftcfd swiftcfd.py --input "input/channel.toml"
+```
+
+To restart to container later, use the ```docker start``` command
+
+```
+docker start -a swiftcfd-channel
+```
+
+Create as many containers as you need for different input files
 
 ## Usage
 
