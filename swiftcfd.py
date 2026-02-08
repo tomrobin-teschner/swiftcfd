@@ -33,6 +33,9 @@ def run():
     # create residual calculating object
     residuals = swiftcfd.residuals(params, eqm.field_manager)
 
+    # create machine learning training data
+    training = swiftcfd.ML_training_data(params, mesh, eqm.field_manager)
+
     # loop over time
     while (runtime.has_not_reached_final_time()):
         # copy solution
@@ -75,6 +78,10 @@ def run():
         if params('solver', 'output', 'writingFrequency') > 0 and runtime.current_timestep % params('solver', 'output', 'writingFrequency') == 0:
             out_file.write_tecplot_file(runtime.current_timestep)
 
+        # store training data for ML if required
+        if training.should_train(runtime):
+            training.commit_training_data()
+
         if has_converged:
             break
 
@@ -89,6 +96,9 @@ def run():
     out_file.write_tecplot_file()
     out_file.plot_contours()
     out_file.plot_residuals()
+
+    # ML training data
+    training.write()
 
 if __name__ == '__main__':
     run()

@@ -9,3 +9,4 @@ from swiftcfd.equations.equations.heatDiffusion import HeatDiffusion as heat_dif
 from swiftcfd.log import Log as log
 from swiftcfd.performanceStatistics import PerformanceStatistics as performance_statistics
 from swiftcfd.equations.equations.equationManager import EquationManager as equation_manager
+from swiftcfd.machineLearning.trainingData import TrainingData as ML_training_data
