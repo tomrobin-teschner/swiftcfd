@@ -88,34 +88,6 @@ class FirstOrderUpwind(NumericalSchemesBase):
                 elif direction == WRT.y:
                     self.upwind_wrt_y_interface(block_id, i, j, solver, "south")
     
-    def _bottom_left_corner(self, direction, block_id, solver, var_name):
-        corners = self.cp.get_corners(block_id)
-        i = corners[CornerType.BOTTOM_LEFT]['i']
-        j = corners[CornerType.BOTTOM_LEFT]['j']
-        self.negative_in_x(block_id, i, j, solver)
-        self.negative_in_y(block_id, i, j, solver)
-
-    def _bottom_right_corner(self, direction, block_id, solver, var_name):
-        corners = self.cp.get_corners(block_id)
-        i = corners[CornerType.BOTTOM_RIGHT]['i']
-        j = corners[CornerType.BOTTOM_RIGHT]['j']
-        self.positive_in_x(block_id, i, j, solver)
-        self.negative_in_y(block_id, i, j, solver)
-
-    def _top_left_corner(self, direction, block_id, solver, var_name):
-        corners = self.cp.get_corners(block_id)
-        i = corners[CornerType.TOP_LEFT]['i']
-        j = corners[CornerType.TOP_LEFT]['j']
-        self.negative_in_x(block_id, i, j, solver)
-        self.positive_in_y(block_id, i, j, solver)
-
-    def _top_right_corner(self, direction, block_id, solver, var_name):
-        corners = self.cp.get_corners(block_id)
-        i = corners[CornerType.TOP_RIGHT]['i']
-        j = corners[CornerType.TOP_RIGHT]['j']
-        self.positive_in_x(block_id, i, j, solver)
-        self.positive_in_y(block_id, i, j, solver)
-    
     def upwind_wrt_x(self, block_id, i, j, solver):
         self.positive_in_x(block_id, i, j, solver)
         self.negative_in_x(block_id, i, j, solver)

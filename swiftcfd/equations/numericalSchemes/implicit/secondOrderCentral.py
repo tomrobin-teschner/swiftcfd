@@ -61,48 +61,6 @@ class SecondOrderCentral(NumericalSchemesBase):
         elif direction == WRT.y:
             for (i, j) in self.mesh.loop_south(block_id, 1):
                 self.__apply_in_y_south(solver, block_id, i, j)
-
-    def _bottom_left_corner(self, direction, block_id, solver, var_name):
-        corners = self.cp.get_corners(block_id)
-        i = corners[CornerType.BOTTOM_LEFT]['i']
-        j = corners[CornerType.BOTTOM_LEFT]['j']
-
-        if direction == WRT.x:
-            self.__apply_in_x_west(solver, block_id, i, j)
-
-        elif direction == WRT.y:
-            self.__apply_in_y_south(solver, block_id, i, j)
-
-    def _bottom_right_corner(self, direction, block_id, solver, var_name):
-        corners = self.cp.get_corners(block_id)
-        i = corners[CornerType.BOTTOM_RIGHT]['i']
-        j = corners[CornerType.BOTTOM_RIGHT]['j']
-
-        if direction == WRT.x:
-            self.__apply_in_x_east(solver, block_id, i, j)
-
-        elif direction == WRT.y:
-            self.__apply_in_y_south(solver, block_id, i, j)
-
-    def _top_left_corner(self, direction, block_id, solver, var_name):
-        corners = self.cp.get_corners(block_id)
-        i = corners[CornerType.TOP_LEFT]['i']
-        j = corners[CornerType.TOP_LEFT]['j']
-        
-        if direction == WRT.x:
-            self.__apply_in_x_west(solver, block_id, i, j)
-        elif direction == WRT.y:
-            self.__apply_in_y_north(solver, block_id, i, j)
-
-    def _top_right_corner(self, direction, block_id, solver, var_name):
-        corners = self.cp.get_corners(block_id)
-        i = corners[CornerType.TOP_RIGHT]['i']
-        j = corners[CornerType.TOP_RIGHT]['j']
-
-        if direction == WRT.x:
-            self.__apply_in_x_east(solver, block_id, i, j)
-        elif direction == WRT.y:
-            self.__apply_in_y_north(solver, block_id, i, j)
     
     def __apply_in_x(self, solver, block_id, i, j):
         ap_index = self.mesh.map3Dto1D(block_id, i, j)

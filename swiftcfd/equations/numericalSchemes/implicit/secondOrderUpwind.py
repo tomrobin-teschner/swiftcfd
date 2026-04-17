@@ -110,15 +110,3 @@ class SecondOrderUpwind(NumericalSchemesBase):
 
     def _south_boundary(self, direction, block_id, solver, var_name):
         pass
-
-    def _bottom_left_corner(self, direction, block_id, solver, var_name):
-        pass
-
-    def _bottom_right_corner(self, direction, block_id, solver, var_name):
-        pass
-
-    def _top_left_corner(self, direction, block_id, solver, var_name):
-        pass
-
-    def _top_right_corner(self, direction, block_id, solver, var_name):
-        pass

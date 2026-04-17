@@ -44,18 +44,6 @@ class SecondOrderBackwards(NumericalSchemesBase):
 
     def _south_boundary(self, direction, block_id, solver, var_name):
         self.__update_boundary(block_id, solver, var_name, "south", self.mesh.loop_south)
-
-    def _bottom_left_corner(self, direction, block_id, solver, var_name):
-        self.__update_corner(block_id, solver, var_name, CornerType.BOTTOM_LEFT)
-
-    def _bottom_right_corner(self, direction, block_id, solver, var_name):
-        self.__update_corner(block_id, solver, var_name, CornerType.BOTTOM_RIGHT)
-
-    def _top_left_corner(self, direction, block_id, solver, var_name):
-        self.__update_corner(block_id, solver, var_name, CornerType.TOP_LEFT)
-
-    def _top_right_corner(self, direction, block_id, solver, var_name):
-        self.__update_corner(block_id, solver, var_name, CornerType.TOP_RIGHT)
     
     def __update_boundary(self, block_id, solver, var_name, face, bc_loop):
         bc_type = self.bc.get_bc_type(block_id, face)
@@ -66,18 +54,3 @@ class SecondOrderBackwards(NumericalSchemesBase):
                 ap_index = self.mesh.map3Dto1D(block_id, i, j)
                 solver.add_to_A(ap_index, ap_index, self.coefficients[block_id]['ap'])
                 solver.add_to_b(ap_index, bc_value)
-
-    def __update_corner(self, block_id, solver, var_name, corner_id):
-        corners = self.cp.get_corners(block_id)
-        bc_type = corners[corner_id]['type']
-
-        if bc_type == BCType.neumann or bc_type == BCType.interface:
-            i = corners[corner_id]['i']
-            j = corners[corner_id]['j']
-
-            bc_value = self.coefficients[block_id]['b'][0] * self.field_manager.fields[var_name].old[block_id, i, j] + \
-                self.coefficients[block_id]['b'][1] * self.field_manager.fields[var_name].oldold[block_id, i, j]
-            ap_index = self.mesh.map3Dto1D(block_id, i, j)
-            
-            solver.add_to_A(ap_index, ap_index, self.coefficients[block_id]['ap'])
-            solver.add_to_b(ap_index, bc_value)
