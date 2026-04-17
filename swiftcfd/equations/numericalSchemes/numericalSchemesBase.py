@@ -4,11 +4,10 @@ from enum import Enum, auto
 from swiftcfd.equations.boundaryConditions.boundaryConditions import BoundaryConditions
 
 class NumericalSchemesBase(ABC):
-    def __init__(self, params, mesh, boundary_conditions, corner_points, field_manager):
+    def __init__(self, params, mesh, boundary_conditions, field_manager):
         self.params = params
         self.mesh = mesh
         self.bc = boundary_conditions
-        self.cp = corner_points
         self.field_manager = field_manager
         self.coefficients = []
 
