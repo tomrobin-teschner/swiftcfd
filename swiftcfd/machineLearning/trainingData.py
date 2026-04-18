@@ -74,8 +74,9 @@ class TrainingData:
                 self.data[var][f'{var}^n+1_i,j+1'].append(self.field_manager.fields[var][block, i, j + 1])
 
     def write(self):
-        for var in self.training_variables:
-            df = pd.DataFrame(self.data[var])
-            case = self.params('solver', 'output', 'filename')
-            out_folder = join('output', case)
-            df.to_csv(join(out_folder, f'trainingData_{var}.csv'), index=False, float_format="%.5e")
+        if self.generate_training_data:
+            for var in self.training_variables:
+                df = pd.DataFrame(self.data[var])
+                case = self.params('solver', 'output', 'filename')
+                out_folder = join('output', case)
+                df.to_csv(join(out_folder, f'trainingData_{var}.csv'), index=False, float_format="%.5e")
