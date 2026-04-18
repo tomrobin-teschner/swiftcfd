@@ -59,9 +59,6 @@ class BaseEquation(ABC):
         # solver linear system of equations after coefficient matrix has been assembled
         self.solver.solve(self.field_manager.fields[self.get_variable_name()])
 
-        # # adjust corner points
-        # self.cp.average_field_at_corner_point(self.field_manager.fields[self.get_variable_name()])
-
         # apply under-relaxation
         self.under_relaxation()
 
@@ -72,29 +69,6 @@ class BaseEquation(ABC):
             self.field_manager.fields[self.get_variable_name()][block, i, j] = \
                 alpha * self.field_manager.fields[self.get_variable_name()][block, i, j] + \
                 (1.0 - alpha) * self.field_manager.fields[self.get_variable_name()].picard_old[block, i, j]
-    
-    # def apply_dirichlet_boundary_conditions(self):
-    #     # apply dirichlet boundary conditions at edges
-    #     faces = ["east", "west", "north", "south"]
-    #     face_loops = [self.mesh.loop_east, self.mesh.loop_west, self.mesh.loop_north, self.mesh.loop_south]
-    #     for block_id in range(0, self.mesh.num_blocks):
-    #         for i in range(0, len(faces)):
-    #             if self.bc.get_bc_type(block_id, faces[i]) == BCType.dirichlet:
-    #                 bc_value = self.bc.get_bc_value(block_id, faces[i])
-    #                 for (i, j) in face_loops[i](block_id, 1):
-    #                     ap_index = self.mesh.map3Dto1D(block_id, i, j)
-    #                     self.solver.add_to_A(ap_index, ap_index, 1.0)
-    #                     self.solver.add_to_b(ap_index, bc_value)
-        
-    #     # apply dirichlet boundary conditions at corners
-    #     for block_id in range(0, self.mesh.num_blocks):
-    #         corners = self.cp.get_corners(block_id)
-    #         for corner_location, corner in corners.items():
-    #             if corner['type'] == BCType.dirichlet:
-    #                 bc_value = corner['value']
-    #                 ap_index = self.mesh.map3Dto1D(block_id, corner['i'], corner['j'])
-    #                 self.solver.add_to_A(ap_index, ap_index, 1.0)
-    #                 self.solver.add_to_b(ap_index, bc_value)
 
     def first_order_time_derivative(self, runtime):
         """Handle time derivatives of the equation."""

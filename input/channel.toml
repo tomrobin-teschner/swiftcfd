@@ -23,7 +23,7 @@
 [solver.schemes]
     # time-integration scheme to use. Available schemes are:
     # firstOrderEuler, secondOrderBackwards
-    timeIntegrationScheme = 'secondOrderBackwards'
+    timeIntegrationScheme = 'firstOrderEuler'
 
     # non-linear scheme to use. Available schemes are:
     # firstOrderUpwind, secondOrderUpwind
@@ -67,6 +67,13 @@
 
     # write output file every X time steps (set to 0 if no animation should be written)
     writingFrequency = 0
+
+[solver.ML]
+    # generate training data
+    generateTrainingData = false
+
+    # variables to output
+    trainingVariables = ['u', 'v', 'p']
 
 ### --------------------------- ###
 ### ----- MESH PROPERTIES ----- ###

@@ -75,7 +75,7 @@ class Runtime():
             CFL_advection = float_info.max
             for block in range(0, self.mesh.num_blocks):
                 dx, dy = self.mesh.get_spacing(block)
-                for (i, j) in self.mesh.internal_loop_single_block(block):
+                for (i, j) in self.mesh.loop_cells(block):
                     u_velocity = self.field_manager.get_field(pv.velocity_x.name())[block, i, j]
                     v_velocity = self.field_manager.get_field(pv.velocity_y.name())[block, i, j]
                     u_mag = pow(u_velocity, 2) + pow(v_velocity, 2)

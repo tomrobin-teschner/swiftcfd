@@ -96,6 +96,11 @@ class Mesh():
         for i in range(1, self.num_cells_x[block_id] - 1):
             for j in range(1, self.num_cells_y[block_id] - 1):
                 yield i, j
+    
+    def loop_cells_with_offset(self, block_id, offset_x, offset_y):
+        for i in range(offset_x, self.num_cells_x[block_id] - offset_x):
+            for j in range(offset_y, self.num_cells_y[block_id] - offset_y):
+                yield i, j
 
     def loop_all_cells(self):
         for block in range(0, self.num_blocks):

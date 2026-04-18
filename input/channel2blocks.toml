@@ -72,6 +72,9 @@
     # generate training data
     generateTrainingData = false
 
+    # variables to output
+    trainingVariables = ['u', 'v', 'p']
+
 ### --------------------------- ###
 ### ----- MESH PROPERTIES ----- ###
 ### --------------------------- ###
@@ -84,7 +87,7 @@
 
 [mesh.block2]
     # start/end location and number of cells to use in the x direction
-    x = {start = 0.0, end = 10.0, numCells = 56}
+    x = {start = 0.0, end = 10.0, numCells = 51}
 
     # start/end location and number of cells to use in the y direction
     y = {start = 0.5, end = 1.0, numCells = 11}
