@@ -1,0 +1,162 @@
+### ----------------------------- ###
+### ----- SOLVER PROPERTIES ----- ###
+### ----------------------------- ###
+[solver.equation]
+    # Specify the solver to use. Available solvers are:
+    # heatDiffusion, pressureProjection
+    solver = 'pressureProjection'
+
+[solver.fluid]
+    # kinematic viscosity
+    nu = 1e-2
+
+    # density
+    rho = 1.0
+
+[solver.time]
+    # time step (only used if CFLBasedTimeStepping is set to false)
+    dt  = 1.0
+
+    # number of time steps to perform
+    timesteps = 300
+
+[solver.schemes]
+    # time-integration scheme to use. Available schemes are:
+    # firstOrderEuler, secondOrderBackwards
+    timeIntegrationScheme = 'secondOrderBackwards'
+
+    # non-linear scheme to use. Available schemes are:
+    # firstOrderUpwind, secondOrderUpwind
+    nonLinearScheme = 'firstOrderUpwind'
+
+    # diffusion scheme to use. Available schemes are:
+    # secondOrderCentral
+    diffusionScheme = 'secondOrderCentral'
+
+[solver.linearSolver]
+    # Linear solver for the implicit treatment. Available solvers are:
+    # RICHARDSON, CG, BCGS, GMRES
+    solver = {u = "BCGS", v="BCGS", p="BCGS"}
+
+    # Preconditioner for the implicit treatment. Available preconditioners are:
+    # JACOBI, ILU, SOR, GAMG, NONE
+    preconditioner = {u = "ILU", v="ILU", p="ILU"}
+
+    # relative tolerance to reach for the linear solver within each time step
+    tolerance = {u = 1e-4, v = 1e-4, p = 1e-4}
+
+    # max allowable iterations by the implicit solver
+    maxIterations = {u = 1000, v = 1000, p = 1000}
+
+    # under-relaxation factor for the implicit solver
+    underRelaxation = {u = 1.0, v = 1.0, p = 1.0}
+
+[solver.convergence]
+    # number of picard iterations
+    picardIterations = 1
+
+    # residual tolerance for picard iteration convergence
+    picard_tolerance = {u = 1e-3, v = 1e-3, p = 1e-3}
+
+    # residual tolerance for the overall simulation
+    convergence_tolerance = {u = 1e-8, v = 1e-8, p = 1e-8}
+
+[solver.output]
+    # filename used to write out the solution
+    filename = "cylinder"
+
+    # write output file every X time steps (set to 0 if no animation should be written)
+    writingFrequency = 1
+
+[solver.ML]
+    # generate training data
+    generateTrainingData = false
+
+    # variables to output
+    trainingVariables = ['u', 'v', 'p']
+
+### --------------------------- ###
+### ----- MESH PROPERTIES ----- ###
+### --------------------------- ###
+[mesh.block1]
+x = {start = -5.0, end = -0.5, numCells = 45}
+y = {start = 0.5, end = 5.0, numCells = 45}
+
+[mesh.block2]
+x = {start = -0.5, end = 0.5, numCells = 10}
+y = {start = 0.5, end = 5.0, numCells = 45}
+
+[mesh.block3]
+x = {start = 0.5, end = 10.0, numCells = 95}
+y = {start = 0.5, end = 5.0, numCells = 45}
+
+[mesh.block4]
+x = {start = -5.0, end = -0.5, numCells = 45}
+y = {start = -0.5, end = 0.5, numCells = 10}
+
+[mesh.block5]
+x = {start = 0.5, end = 10.0, numCells = 95}
+y = {start = -0.5, end = 0.5, numCells = 10}
+
+[mesh.block6]
+x = {start = -5.0, end = -0.5, numCells = 45}
+y = {start = -5.0, end = -0.5, numCells = 45}
+
+[mesh.block7]
+x = {start = -0.5, end = 0.5, numCells = 10}
+y = {start = -5.0, end = -0.5, numCells = 45}
+
+[mesh.block8]
+x = {start = 0.5, end = 10.0, numCells = 95}
+y = {start = -5.0, end = -0.5, numCells = 45}
+
+### ------------------------------------------ ###
+### ----- BOUNDARY CONDITIONS PROPERTIES ----- ###
+### ------------------------------------------ ###
+[boundaryCondition.block1]
+east  = {u = {type = "interface", value = 2}, v = {type = "interface", value = 2}, p = {type = "interface", value = 2}}
+west  = {u = {type = "dirichlet", value = 1.0}, v = {type = "dirichlet", value = 0.0}, p = {type = "neumann", value = 0.0}}
+north = {u = {type = "neumann", value = 0.0},   v = {type = "neumann", value = 0.0},   p = {type = "neumann", value = 0.0}}
+south = {u = {type = "interface", value = 4},   v = {type = "interface", value = 4},   p = {type = "interface", value = 4}}
+
+[boundaryCondition.block2]
+east  = {u = {type = "interface", value = 3}, v = {type = "interface", value = 3}, p = {type = "interface", value = 3}}
+west  = {u = {type = "interface", value = 1}, v = {type = "interface", value = 1}, p = {type = "interface", value = 1}}
+north = {u = {type = "neumann", value = 0.0}, v = {type = "neumann", value = 0.0}, p = {type = "neumann", value = 0.0}}
+south = {u = {type = "dirichlet", value = 0.0}, v = {type = "dirichlet", value = 0.0}, p = {type = "neumann", value = 0.0}}
+
+[boundaryCondition.block3]
+east  = {u = {type = "neumann", value = 0.0}, v = {type = "neumann", value = 0.0}, p = {type = "dirichlet", value = 0.0}}
+west  = {u = {type = "interface", value = 2}, v = {type = "interface", value = 2}, p = {type = "interface", value = 2}}
+north = {u = {type = "neumann", value = 0.0}, v = {type = "neumann", value = 0.0}, p = {type = "neumann", value = 0.0}}
+south = {u = {type = "interface", value = 5}, v = {type = "interface", value = 5}, p = {type = "interface", value = 5}}
+
+[boundaryCondition.block4]
+east  = {u = {type = "dirichlet", value = 0.0}, v = {type = "dirichlet", value = 0.0}, p = {type = "neumann", value = 0.0}}
+west  = {u = {type = "dirichlet", value = 1.0}, v = {type = "dirichlet", value = 0.0}, p = {type = "neumann", value = 0.0}}
+north = {u = {type = "interface", value = 1},   v = {type = "interface", value = 1},   p = {type = "interface", value = 1}}
+south = {u = {type = "interface", value = 6},   v = {type = "interface", value = 6},   p = {type = "interface", value = 6}}
+
+[boundaryCondition.block5]
+east  = {u = {type = "neumann", value = 0.0}, v = {type = "neumann", value = 0.0}, p = {type = "dirichlet", value = 0.0}}
+west  = {u = {type = "dirichlet", value = 0.0}, v = {type = "dirichlet", value = 0.0}, p = {type = "neumann", value = 0.0}}
+north = {u = {type = "interface", value = 3},   v = {type = "interface", value = 3},   p = {type = "interface", value = 3}}
+south = {u = {type = "interface", value = 8},   v = {type = "interface", value = 8},   p = {type = "interface", value = 8}}
+
+[boundaryCondition.block6]
+east  = {u = {type = "interface", value = 7}, v = {type = "interface", value = 7}, p = {type = "interface", value = 7}}
+west  = {u = {type = "dirichlet", value = 1.0}, v = {type = "dirichlet", value = 0.0}, p = {type = "neumann", value = 0.0}}
+north = {u = {type = "interface", value = 4},   v = {type = "interface", value = 4},   p = {type = "interface", value = 4}}
+south = {u = {type = "neumann", value = 0.0},   v = {type = "neumann", value = 0.0},   p = {type = "neumann", value = 0.0}}
+
+[boundaryCondition.block7]
+east  = {u = {type = "interface", value = 8}, v = {type = "interface", value = 8}, p = {type = "interface", value = 8}}
+west  = {u = {type = "interface", value = 6}, v = {type = "interface", value = 6}, p = {type = "interface", value = 6}}
+north = {u = {type = "dirichlet", value = 0.0}, v = {type = "dirichlet", value = 0.0}, p = {type = "neumann", value = 0.0}}
+south = {u = {type = "neumann", value = 0.0},   v = {type = "neumann", value = 0.0},   p = {type = "neumann", value = 0.0}}
+
+[boundaryCondition.block8]
+east  = {u = {type = "neumann", value = 0.0}, v = {type = "neumann", value = 0.0}, p = {type = "dirichlet", value = 0.0}}
+west  = {u = {type = "interface", value = 7}, v = {type = "interface", value = 7}, p = {type = "interface", value = 7}}
+north = {u = {type = "interface", value = 5},   v = {type = "interface", value = 5},   p = {type = "interface", value = 5}}
+south = {u = {type = "neumann", value = 0.0},   v = {type = "neumann", value = 0.0},   p = {type = "neumann", value = 0.0}}
