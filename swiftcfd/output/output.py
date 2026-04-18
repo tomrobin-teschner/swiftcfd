@@ -19,6 +19,12 @@ class Output():
         # create output folder if not exists and delete old files
         if not exists(self.out_folder):
             mkdir(self.out_folder)
+        else:
+            for file in listdir(self.out_folder):
+                if file.endswith('.dat') or file.endswith('.png'):
+                    remove(join(self.out_folder, file))
+                if file == 'residuals.csv':
+                    remove(join(self.out_folder, file))
 
     def write_tecplot_file(self, iteration = -1):
         filename = self.case
