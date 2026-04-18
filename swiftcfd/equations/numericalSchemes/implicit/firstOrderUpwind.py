@@ -160,7 +160,7 @@ class FirstOrderUpwind(NumericalSchemesBase):
             neighbour_block_id = self.bc.get_bc_value(block_id, "west")
 
             ap_index = self.mesh.map3Dto1D(block_id, i, j)
-            aw_index = self.mesh.map3Dto1D(neighbour_block_id, self.mesh.num_cells_x[block_id] - 1, j)
+            aw_index = self.mesh.map3Dto1D(neighbour_block_id, self.mesh.num_cells_x[neighbour_block_id] - 1, j)
             
             ap_value =  max_u * self.inv_dx[block_id]
             aw_value = -max_u * self.inv_dx[neighbour_block_id]
@@ -251,7 +251,7 @@ class FirstOrderUpwind(NumericalSchemesBase):
 
             neighbour_block_id = self.bc.get_bc_value(block_id, "south")
             ap_index = self.mesh.map3Dto1D(block_id, i, j)
-            as_index = self.mesh.map3Dto1D(neighbour_block_id, i, self.mesh.num_cells_y[block_id] - 1)
+            as_index = self.mesh.map3Dto1D(neighbour_block_id, i, self.mesh.num_cells_y[neighbour_block_id] - 1)
             
             ap_value =  max_v * self.inv_dy[block_id]
             as_value = -max_v * self.inv_dy[neighbour_block_id]
