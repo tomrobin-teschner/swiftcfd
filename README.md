@@ -91,7 +91,10 @@ $$
 The ```pressureProjection``` algorithm solves the 2D unsteady Navier-Stokes equations using Chorin's exact projection method. Here, we first solve the momentum equations in $x$ and $y$ as:
 
 $$
-\frac{\partial u}{\partial t} + u\frac{\partial u}{\partial x} + v\frac{\partial u}{\partial y} = \nu\left(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right) \\[1em]
+\frac{\partial u}{\partial t} + u\frac{\partial u}{\partial x} + v\frac{\partial u}{\partial y} = \nu\left(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}\right)
+$$
+
+$$
 \frac{\partial v}{\partial t} + u\frac{\partial v}{\partial x} + v\frac{\partial v}{\partial y} = \nu\left(\frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2}\right)
 $$
 
@@ -114,7 +117,10 @@ $$
 Here, $u^*$ and $v^*$ are the predicted velocities from the momentum equations. The pressure is evaluated at $n+1$ (implicitly), while the right-hand side is evaluated fully explicitly. With the pressure available at $n+1$, we can correct the velocities through:
 
 $$
-u^{n+1}=u^* - \frac{\Delta t}{\rho}\frac{\partial p}{\partial x}\\[1em]
+u^{n+1}=u^* - \frac{\Delta t}{\rho}\frac{\partial p}{\partial x}
+$$
+
+$$
 v^{n+1}=v^* - \frac{\Delta t}{\rho}\frac{\partial p}{\partial y}
 $$
 
@@ -303,12 +309,3 @@ and replace ```INPUT_FILE.toml``` by any of the cases shown above. After the sim
 - ```residuals.png```: Residual plot for the simulation.
 - ```residuals.csv```: The residuals used for the plot above, can be used for additional processing.
 - ```trainingData_<variable>.csv```: If we have set the variable ```generateTrainingData``` to ```true```, then we will collect variables in a specific format, written as a ```*.csv``` file, which can be used for Machine Learning training of this solver.
-
-## Expected results
-
-Once a simulation has finished, results will be accumulated within the ```output``` folder. You will get, at a minimum, 3 files. The solution file as a tecplot file format, which can be read by paraview and tecplot. A residual file in ```*.csv``` format, which can be plotted in paraview or any other suitable tool, and a performance statistics file, which records the total simulation time, the average number of iterations to solve $\mathbf{Ax}=\mathbf{b}$, and the total number of timesteps.
-
-If the ```writingFrequency``` variable within the input file is set to something greater than 0, additional files will be written during the simulation that can be loaded in paraview to create an animation of the results.
-
-
-
