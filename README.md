@@ -1,4 +1,4 @@
-# swiftcfd
+![If you can't see this, imagine this to be the best logo you have ever seen, at least considering it was thrown together in 5 minutes](logo/logo_400.png)
 
 ![Static Badge](https://img.shields.io/badge/Version-0.30.0-blue)
 
