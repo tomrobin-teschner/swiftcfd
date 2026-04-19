@@ -72,6 +72,22 @@ class Mesh():
 
             self.x.append(x)
             self.y.append(y)
+        
+        # ensure that multi-block structured meshes are uniform until mesh transformation is implemented
+        if self.num_blocks > 1:
+            self.__check_spacing()
+    
+    def __check_spacing(self):
+        dx = []
+        dy = []
+        for block_id in range(0, self.num_blocks):
+            dx.append(self.x[block_id][1][0] - self.x[block_id][0][0])
+            dy.append(self.y[block_id][0][1] - self.y[block_id][0][0])
+
+        # check that all values in dx and dy are within a difference of 10^-6
+        for i in range(1, self.num_blocks):
+            assert abs(dx[i] - dx[i - 1]) < 1e-6, "Mesh spacing in x is not uniform"
+            assert abs(dy[i] - dy[i - 1]) < 1e-6, "Mesh spacing in y is not uniform"
     
     def get_min_spacing(self):
         dx = self.x[0][1][0] - self.x[0][0][0]
@@ -101,6 +117,19 @@ class Mesh():
         for i in range(offset_x, self.num_cells_x[block_id] - offset_x):
             for j in range(offset_y, self.num_cells_y[block_id] - offset_y):
                 yield i, j
+
+    def loop_cells_with_offset_from_boundary(self, block_id, offset):
+        for i in range(offset, self.num_cells_x[block_id] - offset):
+            yield i, offset
+
+        for i in range(offset, self.num_cells_x[block_id] - offset):
+            yield i, self.num_cells_y[block_id] - offset -1
+        
+        for j in range(offset + 1, self.num_cells_y[block_id] - offset - 1):
+            yield offset, j
+
+        for j in range(offset + 1, self.num_cells_y[block_id] - offset - 1):
+            yield self.num_cells_x[block_id] - offset - 1, j
 
     def loop_all_cells(self):
         for block in range(0, self.num_blocks):

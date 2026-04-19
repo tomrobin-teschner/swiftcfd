@@ -27,7 +27,7 @@
 
     # non-linear scheme to use. Available schemes are:
     # firstOrderUpwind, secondOrderUpwind
-    nonLinearScheme = 'firstOrderUpwind'
+    nonLinearScheme = 'secondOrderUpwind'
 
     # diffusion scheme to use. Available schemes are:
     # secondOrderCentral
