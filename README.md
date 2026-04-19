@@ -199,6 +199,71 @@ The ```convergence_tolerance``` tells the solver to stop completely once these c
 - ```picard_tolerance``` is met: We go to the next time step.
 - ```convergence_tolerance``` is met: We stop the solver and write out the solution.
 
+### Implemented numerical schemes
+
+The numerical schemes are set in the ```solver.schemes``` node. An exampel is shown below:
+
+```TOML
+[solver.schemes]
+# time-integration scheme to use. Available schemes are:
+# firstOrderEuler, secondOrderBackwards
+timeIntegrationScheme = 'secondOrderBackwards'
+
+# non-linear scheme to use. Available schemes are:
+# firstOrderUpwind, secondOrderUpwind
+nonLinearScheme = 'secondOrderUpwind'
+
+# diffusion scheme to use. Available schemes are:
+# secondOrderCentral
+diffusionScheme = 'secondOrderCentral'
+```
+
+The following schemes can be selected:
+
+#### Time discretisation
+
+- ```firstOrderEuler```: Integrates the time derivative with a first-order time accurate algorithm:
+
+$$
+\frac{\partial \phi}{\partial t}\approx \frac{\phi^{n+1}_{i,j}-\phi^{n}_{i,j}}{\Delta t}
+$$
+
+- ```secondOrderBackwards```: Integrates the time derivative with a second-order time accurate algorithm:
+
+$$
+\frac{\partial \phi}{\partial t}\approx \frac{3\phi^{n+1}_{i,j}-4\phi^{n}_{i,j}+\phi^{n-1}_{i,j}}{2\Delta t}
+$$
+
+#### First-order derivatives
+
+```firstOrderUpwind```: Implements the first-order accurate upwind scheme as:
+
+$$
+u\frac{\partial \phi}{\partial x}\approx \text{max}(u,0)\frac{\phi_{i,j}-\phi_{i-1,j}}{\Delta x} + \text{min}(u,0)\frac{\phi_{i+1,j}-\phi_{i,j}}{\Delta x}
+$$
+
+$$
+v\frac{\partial \phi}{\partial y}\approx \text{max}(u,0)\frac{\phi_{i,j}-\phi_{i-1,j}}{\Delta y} + \text{min}(u,0)\frac{\phi_{i+1,j}-\phi_{i,j}}{\Delta y}
+$$
+
+```secondOrderUpwind```: Implements the second-order accurate upwind scheme as:
+
+$$
+u\frac{\partial \phi}{\partial x}\approx \text{max}(u,0)\frac{3\phi_{i,j}-4\phi_{i-1,j}+\phi_{i-2,j}}{2\Delta x} + \text{min}(u,0)\frac{-3\phi_{i,j}+4\phi_{i+1,j}-\phi_{i+2,j}}{\Delta x}
+$$
+
+$$
+v\frac{\partial \phi}{\partial y}\approx \text{max}(v,0)\frac{3\phi_{i,j}-4\phi_{i-1,j}+\phi_{i-2,j}}{2\Delta y} + \text{min}(v,0)\frac{-3\phi_{i,j}+4\phi_{i+1,j}-\phi_{i+2,j}}{\Delta y}
+$$
+
+#### Second-order derivatives
+
+```secondOrderCentral```: Implements second-order derivatives (diffusion-type derivatives) using a second-order accurate approximation as:
+
+$$
+\frac{\partial^2 \phi}{\partial x^2}\approx \frac{\phi_{i+1,j}-2\phi_{i,j}+\phi_{i-1,j}}{(\Delta x)^2}
+$$
+
 ### Meshing
 
 ```swiftcfd``` comes with a simple block-structured mesh generator. An example input for a mesh with 2 blocks is shown below:
