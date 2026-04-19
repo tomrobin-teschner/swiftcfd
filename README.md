@@ -111,17 +111,17 @@ We don't have to correct the linearisation, but it may lead to better time accur
 Once the momentum equatiosn have been solved, and potentially corrected with our Picard iterations, we solve the pressure Poisson equation of the form:
 
 $$
-\frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y^2} = \frac{\rho}{\Delta t}\left(\frac{\partial u^*}{\partial x} + \frac{\partial v^*}{\partial y}\right)
+\frac{\partial^2 p}{\partial x^2} + \frac{\partial^2 p}{\partial y^2} = \frac{\rho}{\Delta t} \left( \frac{\partial u^{n+1/2}}{\partial x} + \frac{\partial v^{n+1/2}}{\partial y} \right)
 $$
 
-Here, $u^*$ and $v^*$ are the predicted velocities from the momentum equations. The pressure is evaluated at $n+1$ (implicitly), while the right-hand side is evaluated fully explicitly. With the pressure available at $n+1$, we can correct the velocities through:
+Here, $u^{n+1/2}$ and $v^{n+1/2}$ are the predicted (intermediate) velocities from the momentum equations. The pressure is evaluated at $n+1$ (implicitly), while the right-hand side is evaluated fully explicitly. With the pressure available at $n+1$, we can correct the velocities through:
 
 $$
-u^{n+1}=u^* - \frac{\Delta t}{\rho}\frac{\partial p}{\partial x}
+u^{n+1}=u^{n+1/2} - \frac{\Delta t}{\rho}\frac{\partial p}{\partial x}
 $$
 
 $$
-v^{n+1}=v^* - \frac{\Delta t}{\rho}\frac{\partial p}{\partial y}
+v^{n+1}=v^{n+1/2} - \frac{\Delta t}{\rho}\frac{\partial p}{\partial y}
 $$
 
 ### Linear solvers
