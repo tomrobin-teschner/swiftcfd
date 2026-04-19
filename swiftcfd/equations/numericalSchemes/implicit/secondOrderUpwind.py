@@ -5,6 +5,13 @@ from swiftcfd.enums import PrimitiveVariables as pv
 class SecondOrderUpwind(FirstOrderUpwind):
     def __init__(self, params, mesh, bc, field_manager):
         super().__init__(params, mesh, bc, field_manager)
+
+        self.inv_2dx = []
+        self.inv_2dy = []
+        for block_id in range(self.mesh.num_blocks):
+            dx, dy = self.mesh.get_spacing(block_id)
+            self.inv_2dx.append(1.0 / (2.0 * dx))
+            self.inv_2dy.append(1.0 / (2.0 * dy))
     
     def _compute_interior(self, direction, block_id, solver, var_name):
         # loop over internal cells, with an offset of 1 cell from the boundary
@@ -40,9 +47,9 @@ class SecondOrderUpwind(FirstOrderUpwind):
         aw_index  = self.mesh.map3Dto1D(block_id, i - 1, j)
         aww_index = self.mesh.map3Dto1D(block_id, i - 2, j)
         
-        ap_value  =  3.0 * max_u * self.inv_dx[block_id]
-        aw_value  = -4.0 * max_u * self.inv_dx[block_id]
-        aww_value =  1.0 * max_u * self.inv_dx[block_id]
+        ap_value  =  3.0 * max_u * self.inv_2dx[block_id]
+        aw_value  = -4.0 * max_u * self.inv_2dx[block_id]
+        aww_value =  1.0 * max_u * self.inv_2dx[block_id]
 
         solver.add_to_A(ap_index, ap_index,  ap_value )
         solver.add_to_A(ap_index, aw_index,  aw_value )
@@ -55,9 +62,9 @@ class SecondOrderUpwind(FirstOrderUpwind):
         ae_index  = self.mesh.map3Dto1D(block_id, i + 1, j)
         aee_index = self.mesh.map3Dto1D(block_id, i + 2, j)
 
-        ap_value  = -3.0 * min_u * self.inv_dx[block_id]
-        ae_value  =  4.0 * min_u * self.inv_dx[block_id]
-        aee_value = -1.0 * min_u * self.inv_dx[block_id]
+        ap_value  = -3.0 * min_u * self.inv_2dx[block_id]
+        ae_value  =  4.0 * min_u * self.inv_2dx[block_id]
+        aee_value = -1.0 * min_u * self.inv_2dx[block_id]
 
         solver.add_to_A(ap_index, ap_index,  ap_value )
         solver.add_to_A(ap_index, ae_index,  ae_value )
@@ -70,9 +77,9 @@ class SecondOrderUpwind(FirstOrderUpwind):
         as_index  = self.mesh.map3Dto1D(block_id, i, j - 1)
         ass_index = self.mesh.map3Dto1D(block_id, i, j - 2)
 
-        ap_value  =  3.0 * max_v * self.inv_dy[block_id]
-        as_value  = -4.0 * max_v * self.inv_dy[block_id]
-        ass_value =  1.0 * max_v * self.inv_dy[block_id]
+        ap_value  =  3.0 * max_v * self.inv_2dy[block_id]
+        as_value  = -4.0 * max_v * self.inv_2dy[block_id]
+        ass_value =  1.0 * max_v * self.inv_2dy[block_id]
 
         solver.add_to_A(ap_index, ap_index,  ap_value )
         solver.add_to_A(ap_index, as_index,  as_value )
@@ -85,9 +92,9 @@ class SecondOrderUpwind(FirstOrderUpwind):
         an_index  = self.mesh.map3Dto1D(block_id, i, j + 1)
         ann_index = self.mesh.map3Dto1D(block_id, i, j + 2)
 
-        ap_value  = -3.0 * min_v * self.inv_dy[block_id]
-        an_value  =  4.0 * min_v * self.inv_dy[block_id]
-        ann_value = -1.0 * min_v * self.inv_dy[block_id]
+        ap_value  = -3.0 * min_v * self.inv_2dy[block_id]
+        an_value  =  4.0 * min_v * self.inv_2dy[block_id]
+        ann_value = -1.0 * min_v * self.inv_2dy[block_id]
 
         solver.add_to_A(ap_index, ap_index,  ap_value )
         solver.add_to_A(ap_index, an_index,  an_value )
