@@ -3,6 +3,7 @@ from swiftcfd.equations.numericalSchemes.implicit.secondOrderBackwards import Se
 from swiftcfd.equations.numericalSchemes.implicit.firstOrderUpwind import FirstOrderUpwind
 from swiftcfd.equations.numericalSchemes.implicit.secondOrderUpwind import SecondOrderUpwind
 from swiftcfd.equations.numericalSchemes.implicit.secondOrderCentral import SecondOrderCentral
+from swiftcfd.equations.numericalSchemes.explicit.secondOrderCentral import SecondOrderCentralExplicit
 
 class NumericalSchemeFactory:
     def __init__(self, params, mesh, boundary_conditions, field_manager):
@@ -31,8 +32,6 @@ class NumericalSchemeFactory:
                 return FirstOrderUpwind(*self.constructor_arguments)
             elif scheme == 'secondOrderUpwind':
                 return SecondOrderUpwind(*self.constructor_arguments)
-            elif scheme == 'centralDifferencing':
-                return CentralDifferencing(*self.constructor_arguments)
             else:
                 raise Exception('Unknown non-linear scheme: ' + scheme)
 
@@ -42,6 +41,15 @@ class NumericalSchemeFactory:
             scheme = self.params('solver', 'schemes', 'diffusionScheme')
             if scheme == 'secondOrderCentral':
                 return SecondOrderCentral(*self.constructor_arguments)
+            else:
+                raise Exception('Unknown diffusion scheme: ' + scheme)
+    
+    def create_second_order_space_derivative_scheme_explicit(self, equation):
+        # diffusion scheme
+        if equation.has_second_order_space_derivative:
+            scheme = self.params('solver', 'schemes', 'diffusionScheme')
+            if scheme == 'secondOrderCentral':
+                return SecondOrderCentralExplicit(*self.constructor_arguments)
             else:
                 raise Exception('Unknown diffusion scheme: ' + scheme)
 

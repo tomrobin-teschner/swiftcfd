@@ -1,6 +1,6 @@
 ![If you can't see this, imagine this to be the best logo you have ever seen, at least considering it was thrown together in 5 minutes](logo/logo_400.png)
 
-![Static Badge](https://img.shields.io/badge/Version-0.31.0-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.32.0-blue)
 
 > [!WARNING]  
 > This project is work in progress and in version 0.X, expect breaking changes with new features.
@@ -189,7 +189,7 @@ The ```convergence_tolerance``` tells the solver to stop completely once these c
 
 ### Implemented numerical schemes
 
-The numerical schemes are set in the ```solver.schemes``` node. An exampel is shown below:
+The numerical schemes are set in the ```solver.schemes``` node. An example is shown below:
 
 ```TOML
 [solver.schemes]
@@ -251,6 +251,8 @@ $$
 $$
 \frac{\partial^2 \phi}{\partial x^2}\approx \frac{\phi_{i+1,j}-2\phi_{i,j}+\phi_{i-1,j}}{(\Delta x)^2}
 $$
+
+The second-order central differencing scheme is also implemented for explicit discretisations, though currently not used. In this case, the derivative is evaluated based on known quantities at time level $n$ and it will be absorbed into the right-hand side vector $\mathbf{b}$ in $\mathbf{Ax}=\mathbf{b}$.
 
 ### Meshing
 
