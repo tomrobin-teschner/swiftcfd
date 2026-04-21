@@ -5,7 +5,6 @@ from swiftcfd.output.output import Output as output
 from swiftcfd.field.fieldManager import FieldManager as field_manager
 from swiftcfd.runtime import Runtime as runtime
 from swiftcfd.residuals import Residuals as residuals
-from swiftcfd.equations.equations.heatDiffusion import HeatDiffusion as heat_diffusion
 from swiftcfd.log import Log as log
 from swiftcfd.performanceStatistics import PerformanceStatistics as performance_statistics
 from swiftcfd.equations.equations.equationManager import EquationManager as equation_manager
