@@ -11,9 +11,19 @@ Swiftcfd is a 2D solver for cartesian, block-structured grids for fully implicit
 
 This CFD solver requires ```PETSc``` to run, which can only be compiled on UNIX. Either a UNIX environment (Linux / macOS) is required, or [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) on Windows. Since ```PETSc``` is compiled from source, you will need a basic development environment installed on your PC (Python3, a C++/C compiler, and autotools).
 
+### Docker and docker compose
+
+The simplest way to get up and running is to use Docker. It works on any operating system, and since everythign has been preconfigured, you shouldn't see any nasty surprises trying to get this up and running. The only prerequisite is that you have docker installed. If you have that, you can simply type:
+
+```bash
+docker compose run --build swiftcfd python3 swiftcfd.py --input=input/channel.toml
+```
+
+If you are on UNIX, you may need ```sudo``` priviliges to execute Docker, unless you have given special priviliges to Docker. When you run this command for the first time, expect this take about an hour to configure your image. Afterwards the execution will be instant. You can change the input file, more on that at the end of this README file.
+
 ### UNIX (WSL) installation
 
-Using WSL or a Ubuntu-based distribution, the following commands will install the required development tools:
+You can also use a UNIX (or WSL shell on Windows) if you prefer. If you use that instead, you can manually configure and install PETSc. First, we need to ensure we have sensible default build tools available:
 
 ```bash
 sudo update
@@ -36,28 +46,6 @@ When closing the terminal and opening it again, you will need to load the virtua
 ```bash
 source .venv/bin/activate
 ```
-
-### Docker installation
-
-A ```Dockerfile``` is provided, from which an image can be build to run the python code inside a container. To use docker, you will first need to create an image:
-
-```
-docker build -t swiftcfd .
-```
-
-We can then build the container and map the folder with the container as a volume, so code changes and outputs are synched:
-
-```
-docker run --name swiftcfd-channel -v "$(pwd):/swiftcfd" swiftcfd swiftcfd.py --input "input/channel.toml"
-```
-
-To restart to container later, use the ```docker start``` command
-
-```
-docker start -a swiftcfd-channel
-```
-
-Create as many containers as you need for different input files
 
 ## Usage
 

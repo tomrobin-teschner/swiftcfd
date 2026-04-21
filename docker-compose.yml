@@ -1,0 +1,6 @@
+services:
+  swiftcfd:
+    build: .
+    volumes:
+      - .:/swiftcfd
+    working_dir: /swiftcfd
