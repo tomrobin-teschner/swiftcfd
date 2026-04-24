@@ -36,3 +36,6 @@ class Log:
         for var_name, residuals in residuals.convergence_residual.items():
             print(self.term.move_xy(col, row) + f'{var_name}: {residuals[-1]:.2e}')
             col += 20
+
+    def clear_screen(self):
+        print(self.term.home + self.term.clear, end='')

@@ -36,59 +36,67 @@ def run():
     # create machine learning training data
     training = swiftcfd.ML_training_data(params, mesh, eqm.field_manager)
 
-    # loop over time
-    while (runtime.has_not_reached_final_time()):
-        # copy solution
-        eqm.field_manager.update_solution()
+    # loop over time, check for Ctrl+C to stop and write output
+    try:
+        while (runtime.has_not_reached_final_time()):
+            # copy solution
+            eqm.field_manager.update_solution()
 
-        # print time info to console
-        log.print_time_info(runtime)
+            # print time info to console
+            log.print_time_info(runtime)
 
-        # linearisation step through picard iterations
-        while(runtime.has_not_reached_final_picard_iteration()):
-            # update picard solution
-            eqm.field_manager.update_picard_solution()
+            # linearisation step through picard iterations
+            while(runtime.has_not_reached_final_picard_iteration()):
+                # update picard solution
+                eqm.field_manager.update_picard_solution()
 
-            # solve non-linear equations (e.q. momentum equations)
-            eqm.solve_non_linear_equations(runtime, stats)
+                # solve non-linear equations (e.q. momentum equations)
+                eqm.solve_non_linear_equations(runtime, stats)
 
-            # compute picard residuals
-            has_converged = residuals.check_picard_convergence(runtime)
+                # compute picard residuals
+                has_converged = residuals.check_picard_convergence(runtime)
 
-            # print time step statistics
-            log.print_picard_iteration(runtime, eqm.equations, residuals)
+                # print time step statistics
+                log.print_picard_iteration(runtime, eqm.equations, residuals)
+
+                if has_converged:
+                    runtime.current_picard_iteration = 0
+                    break
+
+            # solve linear equations (e.g. pressure poisson, temperature)
+            eqm.solve_linear_equations(runtime, stats)
+            
+            # update time steps
+            runtime.update_time()
+
+            # cehck for simulation convergence
+            has_converged = residuals.check_convergence(runtime)
+
+            # print convergence information for current time step
+            log.print_convergence_info(runtime, eqm.equations, residuals)
+
+            # save solution animation
+            if params('solver', 'output', 'writingFrequency') > 0 and runtime.current_timestep % params('solver', 'output', 'writingFrequency') == 0:
+                out_file.write_tecplot_file(runtime.current_timestep)
+
+            # store training data for ML if required
+            if training.should_train(runtime):
+                training.commit_training_data()
 
             if has_converged:
-                runtime.current_picard_iteration = 0
                 break
 
-        # solve linear equations (e.g. pressure poisson, temperature)
-        eqm.solve_linear_equations(runtime, stats)
-        
-        # update time steps
-        runtime.update_time()
-
-        # cehck for simulation convergence
-        has_converged = residuals.check_convergence(runtime)
-
-        # print convergence information for current time step
-        log.print_convergence_info(runtime, eqm.equations, residuals)
-
-        # save solution animation
-        if params('solver', 'output', 'writingFrequency') > 0 and runtime.current_timestep % params('solver', 'output', 'writingFrequency') == 0:
-            out_file.write_tecplot_file(runtime.current_timestep)
-
-        # store training data for ML if required
-        if training.should_train(runtime):
-            training.commit_training_data()
-
-        if has_converged:
-            break
-
-    # print statistics to console
+    except KeyboardInterrupt:
+        log.clear_screen()
+        print("Ctrl+C detected, stopping simulation...")
+        end_of_simulation(residuals, out_file, training)
+    
+    # normal end to simulation, write out files as requested
     stats.timer_end()
     stats.write_statistics()
+    end_of_simulation(residuals, out_file, training)
 
+def end_of_simulation(residuals, out_file, training):
     # write residuals
     residuals.write()
 
