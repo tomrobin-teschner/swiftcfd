@@ -6,6 +6,20 @@ def run():
     # read command line arguments
     cla_parser = swiftcfd.command_line_argument_parser()
 
+    # check if machine learning should be trained only
+    if cla_parser.arguments.train:
+        print('Training machine learning model...')
+        training_data = swiftcfd.ML_data_manager.get_training_data(cla_parser.arguments.variables)
+
+        # create ML model
+        model = swiftcfd.create_model(cla_parser.arguments.model)
+
+        # train ML model
+        model.train(training_data)
+
+        print('Done. Exiting solver now...')
+        return
+
     # create parameters
     params = swiftcfd.parameters()
     params.read_from_file(cla_parser.arguments.input)
@@ -33,8 +47,8 @@ def run():
     # create residual calculating object
     residuals = swiftcfd.residuals(params, eqm.field_manager)
 
-    # create machine learning training data
-    training = swiftcfd.ML_training_data(params, mesh, eqm.field_manager)
+    # create instance of the data manager class that handles daa I/O for the ML model
+    data_manager = swiftcfd.ML_data_manager(params, mesh, eqm.field_manager)
 
     # loop over time, check for Ctrl+C to stop and write output
     try:
@@ -80,8 +94,8 @@ def run():
                 out_file.write_tecplot_file(runtime.current_timestep)
 
             # store training data for ML if required
-            if training.should_train(runtime):
-                training.commit_training_data()
+            if data_manager.should_train(runtime):
+                data_manager.commit_training_data()
 
             if has_converged:
                 break
@@ -89,14 +103,14 @@ def run():
     except KeyboardInterrupt:
         log.clear_screen()
         print("Ctrl+C detected, stopping simulation...")
-        end_of_simulation(residuals, out_file, training)
+        end_of_simulation(residuals, out_file, data_manager)
     
     # normal end to simulation, write out files as requested
     stats.timer_end()
     stats.write_statistics()
-    end_of_simulation(residuals, out_file, training)
+    end_of_simulation(residuals, out_file, data_manager)
 
-def end_of_simulation(residuals, out_file, training):
+def end_of_simulation(residuals, out_file, data_manager):
     # write residuals
     residuals.write()
 
@@ -106,7 +120,7 @@ def end_of_simulation(residuals, out_file, training):
     out_file.plot_residuals()
 
     # ML training data
-    training.write()
+    data_manager.write()
 
 if __name__ == '__main__':
     run()

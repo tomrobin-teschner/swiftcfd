@@ -5,7 +5,9 @@
 > [!WARNING]  
 > This project is work in progress and in version 0.X, expect breaking changes with new features.
 
-Swiftcfd is a 2D solver for cartesian, block-structured grids for fully implicit, incompressible Navier-Stokes simulations. It has been designed around an ```Equation``` class that allows to quickly prototype new equations and test these with common Krylov subspace methods to solve the linear system $\mathbf{Ax}=\mathbf{b}$. 
+Swiftcfd is a 2D solver for cartesian, block-structured grids for fully implicit, incompressible Navier-Stokes simulations. It has been designed around an ```Equation``` class that allows to quickly prototype new equations and test these with common Krylov subspace methods to solve the linear system $\mathbf{Ax}=\mathbf{b}$.
+
+In addition, various deep neural networks have been implemented to inject an initial solution into $\mathbf{Ax}=\mathbf{b}$ to aide convergence. This is a work-in-progress and should be treated as such. Additional information on the combined ML and CFD can be found at the end of this README.md file in the section titled ```Using the ML module of swiftcfd```.
 
 ## Installation
 
@@ -16,10 +18,10 @@ This CFD solver requires ```PETSc``` to run, which can only be compiled on UNIX.
 The simplest way to get up and running is to use Docker. It works on any operating system, and since everythign has been preconfigured, you shouldn't see any nasty surprises trying to get this up and running. The only prerequisite is that you have docker installed. If you have that, you can simply type:
 
 ```bash
-docker compose run --build swiftcfd python3 swiftcfd.py --input=input/channel.toml
+docker compose build swiftcfd
 ```
 
-If you are on UNIX, you may need ```sudo``` priviliges to execute Docker, unless you have given special priviliges to Docker. When you run this command for the first time, expect this take about an hour to configure your image. Afterwards the execution will be instant. You can change the input file, more on that at the end of this README file.
+If you are on UNIX, you may need ```sudo``` priviliges to execute Docker, unless you have given special priviliges to Docker. When you run this command for the first time, expect this to take about an hour to configure. Afterwards the execution will be instant. You can change the input file, more on that at the end of this README file.
 
 ### UNIX (WSL) installation
 
@@ -52,6 +54,12 @@ source .venv/bin/activate
 To run the solver, an input file is required. Sample input files are shown in the ```input/``` folder, which all use the [TOML](https://toml.io/en/) file extension and formatting. These input files have different section pertaining to the solver settings, the meshing, and the boundary conditions.
 
 To execute the solver with a specific input file, use the following command:
+
+```bash
+docker compose run --rm swiftcfd python3 swiftcfd.py --input input/INPUT_FILE.toml
+```
+
+If you have installed directly into WSL or a UNIX shell, simply use:
 
 ```bash
 python3 swiftcfd.py --input input/INPUT_FILE.toml
@@ -364,3 +372,32 @@ and replace ```INPUT_FILE.toml``` by any of the cases shown above. After the sim
 - ```residuals.png```: Residual plot for the simulation.
 - ```residuals.csv```: The residuals used for the plot above, can be used for additional processing.
 - ```trainingData_<variable>.csv```: If we have set the variable ```generateTrainingData``` to ```true```, then we will collect variables in a specific format, written as a ```*.csv``` file, which can be used for Machine Learning training of this solver.
+
+## Using the ML module of swiftcfd
+
+```swiftcfd``` has native support for convergence acceleration through PyTorch using a modified (numerical) Physics-Informed Neural Network (PINN) approach. This implementation is currently experimental. To generate training data, run as many test cases as you wish to create training data. E.g.:
+
+```bash
+docker compose run --rm swiftcfd python3 swiftcfd.py --input input/channel.toml
+```
+
+Check that the ```generateTrainingData``` variable within the input file (e.g. ```input/channel.toml```) is set to ```true```, and that the variables that should be written to file are set in the input file as well. For example, to write out trainign data for the ```u```, and ```v``` velocity, as well as for the pressure ```p```, your input file should contain the following section:
+
+```toml
+[solver.ML]
+# generate training data
+generateTrainingData = true
+
+# variables to output
+trainingVariables = ['u', 'v', 'p']
+```
+
+Repeat this for as many test cases as you wish. Once all test cases have been recorded, you can train the network using the following command:
+
+```bash
+docker compose run --rm swiftcfd python3 swiftcfd.py --train --model=mlp --variables=u,v,p
+```
+
+Here, we specify that we want to train the model, whcih bypasses the CFD solver entirely and only trains the network based on the variables we provde, in this case ```u```, ```v``` and ```p``` (we have to provide the variables here again in case additional data sets exist for other variables).
+
+We also have to provide the model we wish to train on, and we have ```mlp```, ```rnn```, ```lstm```, and ```transformer``` available. If the ```--train``` flag is provided without the ```--model``` and ```--variables``` flag, the solver will not continue and crash.

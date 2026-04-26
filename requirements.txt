@@ -7,3 +7,4 @@ setuptools
 blessed
 pandas
 matplotlib
+torch
