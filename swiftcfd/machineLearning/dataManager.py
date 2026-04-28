@@ -84,19 +84,19 @@ class DataManager:
                 out_folder = join('output', case)
                 df.to_csv(join(out_folder, f'trainingData_{var}.csv'), index=False, float_format="%.5e")
         
-        # get simulation parameters
+                # get simulation parameters
 
-        # for now, all blocks have the same spacing dx and dy, so getting it from block_id=0
-        # should be the same compared to all other blocks, if there are more than one. 
-        dx, dy = self.mesh.get_spacing(0)
-        dt = self.params('solver', 'time', 'dt')
-        rho = self.params('solver', 'fluid', 'rho')
-        nu = self.params('solver', 'fluid', 'nu')
-        alpha = self.params('solver', 'fluid', 'alpha')
-        
-        # write out additional simulation parameters required for training and inference
-        df = pd.DataFrame({'dx': [dx], 'dy': [dy], 'dt': [dt], 'rho': [rho], 'nu': [nu], 'alpha': [alpha]})
-        df.to_csv(join(out_folder, 'simulationParameters.csv'), index=False, float_format="%.5e")
+                # for now, all blocks have the same spacing dx and dy, so getting it from block_id=0
+                # should be the same compared to all other blocks, if there are more than one. 
+                dx, dy = self.mesh.get_spacing(0)
+                dt = self.params('solver', 'time', 'dt')
+                rho = self.params('solver', 'fluid', 'rho')
+                nu = self.params('solver', 'fluid', 'nu')
+                alpha = self.params('solver', 'fluid', 'alpha')
+                
+                # write out additional simulation parameters required for training and inference
+                df = pd.DataFrame({'dx': [dx], 'dy': [dy], 'dt': [dt], 'rho': [rho], 'nu': [nu], 'alpha': [alpha]})
+                df.to_csv(join(out_folder, 'simulationParameters.csv'), index=False, float_format="%.5e")
     
     @staticmethod
     def get_training_data(training_variables, validation_percentage = 0.2):

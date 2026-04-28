@@ -95,15 +95,17 @@ class ModelBase(torch.nn.Module, ABC):
         #
         # for i in range(len(training_data)):
         #     X_train = training_data[i]['x_train']
+        #     Y_train = training_data[i]['y_train']
+        #     X_val   = training_data[i]['x_validation']
         #
         #     # get simulation parameters for this simulation
-        #     dx = training_data[i]['dx']
-        #     dy = training_data[i]['dy']
-        #     dt = training_data[i]['dt']
-        #     alpha = training_data[i]['alpha']
-        #     rho = training_data[i]['rho']
-        #     nu = training_data[i]['nu']
-
+        #     dx = training_data[i]['training_parameters']['dx']
+        #     dy = training_data[i]['training_parameters']['dy']
+        #     dt = training_data[i]['training_parameters']['dt']
+        #     alpha = training_data[i]['training_parameters']['alpha']
+        #     rho = training_data[i]['training_parameters']['rho']
+        #     nu = training_data[i]['training_parameters']['nu']
+            
         input_size = X_train.shape[1]      
 
         # --- Normalization statistics ---
