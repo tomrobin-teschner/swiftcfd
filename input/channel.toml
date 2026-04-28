@@ -4,7 +4,7 @@
 [solver.equation]
     # Specify the solver to use. Available solvers are:
     # heatDiffusion, pressureProjection
-    solver = 'pressureProjection'
+    solver = 'fsvp'
 
 [solver.fluid]
     # kinematic viscosity
@@ -15,10 +15,10 @@
 
 [solver.time]
     # time step (only used if CFLBasedTimeStepping is set to false)
-    dt  = 1.0
+    dt  = 0.1
 
     # number of time steps to perform
-    timesteps = 100
+    timesteps = 5
 
 [solver.schemes]
     # time-integration scheme to use. Available schemes are:

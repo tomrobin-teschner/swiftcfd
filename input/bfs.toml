@@ -15,7 +15,7 @@
 
 [solver.time]
     # time step (only used if CFLBasedTimeStepping is set to false)
-    dt  = 1.0
+    dt  = 10.0
 
     # number of time steps to perform
     timesteps = 200
@@ -46,7 +46,7 @@
     tolerance = {u = 1e-10, v = 1e-10, p = 1e-10}
 
     # max allowable iterations by the implicit solver
-    maxIterations = {u = 1000, v = 1000, p = 1000}
+    maxIterations = {u = 1000, v = 1000, p = 10000}
 
     # under-relaxation factor for the implicit solver
     underRelaxation = {u = 1.0, v = 1.0, p = 1.0}
@@ -70,7 +70,7 @@
 
 [solver.ML]
     # generate training data
-    generateTrainingData = false
+    generateTrainingData = true
 
     # variables to output
     trainingVariables = ['u', 'v', 'p']
@@ -79,16 +79,16 @@
 ### ----- MESH PROPERTIES ----- ###
 ### --------------------------- ###
 [mesh.block1]
-x = {start = 0.0, end = 10.0, numCells = 20}
-y = {start = 1.0, end = 2.0, numCells = 10}
+x = {start = 0.0, end = 10.0, numCells = 40}
+y = {start = 1.0, end = 2.0, numCells = 20}
 
 [mesh.block2]
-x = {start = 10.0, end = 20.0, numCells = 20}
-y = {start = 1.0, end = 2.0, numCells = 10}
+x = {start = 10.0, end = 20.0, numCells = 40}
+y = {start = 1.0, end = 2.0, numCells = 20}
 
 [mesh.block3]
-x ={start = 10.0, end = 20.0, numCells = 20}
-y = {start = 0.0, end = 1.0, numCells = 10}
+x ={start = 10.0, end = 20.0, numCells = 40}
+y = {start = 0.0, end = 1.0, numCells = 20}
 
 ### ------------------------------------------ ###
 ### ----- BOUNDARY CONDITIONS PROPERTIES ----- ###

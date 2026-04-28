@@ -5,7 +5,7 @@ from swiftcfd.equations.numericalSchemes.numericalSchemeFactory import Numerical
 from swiftcfd.gradients.firstOrderGradient import FirstOrderGradient as gradient
 
 class Pressure(BaseEquation):
-    def __init__(self, params, mesh, field_manager, u_solver, v_solver):
+    def __init__(self, params, mesh, field_manager):
         super().__init__(params, mesh, field_manager)
         
         self.has_second_order_space_derivative = True
@@ -19,9 +19,6 @@ class Pressure(BaseEquation):
         self.grad_u = gradient(self.mesh, self.field_manager, pv.velocity_x.name())
         self.grad_v = gradient(self.mesh, self.field_manager, pv.velocity_y.name())
         self.grad_p = gradient(self.mesh, self.field_manager, pv.pressure.name())
-
-        self.u_solver = u_solver
-        self.v_solver = v_solver
 
         self.uses_second_order_time_integration = \
             self.params('solver', 'schemes', 'timeIntegrationScheme') == 'secondOrderBackwards'

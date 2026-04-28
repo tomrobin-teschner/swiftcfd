@@ -90,8 +90,8 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
             aw_value = self.coefficients[block_id]['aw']
             b_value = -1.0 * self.coefficients[block_id]['b'] * 2.0 / pow(dx, 2)
 
-            phi_i   = self.field_manager.fields[var_name].picard_old[block_id, i    , j]
-            phi_im1 = self.field_manager.fields[var_name].picard_old[block_id, i - 1, j]
+            phi_i   = self.field_manager.fields[var_name][block_id, i    , j]
+            phi_im1 = self.field_manager.fields[var_name][block_id, i - 1, j]
 
             rhs = b_value * phi_b + ap_value * phi_i + aw_value * phi_im1
 
@@ -107,8 +107,8 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
             aw_value = self.coefficients[block_id]['aw']
             ae_value = self.coefficients[block_id]['ae']
 
-            phi_i   = self.field_manager.fields[var_name].picard_old[block_id, i    , j]
-            phi_im1 = self.field_manager.fields[var_name].picard_old[block_id, i - 1, j]
+            phi_i   = self.field_manager.fields[var_name][block_id, i    , j]
+            phi_im1 = self.field_manager.fields[var_name][block_id, i - 1, j]
             phi_ip1 = 2.0 * dx * phi_b + phi_im1
             
             rhs = ae_value * phi_ip1 + ap_value * phi_i + aw_value * phi_im1
@@ -140,8 +140,8 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
             ae_value = self.coefficients[block_id]['ae']
             b_value = -1.0 * self.coefficients[block_id]['b'] * 2.0 / pow(dx, 2)
 
-            phi_i   = self.field_manager.fields[var_name].picard_old[block_id, i    , j]
-            phi_ip1 = self.field_manager.fields[var_name].picard_old[block_id, i + 1, j]
+            phi_i   = self.field_manager.fields[var_name][block_id, i    , j]
+            phi_ip1 = self.field_manager.fields[var_name][block_id, i + 1, j]
 
             rhs = ae_value * phi_ip1 + ap_value * phi_i + b_value * phi_b
 
@@ -157,8 +157,8 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
             ae_value = self.coefficients[block_id]['ae']
             aw_value = self.coefficients[block_id]['aw']
 
-            phi_i   = self.field_manager.fields[var_name].picard_old[block_id, i    , j]
-            phi_ip1 = self.field_manager.fields[var_name].picard_old[block_id, i + 1, j]
+            phi_i   = self.field_manager.fields[var_name][block_id, i    , j]
+            phi_ip1 = self.field_manager.fields[var_name][block_id, i + 1, j]
             phi_im1 = phi_ip1 - 2.0 * dx * phi_b
             
             rhs = ae_value * phi_ip1 + ap_value * phi_i + aw_value * phi_im1
@@ -190,8 +190,8 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
             as_value = self.coefficients[block_id]['as']
             b_value = -1.0 * self.coefficients[block_id]['b'] * 2.0 / pow(dy, 2)
 
-            phi_i   = self.field_manager.fields[var_name].picard_old[block_id, i, j    ]
-            phi_im1 = self.field_manager.fields[var_name].picard_old[block_id, i, j - 1]
+            phi_i   = self.field_manager.fields[var_name][block_id, i, j    ]
+            phi_im1 = self.field_manager.fields[var_name][block_id, i, j - 1]
 
             rhs = b_value * phi_b + ap_value * phi_i + as_value * phi_im1
 
@@ -207,8 +207,8 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
             as_value = self.coefficients[block_id]['as']
             an_value = self.coefficients[block_id]['an']
 
-            phi_j   = self.field_manager.fields[var_name].picard_old[block_id, i, j    ]
-            phi_jm1 = self.field_manager.fields[var_name].picard_old[block_id, i, j - 1]
+            phi_j   = self.field_manager.fields[var_name][block_id, i, j    ]
+            phi_jm1 = self.field_manager.fields[var_name][block_id, i, j - 1]
             phi_jp1 = 2.0 * dy * phi_b + phi_jm1
             
             rhs = an_value * phi_jp1 + ap_value * phi_j + as_value * phi_jm1
@@ -240,8 +240,8 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
             an_value = self.coefficients[block_id]['an']
             b_value = -1.0 * self.coefficients[block_id]['b'] * 2.0 / pow(dy, 2)
 
-            phi_i   = self.field_manager.fields[var_name].picard_old[block_id, i, j]
-            phi_ip1 = self.field_manager.fields[var_name].picard_old[block_id, i, j + 1]
+            phi_i   = self.field_manager.fields[var_name][block_id, i, j]
+            phi_ip1 = self.field_manager.fields[var_name][block_id, i, j + 1]
 
             rhs = an_value * phi_ip1 + ap_value * phi_i + b_value * phi_b
 
@@ -257,8 +257,8 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
             an_value = self.coefficients[block_id]['an']
             as_value = self.coefficients[block_id]['as']
 
-            phi_j   = self.field_manager.fields[var_name].picard_old[block_id, i, j]
-            phi_jp1 = self.field_manager.fields[var_name].picard_old[block_id, i, j + 1]
+            phi_j   = self.field_manager.fields[var_name][block_id, i, j]
+            phi_jp1 = self.field_manager.fields[var_name][block_id, i, j + 1]
             phi_jm1 = phi_jp1 - 2.0 * dy * phi_b
             
             rhs = an_value * phi_jp1 + ap_value * phi_j + as_value * phi_jm1
@@ -282,9 +282,9 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
     def __apply_in_x(self, solver, block_id, i, j, var_name):
         index = self.mesh.map3Dto1D(block_id, i, j)
 
-        phi_ip1 = self.field_manager.fields[var_name].picard_old[block_id, i + 1, j]
-        phi_i   = self.field_manager.fields[var_name].picard_old[block_id, i    , j]
-        phi_im1 = self.field_manager.fields[var_name].picard_old[block_id, i - 1, j]
+        phi_ip1 = self.field_manager.fields[var_name][block_id, i + 1, j]
+        phi_i   = self.field_manager.fields[var_name][block_id, i    , j]
+        phi_im1 = self.field_manager.fields[var_name][block_id, i - 1, j]
 
         ap_value = self.coefficients[block_id]['apx']
         ae_value = self.coefficients[block_id]['ae']
@@ -297,9 +297,9 @@ class SecondOrderCentralExplicit(NumericalSchemesBase):
     def __apply_in_y(self, solver, block_id, i, j, var_name):
         index = self.mesh.map3Dto1D(block_id, i, j)
 
-        phi_jp1 = self.field_manager.fields[var_name].picard_old[block_id, i, j + 1]
-        phi_j   = self.field_manager.fields[var_name].picard_old[block_id, i, j    ]
-        phi_jm1 = self.field_manager.fields[var_name].picard_old[block_id, i, j - 1]
+        phi_jp1 = self.field_manager.fields[var_name][block_id, i, j + 1]
+        phi_j   = self.field_manager.fields[var_name][block_id, i, j    ]
+        phi_jm1 = self.field_manager.fields[var_name][block_id, i, j - 1]
 
         ap_value = self.coefficients[block_id]['apy']
         an_value = self.coefficients[block_id]['an']
