@@ -60,17 +60,59 @@ class ModelBase(torch.nn.Module, ABC):
 
         return total_loss, data_loss, physics_loss
 
-    def train(self, X_train, Y_train, X_val, Y_val, alpha, dx, dy, dt,
-              epochs=200, batch_size=256, lr=1e-4, hidden_size=256,
-              num_layers=5, dropout=0.1, output_dir="output", patience=300):
+    def train(self, training_data, epochs=200, batch_size=256, lr=1e-4,
+              hidden_size=256, num_layers=5, dropout=0.1, output_dir="output",
+              patience=300):
 
-        input_size = X_train.shape[1]
+        # TODO: set up training, validation, and simulation data
+        # training_data contains the followign arrays:
+        # 'x_train',
+        # 'y_train',
+        # 'training_parameters',
+        # 'x_validation',
+        # 'y_validation',
+        # 'validation_parameters'
+        # these have replaced the X_train, Y_train, X_val, and Y_val variables
+        #
+        # in addition, training_parameters and validation_parameters have been contain the following variables:
+        # dx
+        # dy
+        # dt
+        # alpha
+        # rho
+        # nu
+        #
+        # all of these are arrays containing several training data sets for different simulations
+        # to get data for the first simulation, for example, you can create
+        #
+        # X_train = training_data[0]['x_train']
+        #
+        # For the second simulation, use:
+        #
+        # X_train = training_data[1]['x_train']
+        #
+        # To loop over all simulations, you can use:
+        #
+        # for i in range(len(training_data)):
+        #     X_train = training_data[i]['x_train']
+        #
+        #     # get simulation parameters for this simulation
+        #     dx = training_data[i]['dx']
+        #     dy = training_data[i]['dy']
+        #     dt = training_data[i]['dt']
+        #     alpha = training_data[i]['alpha']
+        #     rho = training_data[i]['rho']
+        #     nu = training_data[i]['nu']
+
+        input_size = X_train.shape[1]      
 
         # --- Normalization statistics ---
         X_mean = torch.tensor(X_train.mean(axis=0), dtype=torch.float32)
         X_std  = torch.tensor(X_train.std(axis=0),  dtype=torch.float32)
         Y_mean = torch.tensor(Y_train.mean(axis=0), dtype=torch.float32)
         Y_std  = torch.tensor(Y_train.std(axis=0),  dtype=torch.float32)
+
+        
 
         print(f"\nNormalization stats computed  (input_size={input_size})")
 

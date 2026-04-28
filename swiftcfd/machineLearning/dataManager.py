@@ -76,12 +76,27 @@ class DataManager:
                 self.data[var][f'{var}^n+1_i,j+1'].append(self.field_manager.fields[var][block, i, j + 1])
 
     def write(self):
+        # write out trainign data (variables at different locations and time steps)
         if self.generate_training_data:
             for var in self.training_variables:
                 df = pd.DataFrame(self.data[var])
                 case = self.params('solver', 'output', 'filename')
                 out_folder = join('output', case)
                 df.to_csv(join(out_folder, f'trainingData_{var}.csv'), index=False, float_format="%.5e")
+        
+        # get simulation parameters
+
+        # for now, all blocks have the same spacing dx and dy, so getting it from block_id=0
+        # should be the same compared to all other blocks, if there are more than one. 
+        dx, dy = self.mesh.get_spacing(0)
+        dt = self.params('solver', 'time', 'dt')
+        rho = self.params('solver', 'fluid', 'rho')
+        nu = self.params('solver', 'fluid', 'nu')
+        alpha = self.params('solver', 'fluid', 'alpha')
+        
+        # write out additional simulation parameters required for training and inference
+        df = pd.DataFrame({'dx': [dx], 'dy': [dy], 'dt': [dt], 'rho': [rho], 'nu': [nu], 'alpha': [alpha]})
+        df.to_csv(join(out_folder, 'simulationParameters.csv'), index=False, float_format="%.5e")
     
     @staticmethod
     def get_training_data(training_variables, validation_percentage = 0.2):
@@ -96,7 +111,7 @@ class DataManager:
         # load training data for each variable
         training_data = {}
         for var in training_variables.split(','):
-            x, y = DataManager.__load_training_data(training_files_by_variables[var])
+            x, y, simulation_parameters = DataManager.__load_training_data(training_files_by_variables[var])
 
             # split into training and validation sets
             number_of_validation_samples = int(validation_percentage * len(x))
@@ -104,15 +119,20 @@ class DataManager:
             
             x_validation   = x[idx[:number_of_validation_samples]]
             y_validation   = y[idx[:number_of_validation_samples]]
+            validation_parameters = simulation_parameters[idx[:number_of_validation_samples]]
+
             x_train = x[idx[number_of_validation_samples:]]
             y_train = y[idx[number_of_validation_samples:]]
+            training_parameters = simulation_parameters[idx[number_of_validation_samples:]]
 
             # split into 
             training_data[var] = {
                 'x_train': x_train,
                 'y_train': y_train,
+                'training_parameters': training_parameters,
                 'x_validation': x_validation,
-                'y_validation': y_validation
+                'y_validation': y_validation,
+                'validation_parameters': validation_parameters
             }
 
     @staticmethod
@@ -149,10 +169,26 @@ class DataManager:
     def __load_training_data(training_files):
         # load all training data sets and append to temporary list
         temp_data_sets = []
+        simulation_parameters = []
         for training_file in training_files:
             temp_data_set = pd.read_csv(training_file)
             temp_data_sets.append(temp_data_set)
-        
+
+            # get the file path of the output directory
+            output_folder = training_file.split('trainingData_')[0]
+            temp_data_set = pd.read_csv(join(output_folder, 'simulationParameters.csv'))
+
+            # get parameters
+            dx = temp_data_set['dx'][0]
+            dy = temp_data_set['dy'][0]
+            dt = temp_data_set['dt'][0]
+            rho = temp_data_set['rho'][0]
+            nu = temp_data_set['nu'][0]
+            alpha = temp_data_set['alpha'][0]
+
+            # get simulation parameters
+            simulation_parameters.append({'dx': dx, 'dy': dy, 'dt': dt, 'rho': rho, 'nu': nu, 'alpha': alpha})
+
         # now concatenate temporary data sets into single pandas dataframe
         df = pd.concat(temp_data_sets, ignore_index=True)
         data = df.values
@@ -182,4 +218,4 @@ class DataManager:
         x = x.astype(np.float32)
         y = y.astype(np.float32)
 
-        return x, y
+        return x, y, simulation_parameters

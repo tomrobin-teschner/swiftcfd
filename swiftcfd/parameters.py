@@ -24,7 +24,10 @@ class Parameters:
         assert(mesh_blocks == bc_blocks), 'number of mesh and boundary condition blocks must be equal'
 
     def __call__(self, *args):
-        temp = self.params
-        for key in args:
-            temp = temp[key]
-        return temp
+        try:
+            temp = self.params
+            for key in args:
+                temp = temp[key]
+            return temp
+        except KeyError:
+            return -1
