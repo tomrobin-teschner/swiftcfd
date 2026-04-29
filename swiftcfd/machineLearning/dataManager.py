@@ -134,6 +134,8 @@ class DataManager:
                 'y_validation': y_validation,
                 'validation_parameters': validation_parameters
             }
+        
+        return training_data
 
     @staticmethod
     def __find_all_trainig_data_sets():
@@ -172,7 +174,8 @@ class DataManager:
         simulation_parameters = []
         for training_file in training_files:
             temp_data_set = pd.read_csv(training_file)
-            temp_data_sets.append(temp_data_set)
+            temp_data_sets.extend(temp_data_set.values.tolist())
+            number_of_rows = len(temp_data_set.values)
 
             # get the file path of the output directory
             output_folder = training_file.split('trainingData_')[0]
@@ -186,12 +189,21 @@ class DataManager:
             nu = temp_data_set['nu'][0]
             alpha = temp_data_set['alpha'][0]
 
-            # get simulation parameters
-            simulation_parameters.append({'dx': dx, 'dy': dy, 'dt': dt, 'rho': rho, 'nu': nu, 'alpha': alpha})
+            simulation_parameter = np.stack(
+                (
+                    [dx]*number_of_rows,
+                    [dy]*number_of_rows,
+                    [dt]*number_of_rows,
+                    [rho]*number_of_rows,
+                    [nu]*number_of_rows,
+                    [alpha]*number_of_rows
+                ), axis=1
+            )
+            simulation_parameters.extend(simulation_parameter.tolist())
 
-        # now concatenate temporary data sets into single pandas dataframe
-        df = pd.concat(temp_data_sets, ignore_index=True)
-        data = df.values
+        # convert to numpy array for data and simulation parameters
+        data = np.array(temp_data_sets, dtype=np.float32)
+        simulation_parameters = np.array(simulation_parameters, dtype=np.float32)
 
         # 20-column layout from trainingData.py:
         #   cols  0- 4: T^{n-2}  [center, west, east, south, north]

@@ -9,13 +9,15 @@ def run():
     # check if machine learning should be trained only
     if cla_parser.arguments.train:
         print('Training machine learning model...')
-        training_data = swiftcfd.ML_data_manager.get_training_data(cla_parser.arguments.variables)
+        training_data = swiftcfd.ML_data_manager.get_training_data(cla_parser.arguments.input_variables)
 
         # create ML model
-        model = swiftcfd.create_model(cla_parser.arguments.model)
+        model = swiftcfd.create_model(cla_parser.arguments.model, cla_parser.arguments.input_variables,
+            cla_parser.arguments.output_variables)
 
         # train ML model
-        model.train(training_data)
+        model.train(training_data, cla_parser.arguments.input_variables,
+            cla_parser.arguments.output_variables)
 
         print('Done. Exiting solver now...')
         return

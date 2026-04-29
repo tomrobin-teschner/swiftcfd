@@ -17,7 +17,13 @@ class ModelBase(torch.nn.Module, ABC):
     def __str__(self):
         pass
 
-    def gradient(self, X_batch_raw, Y_prediction_raw, alpha, dx, dy):
+    def unsteady_heat_diffusion_residual(self, X_batch_raw, Y_prediction_raw, training_parameters):
+        # trainign parameters
+        dx = training_parameters[0]
+        dy = training_parameters[1]
+        dt = training_parameters[2]
+        alpha = training_parameters[5]
+
         # inputs
         phi_center = X_batch_raw[:, 0:1]
         phi_east   = X_batch_raw[:, 1:2]
@@ -46,11 +52,15 @@ class ModelBase(torch.nn.Module, ABC):
         residual = phi_t - (alpha/2) * (phi_xx_n + phi_yy_n + phi_xx_n_plus_1 + phi_yy_n_plus_1)
         return residual
 
-    def loss_function(self, X_batch_raw, Y_pred_norm, Y_true_norm, Y_std, Y_mean, alpha, dx, dy,
+    def loss_function(self, X_batch_raw, Y_pred_norm, Y_true_norm, Y_std, Y_mean, training_parameters,
                     weight_pde=1.0, weight_data=1.0):
         #physics loss
         Y_raw = Y_pred_norm * (Y_std + 1e-8) + Y_mean
-        residual = self.gradient(X_batch_raw, Y_raw, alpha, dx, dy)
+
+        # residual based on unsteady heat-diffusion equation
+        residual = self.unsteady_heat_diffusion_residual(X_batch_raw, Y_raw, training_parameters)
+
+
         phi_scale = torch.abs(X_batch_raw[:, 0:1]).mean() + 1e-8
         physics_loss = torch.mean((residual / phi_scale) ** 2)
         # data_loss
@@ -60,51 +70,22 @@ class ModelBase(torch.nn.Module, ABC):
 
         return total_loss, data_loss, physics_loss
 
-    def train(self, training_data, epochs=200, batch_size=256, lr=1e-4,
-              hidden_size=256, num_layers=5, dropout=0.1, output_dir="output",
-              patience=300):
+    def train(self, training_data, input_variables, output_variables, epochs=200,
+              batch_size=256, lr=1e-4, hidden_size=256, num_layers=5, dropout=0.1,
+              output_dir="output", patience=300):
 
-        # TODO: set up training, validation, and simulation data
-        # training_data contains the followign arrays:
-        # 'x_train',
-        # 'y_train',
-        # 'training_parameters',
-        # 'x_validation',
-        # 'y_validation',
-        # 'validation_parameters'
-        # these have replaced the X_train, Y_train, X_val, and Y_val variables
-        #
-        # in addition, training_parameters and validation_parameters have been contain the following variables:
-        # dx
-        # dy
-        # dt
-        # alpha
-        # rho
-        # nu
-        #
-        # all of these are arrays containing several training data sets for different simulations
-        # to get data for the first simulation, for example, you can create
-        #
-        # X_train = training_data[0]['x_train']
-        #
-        # For the second simulation, use:
-        #
-        # X_train = training_data[1]['x_train']
-        #
-        # To loop over all simulations, you can use:
-        #
-        # for i in range(len(training_data)):
-        #     X_train = training_data[i]['x_train']
-        #     Y_train = training_data[i]['y_train']
-        #     X_val   = training_data[i]['x_validation']
-        #
-        #     # get simulation parameters for this simulation
-        #     dx = training_data[i]['training_parameters']['dx']
-        #     dy = training_data[i]['training_parameters']['dy']
-        #     dt = training_data[i]['training_parameters']['dt']
-        #     alpha = training_data[i]['training_parameters']['alpha']
-        #     rho = training_data[i]['training_parameters']['rho']
-        #     nu = training_data[i]['training_parameters']['nu']
+        # TODO: currently only works if input and output variables are the same (temperature)
+        # needs to be adjsusted for Navier-Stokes where input variables are u,v,p and output is p
+        assert input_variables == 'T'
+        assert output_variables == 'T'
+
+        # TODO: same here, hardcoding T as the variable to use, need to be generalised later
+        X_train = training_data['T']['x_train']
+        Y_train = training_data['T']['y_train']
+        X_val   = training_data['T']['x_validation']
+        Y_val   = training_data['T']['y_validation']
+        training_parameters = training_data['T']['training_parameters']
+        validation_parameters = training_data['T']['validation_parameters']
             
         input_size = X_train.shape[1]      
 
@@ -114,17 +95,17 @@ class ModelBase(torch.nn.Module, ABC):
         Y_mean = torch.tensor(Y_train.mean(axis=0), dtype=torch.float32)
         Y_std  = torch.tensor(Y_train.std(axis=0),  dtype=torch.float32)
 
-        
-
         print(f"\nNormalization stats computed  (input_size={input_size})")
 
         train_loader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(
             torch.tensor(X_train, dtype=torch.float32),
-            torch.tensor(Y_train, dtype=torch.float32)),
+            torch.tensor(Y_train, dtype=torch.float32),
+            torch.tensor(training_parameters, dtype=torch.float32)),
             batch_size=batch_size, shuffle=True)
         val_loader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(
             torch.tensor(X_val, dtype=torch.float32),
-            torch.tensor(Y_val, dtype=torch.float32)),
+            torch.tensor(Y_val, dtype=torch.float32),
+            torch.tensor(validation_parameters, dtype=torch.float32)),
             batch_size=batch_size, shuffle=False)
 
         print(f"  Training:   {len(X_train)} samples")
@@ -134,7 +115,7 @@ class ModelBase(torch.nn.Module, ABC):
         print(f"  Architecture: {self}")
         print(f"  Model: {input_size} -> {hidden_size}x{num_layers} -> 5  ({total_params:,} params)")
 
-        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+        optimizer = torch.optim.Adam(self.parameters(), lr=lr)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
 
         best_val_loss = float("inf")
@@ -148,18 +129,26 @@ class ModelBase(torch.nn.Module, ABC):
         print(f"  (LR: CosineAnnealingWarmRestarts, T_0=30, T_mult=2, lr={lr})")
         print("=" * 60)
 
+        print(f"X_train shape: {X_train.shape}")   # expect (N, 10) if model needs 10
+        print(f"X_mean shape:  {X_mean.shape}")
+
+        # Check the first layer's expected input size
+        first_layer = next(m for m in self.modules() if isinstance(m, torch.nn.Linear))
+        print(f"First Linear layer weight shape: {first_layer.weight.shape}")
+        # weight is (out_features, in_features), so .shape[1] is what it expects
+
         for epoch in range(epochs):
             ep_total = ep_data = ep_phys = 0.0
-            for Xb, Yb in train_loader:
+            for Xb, Yb, Tp in train_loader:
                 Xn = (Xb - X_mean)/(X_std + 1e-8)
                 Yn = (Yb - Y_mean)/(Y_std + 1e-8)
                 
-                pred = model(Xn)
-                loss, ld, lp = self.loss_function(Xb, pred, Yn, Y_std, Y_mean, alpha, dx, dy)
+                pred = self(Xn)
+                loss, ld, lp = self.loss_function(Xb, pred, Yn, Y_std, Y_mean, Tp)
                 
                 optimizer.zero_grad();
                 loss.backward()
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+                torch.nn.utils.clip_grad_norm_(self.parameters(), max_norm=1.0)
                 
                 optimizer.step()
                 
@@ -173,11 +162,11 @@ class ModelBase(torch.nn.Module, ABC):
             self.eval()
             val_loss = 0.0
             with torch.no_grad():
-                for Xb, Yb in val_loader:
+                for Xb, Yb, Vp in val_loader:
                     Xn = (Xb - X_mean) / (X_std + 1e-8)
                     Yn = (Yb - Y_mean) / (Y_std + 1e-8)
                     pred = self(Xn)
-                    l, _, _ = loss_function(Xb, pred, Yn, Y_std, Y_mean, alpha, dx, dy)
+                    l, _, _ = loss_function(Xb, pred, Yn, Y_std, Y_mean, Vp)
                     val_loss += l.item()
             val_loss /= len(val_loader)
 
@@ -190,7 +179,7 @@ class ModelBase(torch.nn.Module, ABC):
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 patience_counter = 0
-                best_model_state = copy.deepcopy(model.state_dict())
+                best_model_state = copy.deepcopy(self.state_dict())
             else:
                 patience_counter += 1
 
@@ -214,10 +203,10 @@ class ModelBase(torch.nn.Module, ABC):
         norm_path = os.path.join(output_dir, f"norm_params_{suffix}.pth")
 
         if best_model_state is not None:
-            model.load_state_dict(best_model_state)
+            self.load_state_dict(best_model_state)
             print(f"  Restored best model (val_loss={best_val_loss:.6f})")
 
-        torch.save(model.state_dict(), model_path)
+        torch.save(self.state_dict(), model_path)
         torch.save({"X_mean": X_mean, "X_std": X_std, "Y_mean": Y_mean, "Y_std": Y_std,
                     "input_size": input_size, "hidden_size": hidden_size,
                     "num_layers": num_layers, "model_type": self}, norm_path)

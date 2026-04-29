@@ -12,7 +12,9 @@ class CommandLineArgumentParser:
                                                   action = 'store_true',
                                                   required = False,
                                                   default = False)
-        self.parser.add_argument('-v', '--variables', help = 'variables to use for training',
+        self.parser.add_argument('-iv', '--input-variables', help = 'input variables for training',
+                                                  required = False)
+        self.parser.add_argument('-ov', '--output-variables', help = 'output variables for inference',
                                                   required = False)
         self.parser.add_argument('-m', '--model', help = 'ML model to use for training and inference',
                                                   choices = ['mlp', 'rnn', 'lstm', 'transformer'],
@@ -34,5 +36,8 @@ class CommandLineArgumentParser:
         if self.arguments.train and self.arguments.model is None:
             raise Exception('ML model is required for training.')
 
-        if self.arguments.train and self.arguments.variables is None:
-            raise Exception('Variables are required for training.')
+        if self.arguments.train and self.arguments.input_variables is None:
+            raise Exception('Input variables are required for training.')
+
+        if self.arguments.train and self.arguments.output_variables is None:
+            raise Exception('Output variables are required for training.')

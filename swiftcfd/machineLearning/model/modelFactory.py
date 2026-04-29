@@ -3,8 +3,8 @@ from swiftcfd.machineLearning.model.recurrentNeuralNetwork import RecurrentNeura
 from swiftcfd.machineLearning.model.longShortTermMemory import LongShortTermMemory as lstm
 from swiftcfd.machineLearning.model.transformer import Transformer as transformer
 
-def create_model(model_type, input_size=10, hidden_size=256, output_size=5,
-                 num_layers=5, dropout=0.1):
+def create_model(model_type, input_variables, output_variables, input_size=7,
+                 hidden_size=256, output_size=5, num_layers=5, dropout=0.1):
 
     # model parameter, constructor arguments
     model_kwargs = {
