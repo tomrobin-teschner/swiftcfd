@@ -1,10 +1,12 @@
 from torch import nn
 from swiftcfd.machineLearning.model.modelBase import ModelBase
 
-class LongShortTermMemory(nn.Module):
-    def __init__(self, input_size=10, hidden_size=128, output_size=5,
+class LongShortTermMemory(ModelBase):
+    def __init__(self, input_variables, output_variables, input_size=10, hidden_size=128, output_size=5,
                  num_layers=5, dropout=0.1):
-        super().__init__()
+        super().__init__(input_variables, output_variables, input_size, hidden_size, output_size,
+                 num_layers, dropout)
+        
         self.input_size = input_size
         self.output_size = output_size
         lstm_layers = 2

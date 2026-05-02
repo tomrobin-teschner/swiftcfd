@@ -16,8 +16,7 @@ def run():
             cla_parser.arguments.output_variables)
 
         # train ML model
-        model.train(training_data, cla_parser.arguments.input_variables,
-            cla_parser.arguments.output_variables)
+        model.train_network(training_data)
 
         print('Done. Exiting solver now...')
         return

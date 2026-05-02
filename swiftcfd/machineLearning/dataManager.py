@@ -1,4 +1,4 @@
-from os.path import join
+from os.path import join, isdir
 from os import listdir
 
 import numpy as np
@@ -142,6 +142,9 @@ class DataManager:
         training_files = []
     
         for simulation_folder in listdir('output'):
+            if not isdir(join('output', simulation_folder)):
+                continue
+
             for output_file in listdir(join('output', simulation_folder)):
                 if output_file.find('trainingData') != -1:
                     training_files.append(join('output', simulation_folder, output_file))

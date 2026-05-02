@@ -8,3 +8,4 @@ blessed
 pandas
 matplotlib
 torch
+debugpy 

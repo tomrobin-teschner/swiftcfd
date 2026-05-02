@@ -4,3 +4,5 @@ services:
     volumes:
       - .:/swiftcfd
     working_dir: /swiftcfd
+    ports:
+      - "5678:5678"

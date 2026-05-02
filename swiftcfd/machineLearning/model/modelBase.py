@@ -5,9 +5,12 @@ import torch
 from abc import ABC, abstractmethod
 
 class ModelBase(torch.nn.Module, ABC):
-    def __init__(self, input_size=10, hidden_size=256, output_size=5,
+    def __init__(self, input_variables, output_variables, input_size=10, hidden_size=256, output_size=5,
                  num_layers=5, dropout=0.1):
         super().__init__()
+
+        self.input_variables = input_variables
+        self.output_variables = output_variables
 
     @abstractmethod
     def forward(self, x):
@@ -32,7 +35,6 @@ class ModelBase(torch.nn.Module, ABC):
         phi_south  = X_batch_raw[:, 4:5]
         phi_center_n_minus_1   = X_batch_raw[:, 5:6]
         phi_center_n_minus_2   = X_batch_raw[:, 6:7]
-        dt = X_batch_raw[:, 9:10]
 
         # predictions
         phi_center_n_plus_1 = Y_prediction_raw[:, 0:1]
@@ -41,7 +43,6 @@ class ModelBase(torch.nn.Module, ABC):
         phi_north_n_plus_1  = Y_prediction_raw[:, 3:4]
         phi_south_n_plus_1  = Y_prediction_raw[:, 4:5]
 
-
         # phi_t = (phi_center_n_plus_1 - phi_center_n_minus_1) / dt
         phi_t = 2 * (phi_center - phi_center_n_minus_1) / dt - (phi_center_n_minus_1 - phi_center_n_minus_2) / dt
         phi_xx_n = (phi_east - 2 * phi_center + phi_west) / (dx * dx)
@@ -49,6 +50,7 @@ class ModelBase(torch.nn.Module, ABC):
         phi_xx_n_plus_1 = (phi_east_n_plus_1 - 2 * phi_center_n_plus_1 + phi_west_n_plus_1) / (dx * dx)
         phi_yy_n_plus_1 = (phi_north_n_plus_1 - 2 * phi_center_n_plus_1 + phi_south_n_plus_1) / (dy * dy)
         # residual = phi_t - alpha * (phi_xx_n_plus_1 + phi_yy_n_plus_1)
+
         residual = phi_t - (alpha/2) * (phi_xx_n + phi_yy_n + phi_xx_n_plus_1 + phi_yy_n_plus_1)
         return residual
 
@@ -60,7 +62,6 @@ class ModelBase(torch.nn.Module, ABC):
         # residual based on unsteady heat-diffusion equation
         residual = self.unsteady_heat_diffusion_residual(X_batch_raw, Y_raw, training_parameters)
 
-
         phi_scale = torch.abs(X_batch_raw[:, 0:1]).mean() + 1e-8
         physics_loss = torch.mean((residual / phi_scale) ** 2)
         # data_loss
@@ -70,14 +71,13 @@ class ModelBase(torch.nn.Module, ABC):
 
         return total_loss, data_loss, physics_loss
 
-    def train(self, training_data, input_variables, output_variables, epochs=200,
-              batch_size=256, lr=1e-4, hidden_size=256, num_layers=5, dropout=0.1,
-              output_dir="output", patience=300):
+    def train_network(self, training_data, epochs=10, batch_size=256, lr=1e-4, hidden_size=256,
+              num_layers=5, dropout=0.1, output_dir="output", patience=300):
 
         # TODO: currently only works if input and output variables are the same (temperature)
         # needs to be adjsusted for Navier-Stokes where input variables are u,v,p and output is p
-        assert input_variables == 'T'
-        assert output_variables == 'T'
+        assert self.input_variables == 'T'
+        assert self.output_variables == 'T'
 
         # TODO: same here, hardcoding T as the variable to use, need to be generalised later
         X_train = training_data['T']['x_train']
@@ -166,7 +166,7 @@ class ModelBase(torch.nn.Module, ABC):
                     Xn = (Xb - X_mean) / (X_std + 1e-8)
                     Yn = (Yb - Y_mean) / (Y_std + 1e-8)
                     pred = self(Xn)
-                    l, _, _ = loss_function(Xb, pred, Yn, Y_std, Y_mean, Vp)
+                    l, _, _ = self.loss_function(Xb, pred, Yn, Y_std, Y_mean, Vp)
                     val_loss += l.item()
             val_loss /= len(val_loader)
 
@@ -183,10 +183,10 @@ class ModelBase(torch.nn.Module, ABC):
             else:
                 patience_counter += 1
 
-            if epoch % 10 == 0 or epoch == epochs - 1:
-                print(f"  Epoch {epoch:4d}/{epochs}:  Total={avg_t:.6f}  "
-                    f"Physics={avg_p:.6f}  Data={avg_d:.6f}  "
-                    f"val={val_loss:.6f}  lr={cur_lr:.2e}")
+            # if epoch % 10 == 0 or epoch == epochs - 1:
+            print(f"  Epoch {epoch:>4d}/{epochs}, Total = {avg_t:>8.2e}, "
+                f"Physics = {avg_p:>8.2e}, Data = {avg_d:>8.2e}, "
+                f"val = {val_loss:>8.2e}, lr = {cur_lr:>8.2e}")
 
             if patience_counter >= patience:
                 print(f"  Early stopping at epoch {epoch}")

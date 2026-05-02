@@ -63,7 +63,7 @@
 
 [solver.ML]
     # generate training data
-    generateTrainingData = false
+    generateTrainingData = true
 
     # variables to output
     trainingVariables = ['T']

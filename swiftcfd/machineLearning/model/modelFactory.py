@@ -8,6 +8,8 @@ def create_model(model_type, input_variables, output_variables, input_size=7,
 
     # model parameter, constructor arguments
     model_kwargs = {
+        "input_variables": input_variables,
+        "output_variables": output_variables,
         "input_size": input_size,
         "hidden_size": hidden_size,
         "output_size": output_size,
