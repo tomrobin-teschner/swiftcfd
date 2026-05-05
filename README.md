@@ -395,9 +395,9 @@ trainingVariables = ['u', 'v', 'p']
 Repeat this for as many test cases as you wish. Once all test cases have been recorded, you can train the network using the following command:
 
 ```bash
-docker compose run --rm swiftcfd python3 swiftcfd.py --train --model=mlp --variables=u,v,p
+docker compose run --rm swiftcfd python3 swiftcfd.py --train --model=mlp --input-variables=T --output-variables=T
 ```
 
-Here, we specify that we want to train the model, whcih bypasses the CFD solver entirely and only trains the network based on the variables we provde, in this case ```u```, ```v``` and ```p``` (we have to provide the variables here again in case additional data sets exist for other variables).
+Here, we specify that we want to train the model, which bypasses the CFD solver entirely and only trains the network based on the variables we provde. Specifically, we have to provide the input and output variables here. The input variables are what are fed into the input Neurons (at different time steps and locations ```i``` and ```j```) to predict the output variables at ```i```, ```j```, at the next time level ```n+1```. For the moment, only training of the temperature equation is implemented, so both input and output variables need to be the same. 
 
-We also have to provide the model we wish to train on, and we have ```mlp```, ```rnn```, ```lstm```, and ```transformer``` available. If the ```--train``` flag is provided without the ```--model``` and ```--variables``` flag, the solver will not continue and crash.
+We also have to provide the model we wish to train on, and we have ```mlp```, ```rnn```, ```lstm```, and ```transformer``` available.

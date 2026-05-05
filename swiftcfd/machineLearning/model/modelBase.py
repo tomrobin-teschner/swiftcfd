@@ -71,7 +71,7 @@ class ModelBase(torch.nn.Module, ABC):
 
         return total_loss, data_loss, physics_loss
 
-    def train_network(self, training_data, epochs=10, batch_size=256, lr=1e-4, hidden_size=256,
+    def train_network(self, training_data, epochs=200, batch_size=256, lr=1e-4, hidden_size=256,
               num_layers=5, dropout=0.1, output_dir="output", patience=300):
 
         # TODO: currently only works if input and output variables are the same (temperature)
@@ -183,10 +183,10 @@ class ModelBase(torch.nn.Module, ABC):
             else:
                 patience_counter += 1
 
-            # if epoch % 10 == 0 or epoch == epochs - 1:
-            print(f"  Epoch {epoch:>4d}/{epochs}, Total = {avg_t:>8.2e}, "
-                f"Physics = {avg_p:>8.2e}, Data = {avg_d:>8.2e}, "
-                f"val = {val_loss:>8.2e}, lr = {cur_lr:>8.2e}")
+            if epoch % 10 == 0 or epoch == epochs - 1:
+                print(f"  Epoch {epoch:>4d}/{epochs}, Total = {avg_t:>8.2e}, "
+                    f"Physics = {avg_p:>8.2e}, Data = {avg_d:>8.2e}, "
+                    f"val = {val_loss:>8.2e}, lr = {cur_lr:>8.2e}")
 
             if patience_counter >= patience:
                 print(f"  Early stopping at epoch {epoch}")
